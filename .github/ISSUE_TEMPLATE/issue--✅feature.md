@@ -2,7 +2,7 @@
 name: Feature
 about: 새로운 기능
 title: "[Feature]  - [도메인] 제목"
-labels: ''
+labels: "\U0001F984Feat"
 assignees: ''
 
 ---
