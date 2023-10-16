@@ -120,6 +120,10 @@ DTO(Data Transfer Object)를 request와 response로 나누어 제작할 것!
 | **Refactor** | 프로덕션 코드 리팩토링                                                   |
 | **API** | 서버 API 통신                                                   |
 | **Deploy** | 배포 관련                                                   |
+| **Setting** | 개발환경 세팅                                                   |
+
+<br>
+<br>
 
 ---------------------------------------------------
 
