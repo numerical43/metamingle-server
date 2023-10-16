@@ -1,6 +1,7 @@
 package com.mingles.metamingle.member.command.domain.aggregate.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +32,13 @@ public class Member {
     @Column
     private String providerId;
 
+    @Builder
+    public Member(String memberName, String nickname, String email, String provider, String providerId) {
+        this.memberName = memberName;
+        this.nickname = nickname;
+        this.email = email;
+        this.provider = provider;
+        this.providerId = providerId;
+    }
 
 }

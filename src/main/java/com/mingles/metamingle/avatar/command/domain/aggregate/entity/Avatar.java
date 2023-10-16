@@ -56,5 +56,4 @@ public class Avatar implements Serializable {
     }
 
 
-
 }
