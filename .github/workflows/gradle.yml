@@ -46,8 +46,6 @@ jobs:
       - name: Add permission
         run: 
           chmod +x gradlew
-          ./gradlew clean
-          sed -i 's/\r$//' gradlew
 
       - name: Test with Gradle
         run: ./gradlew --info test
