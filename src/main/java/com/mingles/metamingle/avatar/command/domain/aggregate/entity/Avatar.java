@@ -2,6 +2,7 @@ package com.mingles.metamingle.avatar.command.domain.aggregate.entity;
 
 import com.mingles.metamingle.avatar.command.domain.aggregate.vo.AvatarMemberNoVO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +42,19 @@ public class Avatar implements Serializable {
     @Column
     private String gender;
 
-    //enum 생각해보기티비
+    @Builder
+    public Avatar(AvatarMemberNoVO avatarMemberNoVO, String hair, String hairColor, String eye, String top, String bottom, String set, String shoes, String gender) {
+        this.avatarMemberNoVO = avatarMemberNoVO;
+        this.hair = hair;
+        this.hairColor = hairColor;
+        this.eye = eye;
+        this.top = top;
+        this.bottom = bottom;
+        this.set = set;
+        this.shoes = shoes;
+        this.gender = gender;
+    }
+
+
 
 }
