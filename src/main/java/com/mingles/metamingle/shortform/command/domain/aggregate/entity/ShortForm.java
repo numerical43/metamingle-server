@@ -8,8 +8,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @Table(name = "TBL_SHORT_FORM")
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class ShortForm {
 
     @Id

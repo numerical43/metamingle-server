@@ -1,12 +1,11 @@
 package com.mingles.metamingle.shortform.command.application.service;
 
 import com.mingles.metamingle.shortform.command.domain.repository.ShortFormCommandRepository;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@RequiredArgsConstructor
 public class ShortFormCommandService {
 
     private final ShortFormCommandRepository shortFormCommandRepository;
