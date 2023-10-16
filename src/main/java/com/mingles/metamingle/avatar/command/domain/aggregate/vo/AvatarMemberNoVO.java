@@ -1,9 +1,6 @@
 package com.mingles.metamingle.avatar.command.domain.aggregate.vo;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,9 +10,10 @@ import java.io.Serializable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class AvatarMemberNoVO implements Serializable {
 
     @Column
     private Long memberNo;
-
+    
 }
