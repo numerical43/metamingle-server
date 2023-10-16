@@ -47,6 +47,9 @@ jobs:
         run: 
           chmod +x gradlew
 
+      - name: Remove carriage return from .sh files
+        run: find ./work/_temp -name "*.sh" -exec sed -i 's/\r$//' {} \;
+
       - name: Test with Gradle
         run: ./gradlew --info test
 
