@@ -1,5 +1,5 @@
 package com.mingles.metamingle.shortform.command.application.dto.response;
 
-public class ShrortFormCreateResponse {
+public class ShortFormCreateResponse {
 
 }
