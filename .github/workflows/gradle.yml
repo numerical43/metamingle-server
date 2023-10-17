@@ -46,9 +46,7 @@ jobs:
       - name: Add permission
         run: 
           chmod +x gradlew
-
-      - name: Remove carriage return from .sh files
-        run: find ./home/runner/work/_temp -name "*.sh" -exec sed -i 's/\r$//' {} \;
+          sed -i 's/\r$//' gradlew
 
       - name: Test with Gradle
         run: ./gradlew --info test
