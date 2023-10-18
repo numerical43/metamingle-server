@@ -35,10 +35,10 @@ public class InteractiveMovie {
     @Column
     private int interactiveMovieLength;
 
-    @Column
+    @Embedded
     private ShortFormNoVO shortFormNoVO;
 
-    @Column
+    @Embedded
     private MemberNoVO memberNoVO;
 
     @Builder
