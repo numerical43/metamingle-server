@@ -4,9 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class UserIdVO {
+public class MemberNoVO {
 
     @Column
-    private Long userId;
+    private Long MemberNo;
 
 }
