@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Table(name = "TBL_AVATAR")
+@Table(name = "TBL_SCRIPT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Script implements Serializable {
 
