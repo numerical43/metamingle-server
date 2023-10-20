@@ -39,4 +39,5 @@ out/
 
 ### YAML ###
 src/main/resources/application.yml
+src/main/resources/meta-mingle-firebase-key.json
 

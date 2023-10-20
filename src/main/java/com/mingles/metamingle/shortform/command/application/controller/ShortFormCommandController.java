@@ -1,11 +1,10 @@
 package com.mingles.metamingle.shortform.command.application.controller;
 
 import com.mingles.metamingle.common.ApiResponse;
-import com.mingles.metamingle.common.ApiStatus;
-import com.mingles.metamingle.shortform.command.application.dto.request.ShortFormCreateRequest;
-import com.mingles.metamingle.shortform.command.application.dto.response.ShortFormCreateResponse;
-import com.mingles.metamingle.shortform.command.application.service.ShortFormCommandService;
+import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
+import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,15 +14,29 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ShortFormCommandController {
 
-    private final ShortFormCommandService shortFormCommandService;
+//    private final ShortFormCommandService shortFormCommandService;
+    private final ShortFormFirebaseService shortFormFirebaseService;
 
     // 숏폼 생성
-    @PostMapping("/short-form")
-    public ApiResponse createShortForm(@RequestPart MultipartFile file, @RequestPart ShortFormCreateRequest request) {
+//    @PostMapping("/short-form")
+//    public ResponseEntity<ApiResponse> createShortForm(@RequestPart("video") MultipartFile video,
+//                                               @RequestPart("title") String title) throws Exception {
+//
+//        CreateShortFormResponse response = shortFormCommandService.createShortForm(video, title);
+//
+//        return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공", response));
+//
+//    }
 
-        ShortFormCreateResponse shortFormUrl = null;
+    // 숏폼 생성
+    @PostMapping("/short-form-firebase")
+    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestPart("video") MultipartFile video,
+                                       @RequestPart("title") String title,
+                                       @RequestPart("description") String description) throws Exception {
 
-        return new ApiResponse(ApiStatus.SUCCESS, "동영상 저장 성공", shortFormUrl);
+        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description);
+
+        return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
 
     }
 
