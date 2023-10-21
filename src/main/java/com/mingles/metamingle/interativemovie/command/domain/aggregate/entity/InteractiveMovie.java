@@ -35,9 +35,6 @@ public class InteractiveMovie {
     @Column
     private int order;
 
-    @Column
-    private int interactiveMovieLength;
-
     @Embedded
     private ShortFormNoVO shortFormNoVO;
 
@@ -46,14 +43,13 @@ public class InteractiveMovie {
 
     @Builder
     public InteractiveMovie(String title, String url, String thumbnailUrl, String description, Date date, int order,
-                            int interactiveMovieLength, ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
+                            ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
         this.title = title;
         this.url = url;
         this.thumbnailUrl = thumbnailUrl;
         this.description = description;
         this.date = date;
         this.order = order;
-        this.interactiveMovieLength = interactiveMovieLength;
         this.shortFormNoVO = shortFormNoVO;
         this.memberNoVO = memberNoVO;
     }
