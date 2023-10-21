@@ -1,7 +1,7 @@
 package com.mingles.metamingle.interativemovie.command.infrastructure.service;
 
 import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;
-import com.mingles.metamingle.shortform.command.domain.repository.ShortFormCommandRepository;
+import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.JCodecException;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class ApiShortFormService {
 
     private final ShortFormFirebaseService shortFormFirebaseService;
 
-    public Long createShortFormWithInteractiveMovie(MultipartFile file, String title, String description)
+    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description)
             throws JCodecException, IOException {
 
         return shortFormFirebaseService.createShortFormWithInterativeMovie(file, title, description);

@@ -9,6 +9,7 @@ import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.ShortF
 import com.mingles.metamingle.interativemovie.command.domain.repository.InteractiveMovieCommandRepository;
 import com.mingles.metamingle.interativemovie.command.domain.service.InteractiveMovieDomainService;
 import com.mingles.metamingle.interativemovie.command.infrastructure.service.ApiShortFormService;
+import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.jcodec.api.FrameGrab;
@@ -47,33 +48,35 @@ public class InteractiveMovieCommandService {
     private final InteractiveMovieDomainService interactiveMovieDomainService;
     private final ApiShortFormService apiShortFormService;
 
-    public List<CreateInteractiveMovieResponse> createInteractiveMovie(MultipartFile[] files, String[] titles, String[] descriptions)
+    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, List<String> titles, List<String> descriptions)
             throws JCodecException, IOException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
-        Long shortFormNo = apiShortFormService.createShortFormWithInteractiveMovie(files[0], titles[0], descriptions[0]);
-        ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortFormNo);
+        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), titles.get(0), descriptions.get(0));
+        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), 0));
+
+        ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
 
         for (int i = 1; i <= 2; i++) {
 
-            String fileKeyName = createFileName(files[i].getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+            String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
             GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebaseConfigPath));
             Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
             BlobId blobId = BlobId.of(bucketName, fileKeyName);
             BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("video/mp4").build();
 
-            InputStream inputStream = files[i].getInputStream();
+            InputStream inputStream = files.get(i).getInputStream();
+
             byte[] bytes = IOUtils.toByteArray(inputStream);
             Blob blob = storage.create(blobInfo, bytes);
-            inputStream.close();
 
             String url = bucketUrl + fileKeyName + "?alt=media";
 
-            String thumbnailUrl = createAndUploadThumbnail(files[i], fileKeyName);
+            String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
 
-            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(titles[i], thumbnailUrl, url, descriptions[i], new Date(),
+            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(titles.get(i), url, thumbnailUrl, descriptions.get(i), new Date(),
                     i, shortFormNoVO, null);
 
             InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
@@ -81,13 +84,12 @@ public class InteractiveMovieCommandService {
             response.add(new CreateInteractiveMovieResponse(null, uploadedInteractiveMovie.getInteractiveMovieNo(),
                                                             uploadedInteractiveMovie.getUrl(),
                                                             uploadedInteractiveMovie.getThumbnailUrl(),
-                                                            uploadedInteractiveMovie.getOrder()));
+                                                            uploadedInteractiveMovie.getSequence()));
         }
 
         return response;
 
     }
-
 
     // 이미지 파일 이름 생성
     private String createFileName(String fileName) {
@@ -143,21 +145,4 @@ public class InteractiveMovieCommandService {
         return file;
     }
 
-    private void deleteTempFile() {
-        String tempFilePath = "C:/User/user/temp";
-
-        File directory = new File(tempFilePath);
-
-        if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles();
-
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
-                }
-            }
-        }
-    }
 }
