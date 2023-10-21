@@ -2,10 +2,7 @@ package com.mingles.metamingle.interativemovie.command.domain.aggregate.entity;
 
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.ShortFormNoVO;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,6 +24,12 @@ public class InteractiveMovie {
     private String url;
 
     @Column
+    private String thumbnailUrl;
+
+    @Column
+    private String description;
+
+    @Column
     private Date date;
 
     @Column
@@ -42,9 +45,12 @@ public class InteractiveMovie {
     private MemberNoVO memberNoVO;
 
     @Builder
-    public InteractiveMovie(String title, String url, Date date, int order, int interactiveMovieLength, ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
+    public InteractiveMovie(String title, String url, String thumbnailUrl, String description, Date date, int order,
+                            int interactiveMovieLength, ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
         this.title = title;
         this.url = url;
+        this.thumbnailUrl = thumbnailUrl;
+        this.description = description;
         this.date = date;
         this.order = order;
         this.interactiveMovieLength = interactiveMovieLength;
