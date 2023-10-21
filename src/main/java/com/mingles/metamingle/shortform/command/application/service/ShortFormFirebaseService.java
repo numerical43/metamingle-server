@@ -89,6 +89,37 @@ public class ShortFormFirebaseService {
         return new DeleteShortFormResponse(shortFormNo);
     }
 
+    // 인터랙티브 무비와 관련된 숏폼 생성
+    @Transactional
+    public CreateShortFormResponse createShortFormWithInterativeMovie(MultipartFile file, String title, String description) throws IOException, JCodecException {
+        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebaseConfigPath));
+        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        BlobId blobId = BlobId.of(bucketName, fileKeyName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("video/mp4").build();
+
+        InputStream inputStream = file.getInputStream();
+        byte[] bytes = IOUtils.toByteArray(inputStream);
+        Blob blob = storage.create(blobInfo, bytes);
+        inputStream.close();
+
+        String url = bucketUrl + fileKeyName + "?alt=media";
+
+        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
+
+        ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
+                Boolean.TRUE, null);
+
+        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
+
+        deleteTempFile();
+
+        return new CreateShortFormResponse(uploadedShortForm.getShortFormNo(),
+                uploadedShortForm.getThumbnailUrl(),
+                uploadedShortForm.getUrl());
+    }
+
     // 이미지 파일 이름 생성
     private String createFileName(String fileName) {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
