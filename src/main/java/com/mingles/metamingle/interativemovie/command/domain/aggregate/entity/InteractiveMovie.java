@@ -2,7 +2,10 @@ package com.mingles.metamingle.interativemovie.command.domain.aggregate.entity;
 
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.ShortFormNoVO;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
