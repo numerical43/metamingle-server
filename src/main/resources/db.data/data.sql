@@ -9,5 +9,5 @@ VALUES (2, '2023-10-20T04:43:29.783+00:00', '영상 설명', FALSE, 1,
         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/5b8acaa2-0cc5-4826-83c6-e23ec181d8e020231020133238.mp4?alt=media');
 
 
-INSERT INTO tbl_member(member_no, member_name)
-VALUES (1, '닉네임');
+INSERT INTO tbl_member(member_no, member_name, nickname, email)
+VALUES (1, '이름', '닉네임', 'email');

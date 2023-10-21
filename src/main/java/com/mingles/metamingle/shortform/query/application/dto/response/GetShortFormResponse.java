@@ -30,6 +30,4 @@ public class GetShortFormResponse {
         this.isInteractive = isInteractive;
     }
 
-    public GetShortFormResponse(Long shortFormNo, String description) {
-    }
 }
