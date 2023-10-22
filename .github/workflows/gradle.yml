@@ -43,16 +43,16 @@ jobs:
         run: echo "${{ secrets.APPLICATION_DEV }}" > ./src/main/resources/application.yml
         shell: bash
 
-      - name: make meta-mingle-firebase-key.json
-        run:
-          touch ./src/main/resources/meta-mingle-firebase-key.json
-        shell: bash
-        
-      - name: deliver firebase key
-        run: 
-          echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/meta-mingle-firebase-key.json
-          jq . > ./src/main/resources/meta-mingle-firebase-key.json
-        shell: bash
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "meta-mingle-firebase-key.json"
+          json: ${{ secrets.FIREBASE_KEY }}
+
+      - name: move-json-file
+        run: |
+          mv meta-mingle-firebase-key.json ./src/main/resources/
 
       - name: Check if the file exists
         run: ls -l ./src/main/resources
