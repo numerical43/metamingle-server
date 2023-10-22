@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class FindMemberRequest {
 
-    private Long memberNo;
+    Long memberNo;
 
 }
