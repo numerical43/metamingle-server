@@ -4,6 +4,7 @@ import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortFor
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormListResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormResponse;
 import com.mingles.metamingle.shortform.query.domain.repository.ShortFormQueryRepository;
+import com.mingles.metamingle.shortform.query.infrastructure.service.ApiMemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class ShortFormQueryService {
 
     private final ShortFormQueryRepository shortFormQueryRepository;
+    private final ApiMemberQueryService apiMemberQueryService;
 
     // 전체 숏폼 조회
     public List<GetShortFormListResponse> getShortFormList() {
@@ -23,7 +25,7 @@ public class ShortFormQueryService {
 
         List<GetShortFormListResponse> response = shortFormList.stream().map(
                 shortForm -> {
-                    //String memberNickname = memberCiRepository.findMemberNicknameByMemberNo(shortForm.getMemberNoVo().getMemberNo());
+                    String memberName = apiMemberQueryService.getMemberName(shortForm.getMemberNoVO().getMemberNo());
 
                     return new GetShortFormListResponse(
                             shortForm.getShortFormNo(),
@@ -31,7 +33,7 @@ public class ShortFormQueryService {
                             shortForm.getThumbnailUrl(),
                             shortForm.getUrl(),
                             shortForm.getDescription(),
-                            null,
+                            memberName,
                             shortForm.getDate(),
                             shortForm.getIsInteractive()
                     );
@@ -48,13 +50,15 @@ public class ShortFormQueryService {
 
         ShortForm shortFormResponse = shortFormQueryRepository.findShortFormByShortFormNo(shortFormNo);
 
+        String memberName = apiMemberQueryService.getMemberName(shortFormResponse.getMemberNoVO().getMemberNo());
+
         GetShortFormResponse response = new GetShortFormResponse(
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
                 shortFormResponse.getThumbnailUrl(),
                 shortFormResponse.getThumbnailUrl(),
                 shortFormResponse.getDescription(),
-                null,
+                memberName,
                 shortFormResponse.getDate(),
                 shortFormResponse.getIsInteractive());
 

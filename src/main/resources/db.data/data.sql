@@ -10,4 +10,4 @@ VALUES (2, '2023-10-20T04:43:29.783+00:00', '영상 설명', FALSE, 1,
 
 
 INSERT INTO tbl_member(member_no, member_name, nickname, email)
-VALUES (1, '이름', '닉네임', 'email');
+VALUES (1, '메타밍글', '닉네임', 'email');
