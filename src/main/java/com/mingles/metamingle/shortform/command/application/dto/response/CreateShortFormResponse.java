@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class CreateShortFormResponse {
 
-    Long shortFormNo;
-    String thumbnailUrl;
-    String url;
+    private Long shortFormNo;
+    private String thumbnailUrl;
+    private String url;
 
     public CreateShortFormResponse(Long shortFormNo, String thumbnailUrl, String url) {
         this.shortFormNo = shortFormNo;

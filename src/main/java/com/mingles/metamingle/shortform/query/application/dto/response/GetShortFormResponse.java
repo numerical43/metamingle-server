@@ -10,15 +10,15 @@ import java.util.List;
 @Setter
 public class GetShortFormResponse {
 
-    Long shortFormNo;
-    String title;
-    String thumbnailUrl;
-    String url;
-    String description;
-    String memberName;
-    Date date;
-    Boolean isInteractive;
-    List<InteractiveMovieDTO> interactiveMovieDTOS;
+    private Long shortFormNo;
+    private String title;
+    private String thumbnailUrl;
+    private String url;
+    private String description;
+    private String memberName;
+    private Date date;
+    private Boolean isInteractive;
+    private List<InteractiveMovieDTO> interactiveMovieDTOS;
 
     public GetShortFormResponse(Long shortFormNo, String title, String thumbnailUrl, String url, String description,
                                     String memberName, Date date, Boolean isInteractive, List<InteractiveMovieDTO> interactiveMovieDTOS) {
