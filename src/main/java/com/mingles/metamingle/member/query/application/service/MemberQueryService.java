@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberQueryService {
@@ -22,5 +24,16 @@ public class MemberQueryService {
                 .orElseThrow(() -> new NotFoundException("해당 회원이 존재하지 않습니다."));
 
         return MemberQueryResponse.from(member);
+    }
+
+    @Transactional(readOnly = true)
+    public Long findMemberNoByProviderId(String providerId) {
+        Optional<Member> member = memberQueryRepository.findByProviderId(providerId);
+
+        if(member.isPresent()) {
+            return member.get().getMemberNo();
+        } else {
+            throw new NotFoundException("해당 회원이 존재하지 않습니다.");
+        }
     }
 }
