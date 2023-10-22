@@ -37,7 +37,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     // Aws S3
-//    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    //implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     // ffmpeg
     implementation 'net.bramp.ffmpeg:ffmpeg:0.6.2' // FFmpeg 라이브러리
@@ -51,6 +51,9 @@ dependencies {
     // 썸네일
     implementation 'org.jcodec:jcodec:0.2.3'
     implementation 'org.jcodec:jcodec-javase:0.2.3'
+
+    //webclient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
 
 }
 

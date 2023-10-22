@@ -42,6 +42,4 @@ public class ShortFormCommandController {
 
     // 숏폼 삭제
 
-    // 숏폼 수정
-
 }

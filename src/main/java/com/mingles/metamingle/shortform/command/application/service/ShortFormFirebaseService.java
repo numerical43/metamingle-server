@@ -3,6 +3,7 @@ package com.mingles.metamingle.shortform.command.application.service;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import com.google.firebase.cloud.StorageClient;
+import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
 import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
@@ -64,8 +65,11 @@ public class ShortFormFirebaseService {
 
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
+        // 임시 멤버 넘버 사용
+        MemberNoVO memberNoVO = new MemberNoVO(1L);
+
         ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                                                Boolean.FALSE, null);
+                                                Boolean.FALSE, memberNoVO);
 
         ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
 
@@ -108,8 +112,11 @@ public class ShortFormFirebaseService {
 
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
+        // 임시 멤버 넘버 사용
+        MemberNoVO memberNoVO = new MemberNoVO(1L);
+
         ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                Boolean.TRUE, null);
+                Boolean.TRUE, memberNoVO);
 
         ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
 
