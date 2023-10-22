@@ -11,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @Tag(name = "AI 생성 대본 Command API")
 @RestController
@@ -22,12 +25,16 @@ public class ScriptCommandController {
 
     @Operation(summary = "AI 대본 생성")
     @PostMapping("api/script")
-    public ResponseEntity<ApiResponse> createScript(@RequestBody CreateScriptRequest request) {
+    public ResponseEntity<ApiResponse> createScript(@RequestHeader Map<String, String> requestHeader,
+                                                    @RequestBody CreateScriptRequest request) {
+
+//        String header = requestHeader.get("auth");
+//        Long providerId = jwtTokenService.getUserIdFromToken(header);
 
         ScriptCommandResponse response = scriptCommandService.createScript(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ApiResponse.success("성공적으로 저장되었습니다.",response)
+                ApiResponse.success("성공적으로 저장되었습니다." ,response)
         );
     }
 
