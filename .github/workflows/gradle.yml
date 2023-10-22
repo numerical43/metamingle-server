@@ -43,6 +43,15 @@ jobs:
         run: echo "${{ secrets.APPLICATION_DEV }}" > ./src/main/resources/application.yml
         shell: bash
 
+      - name: make meta-mingle-firebase-key.json
+        run:
+          touch ./src/main/resources/meta-mingle-firebase-key.json
+        shell: bash
+        
+      - name: deliver firebase key
+        run: echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/meta-mingle-firebase-key.json
+        shell: bash
+
       - name: Add permission
         run: 
           chmod +x gradlew;
