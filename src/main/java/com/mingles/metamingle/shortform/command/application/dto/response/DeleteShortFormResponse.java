@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteShortFormResponse {
-    Long shortFormNo;
+    private Long shortFormNo;
 
     public DeleteShortFormResponse(Long shortFormNo) {
         this.shortFormNo = shortFormNo;

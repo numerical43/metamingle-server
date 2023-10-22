@@ -4,22 +4,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 public class GetShortFormResponse {
 
-    Long shortFormNo;
-    String title;
-    String thumbnailUrl;
-    String url;
-    String description;
-    String memberName;
-    Date date;
-    Boolean isInteractive;
+    private Long shortFormNo;
+    private String title;
+    private String thumbnailUrl;
+    private String url;
+    private String description;
+    private String memberName;
+    private Date date;
+    private Boolean isInteractive;
+    private List<InteractiveMovieDTO> interactiveMovieDTOS;
 
     public GetShortFormResponse(Long shortFormNo, String title, String thumbnailUrl, String url, String description,
-                                    String memberName, Date date, Boolean isInteractive) {
+                                    String memberName, Date date, Boolean isInteractive, List<InteractiveMovieDTO> interactiveMovieDTOS) {
         this.shortFormNo = shortFormNo;
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
@@ -28,6 +30,7 @@ public class GetShortFormResponse {
         this.memberName = memberName;
         this.date = date;
         this.isInteractive = isInteractive;
+        this.interactiveMovieDTOS = interactiveMovieDTOS;
     }
 
 }

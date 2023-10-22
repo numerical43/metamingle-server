@@ -9,14 +9,14 @@ import java.util.Date;
 @Setter
 public class GetShortFormListResponse {
 
-    Long shortFormNo;
-    String title;
-    String thumbnailUrl;
-    String url;
-    String description;
-    String memberName;
-    Date date;
-    Boolean isInteractive;
+    private Long shortFormNo;
+    private String title;
+    private String thumbnailUrl;
+    private String url;
+    private String description;
+    private String memberName;
+    private Date date;
+    private Boolean isInteractive;
 
     public GetShortFormListResponse(Long shortFormNo, String title, String thumbnailUrl, String url, String description,
                                     String memberName, Date date, Boolean isInteractive) {
