@@ -48,17 +48,17 @@ public class InteractiveMovieCommandService {
     private final InteractiveMovieDomainService interactiveMovieDomainService;
     private final ApiShortFormService apiShortFormService;
 
-    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, List<String> titles, List<String> descriptions)
+    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices)
             throws JCodecException, IOException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
-        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), titles.get(0), descriptions.get(0));
-        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), 0));
+        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title, description);
+        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), "none", 0));
 
         ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
 
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 0; i <= 1; i++) {
 
             String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
@@ -76,14 +76,15 @@ public class InteractiveMovieCommandService {
 
             String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
 
-            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(titles.get(i), url, thumbnailUrl, descriptions.get(i), new Date(),
-                    i, shortFormNoVO, null);
+            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i), new Date(),
+                    i + 1, shortFormNoVO, null);
 
             InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
 
             response.add(new CreateInteractiveMovieResponse(null, uploadedInteractiveMovie.getInteractiveMovieNo(),
                                                             uploadedInteractiveMovie.getUrl(),
                                                             uploadedInteractiveMovie.getThumbnailUrl(),
+                                                            uploadedInteractiveMovie.getChoice(),
                                                             uploadedInteractiveMovie.getSequence()));
         }
 

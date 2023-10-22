@@ -24,10 +24,11 @@ public class InteractiveMovieCommandController {
     // 인터랙티브 무비 생성
     @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
     public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video") List<MultipartFile> videos,
-                                                              @RequestPart("title") List<String> titles,
-                                                              @RequestPart("description") List<String> descriptions) throws JCodecException, IOException {
+                                                              @RequestPart("title") String title,
+                                                              @RequestPart("description") String description,
+                                                              @RequestPart("choice") List<String> choices) throws JCodecException, IOException {
 
-       List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, titles, descriptions);
+       List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
 
         return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
     }

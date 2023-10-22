@@ -13,6 +13,7 @@ public class CreateInteractiveMovieResponse {
     Long interactiveMovieNo;
     String thumbnailUrl;
     String url;
+    String choice;
     int sequence;
 
 }

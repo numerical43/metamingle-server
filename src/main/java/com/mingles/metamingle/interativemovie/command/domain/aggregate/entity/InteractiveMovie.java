@@ -33,6 +33,9 @@ public class InteractiveMovie {
     private String description;
 
     @Column
+    private String choice;
+
+    @Column
     private Date date;
 
     @Column
@@ -45,12 +48,13 @@ public class InteractiveMovie {
     private MemberNoVO memberNoVO;
 
     @Builder
-    public InteractiveMovie(String title, String url, String thumbnailUrl, String description, Date date, int sequence,
+    public InteractiveMovie(String title, String url, String thumbnailUrl, String description, String choice, Date date, int sequence,
                             ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
         this.title = title;
         this.url = url;
         this.thumbnailUrl = thumbnailUrl;
         this.description = description;
+        this.choice = choice;
         this.date = date;
         this.sequence = sequence;
         this.shortFormNoVO = shortFormNoVO;
