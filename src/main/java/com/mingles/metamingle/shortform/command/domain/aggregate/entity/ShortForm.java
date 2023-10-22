@@ -23,27 +23,31 @@ public class ShortForm {
     private String title;
 
     @Column
+    private String thumbnailUrl;
+
+    @Column
     private String url;
+
+    @Column
+    private String description;
 
     @Column
     private Date date;
 
     @Column
-    private int shortFormLength;
-
-    @Column
     private Boolean isInteractive;
-
 
     @Embedded
     private MemberNoVO memberNoVO;
 
     @Builder
-    public ShortForm(String title, String url, Date date, int shortFormLength, boolean isInteractive, MemberNoVO memberNoVO) {
+    public ShortForm(String title, String thumbnailUrl, String url, String description, Date date,
+                     Boolean isInteractive, MemberNoVO memberNoVO) {
         this.title = title;
+        this.thumbnailUrl = thumbnailUrl;
         this.url = url;
+        this.description = description;
         this.date = date;
-        this.shortFormLength = shortFormLength;
         this.isInteractive = isInteractive;
         this.memberNoVO = memberNoVO;
     }

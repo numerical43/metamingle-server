@@ -30,7 +30,7 @@ public class InteractiveMovie {
     private Date date;
 
     @Column
-    private int order;
+    private int sequence;
 
     @Column
     private int interactiveMovieLength;
@@ -46,7 +46,7 @@ public class InteractiveMovie {
         this.title = title;
         this.url = url;
         this.date = date;
-        this.order = order;
+        this.sequence = order;
         this.interactiveMovieLength = interactiveMovieLength;
         this.shortFormNoVO = shortFormNoVO;
         this.memberNoVO = memberNoVO;
