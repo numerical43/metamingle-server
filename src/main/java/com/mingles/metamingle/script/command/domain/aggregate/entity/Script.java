@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class Script implements Serializable {
 
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scriptNo;
 
     @Embedded
