@@ -50,7 +50,7 @@ jobs:
         
       - name: deliver firebase key
         run: 
-          echo "${{ secrets.FIREBASE_KEY }}" > tmp.json
+          echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/meta-mingle-firebase-key.json
           cat tmp.json | jq . > ./src/main/resources/meta-mingle-firebase-key.json
         shell: bash
 
