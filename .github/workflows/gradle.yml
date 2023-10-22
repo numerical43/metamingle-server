@@ -43,6 +43,25 @@ jobs:
         run: echo "${{ secrets.APPLICATION_DEV }}" > ./src/main/resources/application.yml
         shell: bash
 
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "meta-mingle-firebase-key.json"
+          json: ${{ secrets.FIREBASE_KEY }}
+
+      - name: move-json-file
+        run: |
+          mv meta-mingle-firebase-key.json ./src/main/resources/
+
+      - name: Check if the file exists
+        run: ls -l ./src/main/resources
+        shell: bash
+
+      - name: Check if the file is a regular file
+        run: file ./src/main/resources/meta-mingle-firebase-key.json
+        shell: bash
+  
       - name: Add permission
         run: 
           chmod +x gradlew;
@@ -52,7 +71,7 @@ jobs:
         run: ./gradlew --info test
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: build
 
