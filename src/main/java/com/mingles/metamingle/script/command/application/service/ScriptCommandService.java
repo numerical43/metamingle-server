@@ -24,15 +24,15 @@ public class ScriptCommandService {
     private final ScriptCommandInfraService scriptCommandInfraService;
 
     @Transactional
-    public ScriptCommandResponse createScript(CreateScriptRequest request) {
+    public ScriptCommandResponse createScript(Long memberNo, CreateScriptRequest request) {
 
         //사용자가 입력한 대본이 적합한지 확인
         scriptDomainService.validateScriptContent(request.getContent());
 
-        String aiScript = scriptCommandInfraService.getAiScript(request.getContent());
+        String aiScript = scriptCommandInfraService.getAiScript(request.getContent()).getText();
 
         Script script = scriptCommandRepository.save(Script.builder()
-                        .scriptMemberNoVO(new ScriptMemberNoVO(request.getMemberNo()))
+                        .scriptMemberNoVO(new ScriptMemberNoVO(memberNo))
                         .shortFormNoVO(new ShortFormNoVO(request.getShortFormNo()))
                         .scriptContent(aiScript)
                         .uploadDate(LocalDate.now())

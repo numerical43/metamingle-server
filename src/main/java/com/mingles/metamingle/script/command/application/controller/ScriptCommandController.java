@@ -1,6 +1,7 @@
 package com.mingles.metamingle.script.command.application.controller;
 
 import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.member.query.application.service.MemberQueryService;
 import com.mingles.metamingle.script.command.application.dto.request.CreateScriptRequest;
 import com.mingles.metamingle.script.command.application.dto.response.ScriptCommandResponse;
 import com.mingles.metamingle.script.command.application.service.ScriptCommandService;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class ScriptCommandController {
 
     private final ScriptCommandService scriptCommandService;
+    private final MemberQueryService memberQueryService;
 
     @Operation(summary = "AI 대본 생성")
     @PostMapping("api/script")
@@ -31,10 +33,12 @@ public class ScriptCommandController {
 //        String header = requestHeader.get("auth");
 //        Long providerId = jwtTokenService.getUserIdFromToken(header);
 
-        ScriptCommandResponse response = scriptCommandService.createScript(request);
+        Long memberNo = memberQueryService.findMemberNoByProviderId("111111");
+
+        ScriptCommandResponse response = scriptCommandService.createScript(memberNo, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ApiResponse.success("성공적으로 저장되었습니다." ,response)
+                ApiResponse.success("성공적으로 저장되었습니다." , response)
         );
     }
 
