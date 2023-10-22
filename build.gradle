@@ -52,6 +52,9 @@ dependencies {
     implementation 'org.jcodec:jcodec:0.2.3'
     implementation 'org.jcodec:jcodec-javase:0.2.3'
 
+    //webclient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
+
 }
 
 tasks.named('test') {
