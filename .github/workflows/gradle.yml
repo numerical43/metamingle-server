@@ -54,6 +54,13 @@ jobs:
           cat tmp.json | jq . > ./src/main/resources/meta-mingle-firebase-key.json
         shell: bash
 
+      - name: Check if the file exists
+        run: ls -l ./src/main/resources
+        shell: bash
+
+      - name: Check if the file is a regular file
+        run: file ./src/main/resources/meta-mingle-firebase-key.json
+        shell: bash
   
       - name: Add permission
         run: 
