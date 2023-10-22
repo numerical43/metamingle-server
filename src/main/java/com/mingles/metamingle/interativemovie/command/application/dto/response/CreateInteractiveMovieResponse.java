@@ -9,11 +9,11 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CreateInteractiveMovieResponse {
 
-    Long shortFormNo;
-    Long interactiveMovieNo;
-    String thumbnailUrl;
-    String url;
-    String choice;
-    int sequence;
+    private Long shortFormNo;
+    private Long interactiveMovieNo;
+    private String thumbnailUrl;
+    private String url;
+    private String choice;
+    private int sequence;
 
 }
