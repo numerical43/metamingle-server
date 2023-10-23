@@ -27,7 +27,8 @@ public class ScriptCommandService {
     public ScriptCommandResponse createScript(Long memberNo, CreateScriptRequest request) {
 
         //사용자가 입력한 대본이 적합한지 확인
-        scriptDomainService.validateScriptContent(request.getContent());
+        scriptDomainService.validateScriptLanguage(request.getContent());
+        scriptDomainService.validateScriptLength(request.getContent());
 
         String aiScript = scriptCommandInfraService.getAiScript(request.getContent()).getText();
 
