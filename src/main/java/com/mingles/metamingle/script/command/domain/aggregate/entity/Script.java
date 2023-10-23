@@ -27,7 +27,7 @@ public class Script implements Serializable {
     @Embedded
     private ShortFormNoVO shortFormNoVO;
 
-    @Column
+    @Column(length = 1000)
     private String scriptContent;
 
     @Column
