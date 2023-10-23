@@ -3,6 +3,7 @@ package com.mingles.metamingle.script.command.application.controller;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.member.query.application.service.MemberQueryService;
 import com.mingles.metamingle.script.command.application.dto.request.CreateScriptRequest;
+import com.mingles.metamingle.script.command.application.dto.request.UpdateScriptRequest;
 import com.mingles.metamingle.script.command.application.dto.response.ScriptCommandResponse;
 import com.mingles.metamingle.script.command.application.service.ScriptCommandService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +40,23 @@ public class ScriptCommandController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success("성공적으로 저장되었습니다." , response)
+        );
+    }
+
+    @Operation(summary = "AI 대본 재생성")
+    @PostMapping("api/script-recreate")
+    public ResponseEntity<ApiResponse> updateScript(@RequestHeader Map<String, String> requestHeader,
+                                                    @RequestBody UpdateScriptRequest request) {
+
+//        String header = requestHeader.get("auth");
+//        Long providerId = jwtTokenService.getUserIdFromToken(header);
+
+        Long memberNo = memberQueryService.findMemberNoByProviderId("111111");
+
+        ScriptCommandResponse response = scriptCommandService.updateScript(memberNo, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success("성공적으로 수정되었습니다." , response)
         );
     }
 
