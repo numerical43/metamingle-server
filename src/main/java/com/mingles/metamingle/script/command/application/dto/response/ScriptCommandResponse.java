@@ -15,7 +15,7 @@ public class ScriptCommandResponse {
     private Long memberNo;
     private Long shortFormNo;
     private LocalDate uploadDate;
-    private String content;
+    private String aiContent;
 
     public static ScriptCommandResponse from(Script script) {
         return new ScriptCommandResponse(
@@ -23,7 +23,7 @@ public class ScriptCommandResponse {
                 script.getScriptMemberNoVO().getMemberNo(),
                 script.getShortFormNoVO().getShortFormNo(),
                 script.getUploadDate(),
-                script.getScriptContent()
+                script.getAiContent()
         );
     }
 

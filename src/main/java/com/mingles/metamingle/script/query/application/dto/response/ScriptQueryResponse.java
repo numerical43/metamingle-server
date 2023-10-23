@@ -22,7 +22,7 @@ public class ScriptQueryResponse {
         return new ScriptQueryResponse(
                 script.getScriptMemberNoVO().getMemberNo(),
                 script.getShortFormNoVO().getShortFormNo(),
-                script.getScriptContent(),
+                script.getAiContent(),
                 script.getUploadDate()
         );
     }
