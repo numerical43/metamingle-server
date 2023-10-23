@@ -6,8 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateScriptRequest {
-    Long shortFormNo;
-    String content;
+    private Long shortFormNo;
+    private String content;
     public CreateScriptRequest(Long shortFormNo, String content) {
         this.shortFormNo = shortFormNo;
         this.content = content;
