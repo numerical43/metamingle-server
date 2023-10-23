@@ -29,6 +29,8 @@ public class ScriptCommandDomainService {
 
         if(length > 1000) {
             throw new IllegalArgumentException("글자수는 1000자를 넘길 수 없습니다.");
+        } else if (length == 0 || scriptContent.trim().isEmpty()) {
+            throw new IllegalArgumentException("글자수는 0자 이상이어야 합니다.");
         }
 
     }
