@@ -28,12 +28,10 @@ public class MemberQueryService {
 
     @Transactional(readOnly = true)
     public Long findMemberNoByProviderId(String providerId) {
-        Optional<Member> member = memberQueryRepository.findByProviderId(providerId);
 
-        if(member.isPresent()) {
-            return member.get().getMemberNo();
-        } else {
-            throw new NotFoundException("해당 회원이 존재하지 않습니다.");
-        }
+        Member member = memberQueryRepository.findByProviderId(providerId)
+                .orElseThrow(() -> new NotFoundException("해당 회원이 존재하지 않습니다."));
+
+        return member.getMemberNo();
     }
 }
