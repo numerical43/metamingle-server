@@ -10,5 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShortFormLikeCommandService {
 
+    private final ShortFormLikeCommandRepository shortFormLikeCommandRepository;
 
+
+    @Transactional
+    public CreateShortFormLikeResponse createShortFormLike(Long memberNo) {
+        return null;
+    }
 }
