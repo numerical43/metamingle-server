@@ -8,11 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateScriptRequest {
+
     private Long shortFormNo;
     private String content;
-    public CreateScriptRequest(Long shortFormNo, String content) {
-        this.shortFormNo = shortFormNo;
-        this.content = content;
-    }
+
 }
