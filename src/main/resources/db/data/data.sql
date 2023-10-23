@@ -26,5 +26,5 @@ VALUES (2, '선택지2222222222', '2023-10-20T04:43:29.783+00:00', '영상 설�
         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/6edaff0f-fa4e-4a62-988d-f65b583c91b020231019195508.mp4?alt=media');
 
 # tbl_member
-INSERT INTO tbl_member(member_no, member_name, nickname, email)
-VALUES (1, '메타밍글', '닉네임은항상고민', 'email@email.com');
+INSERT INTO tbl_member(member_no, provider_id, member_name, nickname, email)
+VALUES (1, '111111', '메타밍글', '닉네임', 'email');
