@@ -9,14 +9,14 @@ import java.util.Date;
 @Setter
 public class GetInteractiveMovieResponse {
 
-    Long interactiveMovieNo;
-    String title;
-    String thumbnailUrl;
-    String url;
-    String description;
-    String memberName;
-    Date date;
-    int sequence;
+    private Long interactiveMovieNo;
+    private String title;
+    private String thumbnailUrl;
+    private String url;
+    private String description;
+    private String memberName;
+    private Date date;
+    private int sequence;
 
     public GetInteractiveMovieResponse(Long interactiveMovieNo, String title, String thumbnailUrl, String url, String description,
                                 String memberName, Date date, int sequence) {

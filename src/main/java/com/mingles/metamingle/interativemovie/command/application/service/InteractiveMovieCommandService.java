@@ -5,6 +5,7 @@ import com.google.cloud.storage.*;
 import com.google.firebase.cloud.StorageClient;
 import com.mingles.metamingle.interativemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.entity.InteractiveMovie;
+import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.ShortFormNoVO;
 import com.mingles.metamingle.interativemovie.command.domain.repository.InteractiveMovieCommandRepository;
 import com.mingles.metamingle.interativemovie.command.domain.service.InteractiveMovieDomainService;
@@ -76,8 +77,11 @@ public class InteractiveMovieCommandService {
 
             String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
 
+            // 임시 멤버 넘버 사용
+            MemberNoVO memberNoVO = new MemberNoVO(1L);
+
             InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i), new Date(),
-                    i + 1, shortFormNoVO, null);
+                    i + 1, shortFormNoVO, memberNoVO);
 
             InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
 
