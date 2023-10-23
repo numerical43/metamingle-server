@@ -10,7 +10,7 @@ public class ScriptCommandDomainService {
 
     public void validateScriptLanguage(String scriptContent) {
 
-        boolean isKorean = Pattern.matches("^[ㄱ-ㅎ가-힣]*$", scriptContent);
+        boolean isKorean = Pattern.matches("^[\\sㄱ-ㅎ가-힣]*$", scriptContent);
 //        boolean isKoreanOrEnglish = Pattern.matches("^[ㄱ-ㅎ가-힣a-zA-Z]*$", scriptContent);
 
         System.out.println("isKorean = " + isKorean);
