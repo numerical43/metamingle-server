@@ -3,11 +3,14 @@ package com.mingles.metamingle.shortform.query.application.service;
 import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormListResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormResponse;
+import com.mingles.metamingle.shortform.query.application.dto.response.InteractiveMovieDTO;
 import com.mingles.metamingle.shortform.query.domain.repository.ShortFormQueryRepository;
+import com.mingles.metamingle.shortform.query.infrastructure.service.ApiInteractiveMovieService;
 import com.mingles.metamingle.shortform.query.infrastructure.service.ApiMemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +20,7 @@ public class ShortFormQueryService {
 
     private final ShortFormQueryRepository shortFormQueryRepository;
     private final ApiMemberQueryService apiMemberQueryService;
+    private final ApiInteractiveMovieService apiInteractiveMovieService;
 
     // 전체 숏폼 조회
     public List<GetShortFormListResponse> getShortFormList() {
@@ -39,9 +43,6 @@ public class ShortFormQueryService {
                     );
                 }).collect(Collectors.toList());
 
-        System.out.println("response = " + response.get(0).getThumbnailUrl());
-        System.out.println("response = " + response.get(0).getMemberName());
-
         return response;
     }
 
@@ -52,6 +53,14 @@ public class ShortFormQueryService {
 
         String memberName = apiMemberQueryService.getMemberName(shortFormResponse.getMemberNoVO().getMemberNo());
 
+        List<InteractiveMovieDTO> interactiveMovieDTOS;
+
+        if (shortFormResponse.getIsInteractive()) {
+            interactiveMovieDTOS = apiInteractiveMovieService.getRelatedInteractiveMovies(shortFormNo);
+        } else {
+            interactiveMovieDTOS = null;
+        }
+
         GetShortFormResponse response = new GetShortFormResponse(
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
@@ -60,7 +69,9 @@ public class ShortFormQueryService {
                 shortFormResponse.getDescription(),
                 memberName,
                 shortFormResponse.getDate(),
-                shortFormResponse.getIsInteractive());
+                shortFormResponse.getIsInteractive(),
+                interactiveMovieDTOS
+        );
 
         return response;
 

@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteShortFormRequest {
-    Long shortFormNo;
+    private Long shortFormNo;
 }
