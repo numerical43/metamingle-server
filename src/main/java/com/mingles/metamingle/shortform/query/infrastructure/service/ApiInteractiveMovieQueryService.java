@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ApiInteractiveMovieService {
+public class ApiInteractiveMovieQueryService {
 
     private final InteractiveMovieQueryRepository interactiveMovieQueryRepository;
 

@@ -9,6 +9,7 @@ import com.mingles.metamingle.shortform.command.application.dto.response.DeleteS
 import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import com.mingles.metamingle.shortform.command.domain.repository.ShortFormCommandRepository;
 import com.mingles.metamingle.shortform.command.domain.service.ShortFormCommandDomainService;
+import com.mingles.metamingle.shortform.command.infrastructure.service.ApiInteractiveMovieCommandService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.jcodec.api.FrameGrab;
@@ -17,10 +18,12 @@ import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -28,6 +31,7 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -45,6 +49,8 @@ public class ShortFormFirebaseService {
     private final ShortFormCommandRepository shortFormCommandRepository;
 
     private final ShortFormCommandDomainService shortFormCommandDomainService;
+
+    private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
 
     // 숏폼 생성
     @Transactional
@@ -86,11 +92,39 @@ public class ShortFormFirebaseService {
         ShortForm shortForm = shortFormCommandRepository.findById(shortFormNo)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지않는 숏폼입니다."));
 
+        List<Long> deletedInteractiveMovieNos = null;
+
+        if (shortForm.getIsInteractive()) {
+            deletedInteractiveMovieNos = apiInteractiveMovieCommandService.deleteInteractiveMovieWithShortFormNo(shortFormNo);
+        }
+
         // 사용자 확인 로직 (본인 확인)
+
+        // firebase storage의 영상, 썸네일 삭제
+        String thumbnailName = shortForm.getThumbnailUrl()
+                                        .replace(bucketUrl, "")
+                                        .replace("%2F", "/")
+                                        .replace("?alt=media", "");
+        String videoName = shortForm.getUrl()
+                                    .replace(bucketUrl, "")
+                                    .replace("?alt=media", "");
+
+        BlobId blobIdThumbnail = BlobId.of(bucketName, thumbnailName);
+        BlobId blobIdVideo = BlobId.of(bucketName, videoName);
+
+        Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
+
+        if (!storage.delete(blobIdThumbnail)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 썸네일 삭제 실패 ");
+        }
+
+        if (!storage.delete(blobIdVideo)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 무비 영상 삭제 실패 ");
+        }
 
         shortFormCommandRepository.delete(shortForm);
 
-        return new DeleteShortFormResponse(shortFormNo);
+        return new DeleteShortFormResponse(shortFormNo, deletedInteractiveMovieNos);
     }
 
     // 인터랙티브 무비와 관련된 숏폼 생성
