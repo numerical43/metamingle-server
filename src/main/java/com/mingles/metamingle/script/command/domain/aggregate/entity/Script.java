@@ -28,16 +28,24 @@ public class Script implements Serializable {
     private ShortFormNoVO shortFormNoVO;
 
     @Column(length = 1000)
-    private String scriptContent;
+    private String memberContent;
+
+    @Column(length = 1000)
+    private String aiContent;
 
     @Column
     private LocalDate uploadDate;
 
     @Builder
-    public Script(ScriptMemberNoVO scriptMemberNoVO, ShortFormNoVO shortFormNoVO, String scriptContent, LocalDate uploadDate) {
+    public Script(ScriptMemberNoVO scriptMemberNoVO, ShortFormNoVO shortFormNoVO, String memberContent, String aiContent, LocalDate uploadDate) {
         this.scriptMemberNoVO = scriptMemberNoVO;
         this.shortFormNoVO = shortFormNoVO;
-        this.scriptContent = scriptContent;
+        this.memberContent = memberContent;
+        this.aiContent = aiContent;
         this.uploadDate = uploadDate;
+    }
+
+    public void update(String aiContent) {
+        this.aiContent = aiContent;
     }
 }

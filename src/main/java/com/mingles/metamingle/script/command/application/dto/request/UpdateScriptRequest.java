@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateScriptRequest {
+public class UpdateScriptRequest {
 
     private Long shortFormNo;
-    private String content;
 
 }
