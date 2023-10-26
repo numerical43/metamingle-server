@@ -1,8 +1,8 @@
 package com.mingles.metamingle.shortform.query.infrastructure.service;
 
-import com.mingles.metamingle.interativemovie.command.domain.aggregate.entity.InteractiveMovie;
-import com.mingles.metamingle.interativemovie.command.domain.aggregate.vo.ShortFormNoVO;
-import com.mingles.metamingle.interativemovie.query.domain.repository.InteractiveMovieQueryRepository;
+import com.mingles.metamingle.interactivemovie.command.domain.aggregate.entity.InteractiveMovie;
+import com.mingles.metamingle.interactivemovie.command.domain.aggregate.vo.ShortFormNoVO;
+import com.mingles.metamingle.interactivemovie.query.domain.repository.InteractiveMovieQueryRepository;
 import com.mingles.metamingle.shortform.query.application.dto.response.InteractiveMovieDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
