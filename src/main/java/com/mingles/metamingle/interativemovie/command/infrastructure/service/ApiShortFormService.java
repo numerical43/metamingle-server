@@ -18,7 +18,7 @@ public class ApiShortFormService {
     public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description)
             throws JCodecException, IOException {
 
-        return shortFormFirebaseService.createShortFormWithInterativeMovie(file, title, description);
+        return shortFormFirebaseService.createShortFormWithInteractiveMovie(file, title, description);
 
     }
 }

@@ -46,7 +46,7 @@ dependencies {
     implementation 'net.coobird:thumbnailator:0.4.13'
 
     // firebase
-    implementation 'com.google.firebase:firebase-admin:8.1.0'
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 
     // 썸네일
     implementation 'org.jcodec:jcodec:0.2.3'

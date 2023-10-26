@@ -1,7 +1,9 @@
 package com.mingles.metamingle.shortform.command.application.service;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.*;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
 import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
@@ -11,7 +13,6 @@ import com.mingles.metamingle.shortform.command.domain.repository.ShortFormComma
 import com.mingles.metamingle.shortform.command.domain.service.ShortFormCommandDomainService;
 import com.mingles.metamingle.shortform.command.infrastructure.service.ApiInteractiveMovieCommandService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
 import org.jcodec.common.io.NIOUtils;
@@ -57,14 +58,14 @@ public class ShortFormFirebaseService {
     public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description) throws IOException, JCodecException {
         String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebaseConfigPath));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        BlobId blobId = BlobId.of(bucketName, fileKeyName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("video/mp4").build();
-
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
-        byte[] bytes = IOUtils.toByteArray(inputStream);
-        Blob blob = storage.create(blobInfo, bytes);
+        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
+        Blob getBlob = bucket.get(fileKeyName);
+
+        System.out.println("blob shortForm = " + getBlob.getMediaLink());
+
+
         inputStream.close();
 
         String url = bucketUrl + fileKeyName + "?alt=media";
@@ -113,6 +114,7 @@ public class ShortFormFirebaseService {
         BlobId blobIdVideo = BlobId.of(bucketName, videoName);
 
         Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
 
         if (!storage.delete(blobIdThumbnail)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 썸네일 삭제 실패 ");
@@ -129,17 +131,15 @@ public class ShortFormFirebaseService {
 
     // 인터랙티브 무비와 관련된 숏폼 생성
     @Transactional
-    public ShortForm createShortFormWithInterativeMovie(MultipartFile file, String title, String description) throws IOException, JCodecException {
+    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description) throws IOException, JCodecException {
         String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebaseConfigPath));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        BlobId blobId = BlobId.of(bucketName, fileKeyName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("video/mp4").build();
-
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
-        byte[] bytes = IOUtils.toByteArray(inputStream);
-        Blob blob = storage.create(blobInfo, bytes);
+        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
+
+        System.out.println("blob interactiveMovie = " + blob.getMediaLink());
+
         inputStream.close();
 
         String url = bucketUrl + fileKeyName + "?alt=media";
@@ -194,12 +194,11 @@ public class ShortFormFirebaseService {
         // 이미지 포맷을 "jpeg"로 변경
         ImageIO.write(bufferedImage, "jpeg", baos);
         byte[] thumbnailBytes = baos.toByteArray();
-        Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         String thumbnailKey = "thumbnails/" + fileKeyName.replace(".mp4", ".jpeg");
+        Blob blob = bucket.create(thumbnailKey, thumbnailBytes, "image/jpeg");
 
-        BlobId blobId = BlobId.of(bucketName, thumbnailKey);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/jpeg").build();
-        Blob thumbnailBlob = storage.create(blobInfo, thumbnailBytes);
+        System.out.println("blob thumbnail = " + blob.getMediaLink());
 
         return bucketUrl + thumbnailKey.replace("/", "%2F") + "?alt=media";
     }
