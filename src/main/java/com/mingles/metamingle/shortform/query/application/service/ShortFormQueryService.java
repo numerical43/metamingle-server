@@ -5,12 +5,11 @@ import com.mingles.metamingle.shortform.query.application.dto.response.GetShortF
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.InteractiveMovieDTO;
 import com.mingles.metamingle.shortform.query.domain.repository.ShortFormQueryRepository;
-import com.mingles.metamingle.shortform.query.infrastructure.service.ApiInteractiveMovieService;
+import com.mingles.metamingle.shortform.query.infrastructure.service.ApiInteractiveMovieQueryService;
 import com.mingles.metamingle.shortform.query.infrastructure.service.ApiMemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,7 @@ public class ShortFormQueryService {
 
     private final ShortFormQueryRepository shortFormQueryRepository;
     private final ApiMemberQueryService apiMemberQueryService;
-    private final ApiInteractiveMovieService apiInteractiveMovieService;
+    private final ApiInteractiveMovieQueryService apiInteractiveMovieQueryService;
 
     // 전체 숏폼 조회
     public List<GetShortFormListResponse> getShortFormList() {
@@ -56,7 +55,7 @@ public class ShortFormQueryService {
         List<InteractiveMovieDTO> interactiveMovieDTOS;
 
         if (shortFormResponse.getIsInteractive()) {
-            interactiveMovieDTOS = apiInteractiveMovieService.getRelatedInteractiveMovies(shortFormNo);
+            interactiveMovieDTOS = apiInteractiveMovieQueryService.getRelatedInteractiveMovies(shortFormNo);
         } else {
             interactiveMovieDTOS = null;
         }
