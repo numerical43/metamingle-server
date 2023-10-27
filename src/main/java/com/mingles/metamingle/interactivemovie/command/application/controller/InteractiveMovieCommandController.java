@@ -37,24 +37,24 @@ public class InteractiveMovieCommandController {
 //        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
 //    }
 
-//    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
-//    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
-//                                                              @RequestPart("video2") MultipartFile video2,
-//                                                              @RequestPart("video3") MultipartFile video3,
-//                                                              @RequestPart("title") String title,
-//                                                              @RequestPart("description") String description,
-//                                                              @RequestPart("choice1") String choice1,
-//                                                              @RequestPart("choice2") String choice2) throws JCodecException, IOException {
-//
-//        List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
-//
-//        List<String> choices = Arrays.asList(choice1, choice2);
-//
-//        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
-//
-//        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
-//
-//    }
+    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
+    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
+                                                              @RequestPart("video2") MultipartFile video2,
+                                                              @RequestPart("video3") MultipartFile video3,
+                                                              @RequestPart("title") String title,
+                                                              @RequestPart("description") String description,
+                                                              @RequestPart("choice1") String choice1,
+                                                              @RequestPart("choice2") String choice2) throws JCodecException, IOException {
+
+        List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
+
+        List<String> choices = Arrays.asList(choice1, choice2);
+
+        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
+
+        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
+
+    }
 
 
 //    @PostMapping(value = "/interactive-movie")
@@ -81,23 +81,23 @@ public class InteractiveMovieCommandController {
 //
 //    }
 
-    @PostMapping(value = "/interactive-movie")
-    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("files") MultipartFile[] files,
-                                                              @RequestPart("metadata") String metadataJson) throws JCodecException, IOException {
-
-        List<MultipartFile> videos = new ArrayList<>(Arrays.asList(files));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        VideoMetadata videoMetadata = objectMapper.readValue(metadataJson, VideoMetadata.class);
-
-        String title = videoMetadata.getTitle();
-        String description = videoMetadata.getDescription();
-        List<String> choices = videoMetadata.getChoices();
-
-        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
-
-        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
-
-    }
+//    @PostMapping(value = "/interactive-movie")
+//    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("files") MultipartFile[] files,
+//                                                              @RequestPart("metadata") String metadataJson) throws JCodecException, IOException {
+//
+//        List<MultipartFile> videos = new ArrayList<>(Arrays.asList(files));
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        VideoMetadata videoMetadata = objectMapper.readValue(metadataJson, VideoMetadata.class);
+//
+//        String title = videoMetadata.getTitle();
+//        String description = videoMetadata.getDescription();
+//        List<String> choices = videoMetadata.getChoices();
+//
+//        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
+//
+//        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
+//
+//    }
 }
 
