@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ShortFormQueryRepository extends JpaRepository<ShortForm, Long> {
 
-    List<ShortForm> findAllByOrderByShortFormNo();
+    List<ShortForm> findAllByOrderByShortFormNoDesc();
 
     ShortForm findShortFormByShortFormNo(Long shortFormNo);
 

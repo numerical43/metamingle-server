@@ -24,7 +24,7 @@ public class ShortFormQueryService {
     // 전체 숏폼 조회
     public List<GetShortFormListResponse> getShortFormList() {
 
-        List<ShortForm> shortFormList = shortFormQueryRepository.findAllByOrderByShortFormNo();
+        List<ShortForm> shortFormList = shortFormQueryRepository.findAllByOrderByShortFormNoDesc();
 
         List<GetShortFormListResponse> response = shortFormList.stream().map(
                 shortForm -> {
