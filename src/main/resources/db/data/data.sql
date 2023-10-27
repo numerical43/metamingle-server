@@ -28,3 +28,7 @@ VALUES (2, '선택지2222222222', '2023-10-20T04:43:29.783+00:00', '영상 설�
 -- tbl_member
 INSERT INTO tbl_member(member_no, provider_id, member_name, nickname, email)
 VALUES (1, '111111', '메타밍글', '닉네임', 'email');
+
+-- tbl_script
+INSERT INTO tbl_script(script_no, member_no, short_form_no, member_content, ai_content, upload_date)
+VALUES (1, 1, 1, 'member content', 'ai content', '2023-10-10');
