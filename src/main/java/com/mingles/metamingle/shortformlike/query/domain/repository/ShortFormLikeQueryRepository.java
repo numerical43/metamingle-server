@@ -11,4 +11,6 @@ public interface ShortFormLikeQueryRepository extends JpaRepository<ShortFormLik
 
     int countAllByShortFormLikeVO_ShortFormNo(Long shortFormNo);
 
+    ShortFormLike findShortFormLikeByShortFormLikeVO(ShortFormLikeVO shortFormLikeVO);
+
 }
