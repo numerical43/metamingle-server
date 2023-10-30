@@ -3,11 +3,11 @@ package com.mingles.metamingle.shortformlike.query.application.dto.response;
 import lombok.Getter;
 
 @Getter
-public class CountShortFormLikeResponse {
+public class CountShortFormLike {
 
     private final int likeCnt;
 
-    public CountShortFormLikeResponse(int likeCnt) {
+    public CountShortFormLike(int likeCnt) {
         this.likeCnt = likeCnt;
     }
 

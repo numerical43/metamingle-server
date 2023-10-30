@@ -2,8 +2,8 @@ package com.mingles.metamingle.shortformlike.query.application.service;
 
 import com.mingles.metamingle.shortformlike.command.domain.aggregate.entity.ShortFormLike;
 import com.mingles.metamingle.shortformlike.command.domain.aggregate.vo.ShortFormLikeVO;
-import com.mingles.metamingle.shortformlike.query.application.dto.response.CountShortFormLikeResponse;
-import com.mingles.metamingle.shortformlike.query.application.dto.response.GetShortFormLikeResponse;
+import com.mingles.metamingle.shortformlike.query.application.dto.response.CountShortFormLike;
+import com.mingles.metamingle.shortformlike.query.application.dto.response.GetShortFormLike;
 import com.mingles.metamingle.shortformlike.query.domain.repository.ShortFormLikeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,24 +18,24 @@ public class ShortFormLikeQueryService {
     private final ShortFormLikeQueryRepository shortFormLikeQueryRepository;
 
     @Transactional
-    public CountShortFormLikeResponse countShortFormLike(Long shortFormNo) {
+    public CountShortFormLike countShortFormLike(Long shortFormNo) {
 
         int likeCnt = shortFormLikeQueryRepository.countAllByShortFormLikeVO_ShortFormNo(shortFormNo);
 
-        return new CountShortFormLikeResponse(likeCnt);
+        return new CountShortFormLike(likeCnt);
 
     }
 
-    public GetShortFormLikeResponse getShortFormLike(Long memberNo, Long shortFormNo) {
+    public GetShortFormLike getShortFormLike(Long memberNo, Long shortFormNo) {
 
         ShortFormLikeVO shortFormLikeVO = new ShortFormLikeVO(memberNo, shortFormNo);
 
         Optional<ShortFormLike> optionalShortFormLike = shortFormLikeQueryRepository.findShortFormLikeByShortFormLikeVO(shortFormLikeVO);
 
         if (optionalShortFormLike.isPresent()) {
-            return new GetShortFormLikeResponse(true);
+            return new GetShortFormLike(true);
         }
 
-        return new GetShortFormLikeResponse(false);
+        return new GetShortFormLike(false);
     }
 }
