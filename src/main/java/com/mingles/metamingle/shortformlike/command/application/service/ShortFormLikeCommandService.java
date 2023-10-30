@@ -24,23 +24,18 @@ public class ShortFormLikeCommandService {
 
         Optional<ShortFormLike> optionalShortFormLike = shortFormLikeCommandRepository.findShortFormLikeByShortFormLikeVO(shortFormLikeVO);
 
-        CreateShortFormLikeResponse response = new CreateShortFormLikeResponse();
 
         if (optionalShortFormLike.isEmpty()) {
 
             ShortFormLike shortFormLike = new ShortFormLike(shortFormLikeVO);
             shortFormLikeCommandRepository.save(shortFormLike);
 
-            response.setLike(true);
-
-            return response;
+            return new CreateShortFormLikeResponse(true);
 
         }
 
         shortFormLikeCommandRepository.delete(optionalShortFormLike.get());
 
-        response.setLike(false);
-
-        return response;
+        return new CreateShortFormLikeResponse(false);
     }
 }

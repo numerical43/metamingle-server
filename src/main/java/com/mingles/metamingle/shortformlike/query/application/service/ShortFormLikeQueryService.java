@@ -32,12 +32,10 @@ public class ShortFormLikeQueryService {
 
         Optional<ShortFormLike> optionalShortFormLike = shortFormLikeQueryRepository.findShortFormLikeByShortFormLikeVO(shortFormLikeVO);
 
-        Boolean isLike = false;
-
         if (optionalShortFormLike.isPresent()) {
-            isLike = true;
+            return new GetShortFormLikeResponse(true);
         }
 
-        return new GetShortFormLikeResponse(isLike);
+        return new GetShortFormLikeResponse(false);
     }
 }
