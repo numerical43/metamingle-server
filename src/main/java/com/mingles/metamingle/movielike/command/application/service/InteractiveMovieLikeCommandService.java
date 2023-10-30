@@ -24,22 +24,19 @@ public class InteractiveMovieLikeCommandService {
 
         Optional<InteractiveMovieLike> optionalInteractiveMovieLike = interactiveMovieLikeCommandRepository.findInteractiveMovieLikeByInteractiveMovieLikeVO(interactiveMovieLikeVO);
 
-        CreateInteractiveMovieLikeResponse response = new CreateInteractiveMovieLikeResponse(false);
 
         if (optionalInteractiveMovieLike.isEmpty()) {
 
             InteractiveMovieLike interactiveMovieLike = new InteractiveMovieLike(interactiveMovieLikeVO);
             interactiveMovieLikeCommandRepository.save(interactiveMovieLike);
 
-            response.setLike(true);
-
-            return response;
+            return new CreateInteractiveMovieLikeResponse(true);
 
         }
 
         interactiveMovieLikeCommandRepository.delete(optionalInteractiveMovieLike.get());
 
-        return response;
+        return new CreateInteractiveMovieLikeResponse(false);
     }
 
 }
