@@ -32,10 +32,12 @@ public class ShortFormLikeQueryService {
 
         Optional<ShortFormLike> optionalShortFormLike = shortFormLikeQueryRepository.findShortFormLikeByShortFormLikeVO(shortFormLikeVO);
 
+        int likeCnt = shortFormLikeQueryRepository.countAllByShortFormLikeVO_ShortFormNo(shortFormNo);
+
         if (optionalShortFormLike.isPresent()) {
-            return new GetShortFormLike(true);
+            return new GetShortFormLike(true, likeCnt);
         }
 
-        return new GetShortFormLike(false);
+        return new GetShortFormLike(false, likeCnt);
     }
 }

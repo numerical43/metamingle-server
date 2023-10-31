@@ -6,9 +6,11 @@ import lombok.Getter;
 public class GetShortFormLike {
 
     private final Boolean isLike;
+    private final int likeCnt;
 
-    public GetShortFormLike(Boolean isLike) {
+    public GetShortFormLike(Boolean isLike, int likeCnt) {
         this.isLike = isLike;
+        this.likeCnt = likeCnt;
     }
 
 }
