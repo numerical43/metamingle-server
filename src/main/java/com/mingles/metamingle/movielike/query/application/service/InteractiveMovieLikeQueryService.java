@@ -35,11 +35,13 @@ public class InteractiveMovieLikeQueryService {
         Optional<InteractiveMovieLike> optionalInteractiveMovieLike = interactiveMovieLikeQueryRepository
                 .findInteractiveMovieLikeByInteractiveMovieLikeVO(interactiveMovieLikeVO);
 
+        int likeCnt = interactiveMovieLikeQueryRepository.countAllByInteractiveMovieLikeVO_InteractiveMovieNo(interactiveMovieNo);
+
         if (optionalInteractiveMovieLike.isPresent()) {
-            return new GetInteractiveMovieLike(true);
+            return new GetInteractiveMovieLike(true, likeCnt);
         }
 
-        return new GetInteractiveMovieLike(false);
+        return new GetInteractiveMovieLike(false, likeCnt);
 
     }
 }
