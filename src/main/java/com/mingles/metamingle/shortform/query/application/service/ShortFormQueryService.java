@@ -64,7 +64,7 @@ public class ShortFormQueryService {
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
                 shortFormResponse.getThumbnailUrl(),
-                shortFormResponse.getThumbnailUrl(),
+                shortFormResponse.getUrl(),
                 shortFormResponse.getDescription(),
                 memberName,
                 shortFormResponse.getDate(),
