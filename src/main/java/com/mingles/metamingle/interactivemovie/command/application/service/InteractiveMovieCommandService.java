@@ -1,7 +1,7 @@
 package com.mingles.metamingle.interactivemovie.command.application.service;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.*;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.command.domain.aggregate.entity.InteractiveMovie;
@@ -12,7 +12,6 @@ import com.mingles.metamingle.interactivemovie.command.domain.service.Interactiv
 import com.mingles.metamingle.interactivemovie.command.infrastructure.service.ApiShortFormService;
 import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
 import org.jcodec.common.io.NIOUtils;
@@ -63,15 +62,11 @@ public class InteractiveMovieCommandService {
 
             String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
-            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(firebaseConfigPath));
-            Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-            BlobId blobId = BlobId.of(bucketName, fileKeyName);
-            BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("video/mp4").build();
-
+            Bucket bucket = StorageClient.getInstance().bucket(bucketName);
             InputStream inputStream = files.get(i).getInputStream();
+            Blob blob = bucket.create(fileKeyName, inputStream, files.get(i).getContentType());
 
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            Blob blob = storage.create(blobInfo, bytes);
+            inputStream.close();
 
             String url = bucketUrl + fileKeyName + "?alt=media";
 
@@ -86,8 +81,8 @@ public class InteractiveMovieCommandService {
             InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
 
             response.add(new CreateInteractiveMovieResponse(null, uploadedInteractiveMovie.getInteractiveMovieNo(),
-                                                            uploadedInteractiveMovie.getUrl(),
                                                             uploadedInteractiveMovie.getThumbnailUrl(),
+                                                            uploadedInteractiveMovie.getUrl(),
                                                             uploadedInteractiveMovie.getChoice(),
                                                             uploadedInteractiveMovie.getSequence()));
         }
@@ -131,12 +126,9 @@ public class InteractiveMovieCommandService {
         // 이미지 포맷을 "jpeg"로 변경
         ImageIO.write(bufferedImage, "jpeg", baos);
         byte[] thumbnailBytes = baos.toByteArray();
-        Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         String thumbnailKey = "thumbnails/" + fileKeyName.replace(".mp4", ".jpeg");
-
-        BlobId blobId = BlobId.of(bucketName, thumbnailKey);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/jpeg").build();
-        Blob thumbnailBlob = storage.create(blobInfo, thumbnailBytes);
+        Blob blob = bucket.create(thumbnailKey, thumbnailBytes, "image/jpeg");
 
         return bucketUrl + thumbnailKey.replace("/", "%2F") + "?alt=media";
     }
