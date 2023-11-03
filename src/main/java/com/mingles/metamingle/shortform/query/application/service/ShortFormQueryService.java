@@ -30,6 +30,14 @@ public class ShortFormQueryService {
                 shortForm -> {
                     String memberName = apiMemberQueryService.getMemberName(shortForm.getMemberNoVO().getMemberNo());
 
+                    List<InteractiveMovieDTO> interactiveMovieDTOS;
+
+                    if (shortForm.getIsInteractive()) {
+                        interactiveMovieDTOS = apiInteractiveMovieQueryService.getRelatedInteractiveMovies(shortForm.getShortFormNo());
+                    } else {
+                        interactiveMovieDTOS = null;
+                    }
+
                     return new GetShortFormListResponse(
                             shortForm.getShortFormNo(),
                             shortForm.getTitle(),
@@ -38,7 +46,8 @@ public class ShortFormQueryService {
                             shortForm.getDescription(),
                             memberName,
                             shortForm.getDate(),
-                            shortForm.getIsInteractive()
+                            shortForm.getIsInteractive(),
+                            interactiveMovieDTOS
                     );
                 }).collect(Collectors.toList());
 
