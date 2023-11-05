@@ -18,10 +18,13 @@ public class GetShortFormListResponse {
     private String memberName;
     private Date date;
     private Boolean isInteractive;
+    private Boolean isLike;
+    private int shortFormLikeCnt;
     private List<InteractiveMovieDTO> interactiveMovieDTOS;
 
     public GetShortFormListResponse(Long shortFormNo, String title, String thumbnailUrl, String url, String description,
-                                    String memberName, Date date, Boolean isInteractive, List<InteractiveMovieDTO> interactiveMovieDTOS) {
+                                    String memberName, Date date, Boolean isInteractive, Boolean isLike, int shortFormLikeCnt,
+                                    List<InteractiveMovieDTO> interactiveMovieDTOS) {
         this.shortFormNo = shortFormNo;
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
@@ -30,6 +33,8 @@ public class GetShortFormListResponse {
         this.memberName = memberName;
         this.date = date;
         this.isInteractive = isInteractive;
+        this.isLike = isLike;
+        this.shortFormLikeCnt = shortFormLikeCnt;
         this.interactiveMovieDTOS = interactiveMovieDTOS;
     }
 
