@@ -34,9 +34,8 @@ public class ScriptCommandController {
 //        String header = requestHeader.get("auth");
 //        Long providerId = jwtTokenService.getUserIdFromToken(header);
 
-        Long memberNo = memberQueryService.findMemberNoByProviderId("111111");
 
-        ScriptCommandResponse response = scriptCommandService.createScript(memberNo, request);
+        ScriptCommandResponse response = scriptCommandService.createScript(1L, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success("성공적으로 저장되었습니다." , response)
@@ -51,9 +50,8 @@ public class ScriptCommandController {
 //        String header = requestHeader.get("auth");
 //        Long providerId = jwtTokenService.getUserIdFromToken(header);
 
-        Long memberNo = memberQueryService.findMemberNoByProviderId("111111");
 
-        ScriptCommandResponse response = scriptCommandService.updateScript(memberNo, request);
+        ScriptCommandResponse response = scriptCommandService.updateScript(1L, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success("성공적으로 수정되었습니다." , response)
