@@ -4,9 +4,11 @@ import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortFor
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormListResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.InteractiveMovieDTO;
+import com.mingles.metamingle.shortform.query.application.dto.response.ShortFormLikeInfoDTO;
 import com.mingles.metamingle.shortform.query.domain.repository.ShortFormQueryRepository;
 import com.mingles.metamingle.shortform.query.infrastructure.service.ApiInteractiveMovieQueryService;
 import com.mingles.metamingle.shortform.query.infrastructure.service.ApiMemberQueryService;
+import com.mingles.metamingle.shortform.query.infrastructure.service.ApiShortFormLikeQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class ShortFormQueryService {
     private final ShortFormQueryRepository shortFormQueryRepository;
     private final ApiMemberQueryService apiMemberQueryService;
     private final ApiInteractiveMovieQueryService apiInteractiveMovieQueryService;
+    private final ApiShortFormLikeQueryService apiShortFormLikeQueryService;
 
     // 전체 숏폼 조회
     public List<GetShortFormListResponse> getShortFormList() {
@@ -38,6 +41,9 @@ public class ShortFormQueryService {
                         interactiveMovieDTOS = null;
                     }
 
+                    ShortFormLikeInfoDTO shortFormLikeInfoDTO = apiShortFormLikeQueryService
+                            .getShortFormLikeInfo(shortForm.getMemberNoVO().getMemberNo(), shortForm.getShortFormNo());
+
                     return new GetShortFormListResponse(
                             shortForm.getShortFormNo(),
                             shortForm.getTitle(),
@@ -47,6 +53,8 @@ public class ShortFormQueryService {
                             memberName,
                             shortForm.getDate(),
                             shortForm.getIsInteractive(),
+                            shortFormLikeInfoDTO.getIsLike(),
+                            shortFormLikeInfoDTO.getShortFormLikeCnt(),
                             interactiveMovieDTOS
                     );
                 }).collect(Collectors.toList());
@@ -69,6 +77,9 @@ public class ShortFormQueryService {
             interactiveMovieDTOS = null;
         }
 
+        ShortFormLikeInfoDTO shortFormLikeInfoDTO = apiShortFormLikeQueryService
+                .getShortFormLikeInfo(shortFormResponse.getMemberNoVO().getMemberNo(), shortFormResponse.getShortFormNo());
+
         GetShortFormResponse response = new GetShortFormResponse(
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
@@ -78,6 +89,8 @@ public class ShortFormQueryService {
                 memberName,
                 shortFormResponse.getDate(),
                 shortFormResponse.getIsInteractive(),
+                shortFormLikeInfoDTO.getIsLike(),
+                shortFormLikeInfoDTO.getShortFormLikeCnt(),
                 interactiveMovieDTOS
         );
 
