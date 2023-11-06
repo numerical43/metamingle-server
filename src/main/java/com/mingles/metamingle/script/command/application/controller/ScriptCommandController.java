@@ -5,16 +5,18 @@ import com.mingles.metamingle.member.query.application.service.MemberQueryServic
 import com.mingles.metamingle.script.command.application.dto.request.CreateScriptRequest;
 import com.mingles.metamingle.script.command.application.dto.request.UpdateScriptRequest;
 import com.mingles.metamingle.script.command.application.dto.response.ScriptCommandResponse;
+import com.mingles.metamingle.script.command.application.dto.response.ScriptInfraResponse;
 import com.mingles.metamingle.script.command.application.service.ScriptCommandService;
+import com.mingles.metamingle.script.command.infrastructure.service.ScriptCommandInfraService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.Map;
 
@@ -25,13 +27,14 @@ public class ScriptCommandController {
 
     private final ScriptCommandService scriptCommandService;
     private final MemberQueryService memberQueryService;
+    private final ScriptCommandInfraService scriptCommandInfraService;
 
     @Operation(summary = "AI 대본 생성")
     @PostMapping("api/script")
     public ResponseEntity<ApiResponse> createScript(@RequestHeader Map<String, String> requestHeader,
                                                     @RequestBody CreateScriptRequest request) {
 
-//        String header = requestHeader.get("auth");
+//        String header = requestHeader.get("Authentication");
 //        Long providerId = jwtTokenService.getUserIdFromToken(header);
 
         Long memberNo = memberQueryService.findMemberNoByProviderId("111111");
@@ -58,6 +61,13 @@ public class ScriptCommandController {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success("성공적으로 수정되었습니다." , response)
         );
+    }
+
+    @Operation(summary = "AI 대본 스트리밍")
+    @GetMapping(value = "/member/streaming", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> streamScript() {
+//        return scriptCommandInfraService.getStreamingData(request.getContent());
+        return scriptCommandInfraService.getStreamingData("Testing");
     }
 
 }
