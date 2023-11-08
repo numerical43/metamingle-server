@@ -55,7 +55,8 @@ dependencies {
     //webclient
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
 
-    implementation 'org.springframework.boot:spring-boot-starter-test'
+    //mongoDB
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
 
 
 }
