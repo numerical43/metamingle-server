@@ -12,16 +12,19 @@ pipeline {
         }
         stage('Build') {
             steps {
+
+                def currentDir = pwd()
+                echo "Current directory : ${currentDir}"
+
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
                     script {
-                        new File('src/main/resources/application.yml')
+                        def applicationYmlFile = new File('src/main/resources/application.yml')
                         bat "copy %SECRETS_APPLICATION src\\main\\resources\\application.yml"
                     }
                 }
 
                 withCredentials([file(credentialsId: 'meta-mingle-firebase-key', variable: 'SECRETS_FIREBASE')]) {
                     script {
-                        new File('src/main/resources/meta-mingle-firebase-key.json')
                         bat "copy %SECRETS_FIREBASE src\\main\\resources\\meta-mingle-firebase-key.json"
                     }
                 }
