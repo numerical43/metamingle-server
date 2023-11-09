@@ -72,6 +72,7 @@ pipeline {
                         error("Failed to start the process.")
                     } else {
                         echo "JAR process started successfully."
+                    }
                 }
             }
         }
