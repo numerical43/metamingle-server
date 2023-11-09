@@ -20,6 +20,8 @@ pipeline {
         stage('Terminate Process') {
             steps {
                 script {
+                    echo "Start terminate process."
+
                     def jarName = "meta-mingle-0.0.1-SNAPSHOT.jar"
                     def jpsOutput = bat(script: 'jps -m', returnStatus: true).trim()
                     def processLine = jpsOutput.readLines().find { it.contains(jarName) }
