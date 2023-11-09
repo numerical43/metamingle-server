@@ -3,7 +3,9 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,15 +20,43 @@ public class ScenarioCommandInfraService {
         Map<String, String> bodyJson = new HashMap<>();
         bodyJson.put("text", message);
 
-        return webClient
-                .post()
-                .uri("chatbot/test_text")
-                .bodyValue(bodyJson)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .map(data -> ServerSentEvent.<String>builder()
-                        .data(data)
-                        .build());
+//        return webClient
+//                .post()
+//                .uri("chatbot/test_text")
+//                .bodyValue(bodyJson)
+//                .retrieve()
+//                .bodyToFlux(String.class)
+//                .map(data -> ServerSentEvent.<String>builder()
+//                        .data(data)
+//                        .build());
+
+        Mono<String> firstResponse = Mono.just("일 ");
+        Mono<String> secondResponse = Mono.just("이 ");
+        Mono<String> thirdResponse = Mono.just("쓰리 ");
+        Mono<String> fourthResponse = Mono.just("사 ");
+        Mono<String> fifthResponse = Mono.just("오 ");
+
+        Flux<ServerSentEvent<String>> responseStream = Flux.concat(
+                firstResponse.map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                secondResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                thirdResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fourthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fifthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                secondResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                thirdResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fourthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fifthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                secondResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                thirdResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fourthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fifthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                secondResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                thirdResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fourthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build()),
+                fifthResponse.delayElement(Duration.ofSeconds(1)).map(data -> ServerSentEvent.<String>builder().data(data).build())
+        );
+
+        return responseStream;
 
     }
 
