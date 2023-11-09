@@ -1,4 +1,4 @@
-package com.mingles.metamingle.scenario.command.domain.aggregate.entity;
+package com.mingles.metamingle.scenario.command.domain.aggregate.document;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
