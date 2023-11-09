@@ -12,9 +12,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                script {
-                    sh "gradlew clean build"
-                }
+                bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
         stage('Terminate Process') {
