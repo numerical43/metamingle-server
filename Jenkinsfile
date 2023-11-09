@@ -45,9 +45,11 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
-                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true) == 0
-
-                        if (imageExists) {
+                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true)
+                        if (imageExists == 0) {
+                            echo "Docker image does not exist."
+                        } else {
+                            echo "Docker image exists. Removing..."
                             bat "docker rmi ${dockerImageName}"
                         }
 
@@ -55,8 +57,11 @@ pipeline {
                     }
 
                     // 기존 컨테이너를 중지하고 제거
-                    def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true) == 0
-                    if (isRunning) {
+                    def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true)
+                    if (isRunning == 0) {
+                        echo "No running containers with the name 'meta-mingle-container' found."
+                    } else {
+                        echo "Stopping and removing existing 'meta-mingle-container'..."
                         bat(script: 'docker stop meta-mingle-container')
                         bat(script: 'docker rm meta-mingle-container')
                     }
