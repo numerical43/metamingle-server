@@ -26,8 +26,8 @@ VALUES (2, '선택지2222222222', '2023-10-20T04:43:29.783+00:00', '인터랙티
         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/9e4e1fa1-ffd4-4c51-a828-70bbadc57e6a20231103150452.mp4?alt=media');
 
 -- tbl_member
-INSERT INTO tbl_member(member_no, provider_id, member_name, nickname, email)
-VALUES (1, '111111', '메타밍글', '닉네임', 'email');
+-- INSERT INTO tbl_member(member_no, provider_id, member_name, nickname, email)
+-- VALUES (1, '111111', '메타밍글', '닉네임', 'email');
 
 -- tbl_script
 -- INSERT INTO tbl_script(script_no, member_no, short_form_no, member_content, ai_content, upload_date)
