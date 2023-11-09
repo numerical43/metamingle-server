@@ -4,6 +4,10 @@ pipeline {
         jdk 'Java 11'
         gradle 'Gradle 8.3'
     }
+    environment{
+        APPLICATION_DEV = credentials('APPLICATION_DEV')
+        FIREBASE_KEY = credentials('FIREBASE_KEY')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -12,6 +16,13 @@ pipeline {
         }
         stage('Build') {
             steps {
+                echo ""
+
+                def json = new File('src/main/resources/meta-mingle-firebase-key.json')
+                def application = new File('src/main/resources/application.yml')
+                file.text = APPLICATION_DEV
+                file.text = FIREBASE_KEY
+
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
