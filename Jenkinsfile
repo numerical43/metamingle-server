@@ -45,7 +45,8 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
-                        def imageExists = bat(script: docker image inspect ${dockerImageName}, returnStatus: true) == 0
+                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true) == 0
+
                         if (imageExists) {
                             bat "docker rmi ${dockerImageName}"
                         }
