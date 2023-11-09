@@ -10,6 +10,7 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
@@ -23,56 +24,38 @@ pipeline {
                         bat "copy %SECRETS_FIREBASE% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\src\\main\\resources\\meta-mingle-firebase-key.json"
                     }
                 }
+
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
-        stage('Terminate Process') {
-            steps {
-                script {
-                    echo "Start terminate process."
 
-                    def jarName = "meta-mingle-0.0.1-SNAPSHOT.jar"
-                    def jpsOutput = bat(script: 'jps -m', returnStatus: true).toString().trim()
-                    def processLine = jpsOutput.readLines().find { it.contains(jarName) }
-
-                    if (processLine) {
-                        def processParts = processLine.split(' ')
-                        def pid = processParts[0]
-
-                        def killCommand = "taskkill /F /PID ${pid}"
-                        bat script: killCommand, returnStatus: true
-
-                        if (currentBuild.resultIsBetterOrEqualTo('FAILURE')) {
-                            error("Failed to terminate the process.")
-                        } else {
-                            echo "Terminated process with PID ${pid}."
-                        }
-                    } else {
-                        echo "No process found for ${jarName}."
-                    }
-                }
-            }
-        }
         stage('Deploy') {
             steps {
                 script {
-                    def jarName = "meta-mingle-0.0.1-SNAPSHOT.jar"
-                    def jarPath = "build\\libs\\${jarName}"
                     def deployDir = "C:\\Users\\user\\Desktop\\metamingle\\"
+                    def dockerImageName = 'numerical43/meta-mingle:latest'
 
                     // JAR 파일 복사
-                    bat "copy /Y ${jarPath} ${deployDir}"
+                    bat "copy /Y build\\libs\\meta-mingle-0.0.1-SNAPSHOT.jar ${deployDir}"
 
-                    // Spring Boot 애플리케이션 실행
-                    def startCommand = "start cmd /B java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
+                    // Docker 이미지 빌드
+                    bat "docker build -t ${dockerImageName} ."
 
-                    bat startCommand
-
-                    if (currentBuild.resultIsBetterOrEqualTo('FAILURE')) {
-                        error("Failed to start the process.")
-                    } else {
-                        echo "JAR process started successfully."
+                    // Docker 이미지를 Docker Hub에 푸시
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
+                        bat "docker push ${dockerImageName}"
                     }
+
+                    // 기존 컨테이너를 중지하고 제거
+                    def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true) == 0
+                    if (isRunning) {
+                        bat(script: 'docker stop meta-mingle-container')
+                    }
+                    bat(script: 'docker rm meta-mingle-container')
+
+                    // Docker 이미지로 새 컨테이너 실행
+                    bat "docker run -d --name meta-mingle-container -p 8080:80 ${dockerImageName}"
                 }
             }
         }
