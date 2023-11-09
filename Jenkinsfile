@@ -64,9 +64,8 @@ pipeline {
                     bat "copy /Y ${jarPath} ${deployDir}"
 
                     // Spring Boot 애플리케이션 실행
-                    def startCommand = "start cmd /c java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
+                    def startCommand = "start cmd /B java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
 
-                    echo startCommand
                     bat startCommand
                 }
             }
