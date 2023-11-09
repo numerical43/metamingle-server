@@ -51,8 +51,8 @@ pipeline {
                     def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true) == 0
                     if (isRunning) {
                         bat(script: 'docker stop meta-mingle-container')
+                        bat(script: 'docker rm meta-mingle-container')
                     }
-                    bat(script: 'docker rm meta-mingle-container')
 
                     // Docker 이미지로 새 컨테이너 실행
                     bat "docker run -d --name meta-mingle-container -p 8080:8080 ${dockerImageName}"
