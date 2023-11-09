@@ -44,11 +44,17 @@ pipeline {
                     // Docker 이미지를 Docker Hub에 푸시
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
+
+                        def imageExists = bat(script: docker image inspect ${dockerImageName}, returnStatus: true) == 0
+                        if (imageExists) {
+                            bat "docker rmi ${dockerImageName}"
+                        }
+
                         bat "docker push ${dockerImageName}"
                     }
 
                     // 기존 컨테이너를 중지하고 제거
-                    def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true) != 0
+                    def isRunning = bat(script: 'docker ps -q --filter "name=meta-mingle-container"', returnStatus: true) == 0
                     if (isRunning) {
                         bat(script: 'docker stop meta-mingle-container')
                         bat(script: 'docker rm meta-mingle-container')
