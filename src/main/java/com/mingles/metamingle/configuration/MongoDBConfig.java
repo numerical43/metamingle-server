@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration
 @RequiredArgsConstructor
 @EnableMongoAuditing
-@EnableMongoRepositories(basePackages = "com.mingles.metamingle.scenario.command.domain.mongo")
+@EnableMongoRepositories(basePackages = "com.mingles.metamingle.*.*.domain.mongo")
 public class MongoDBConfig {
 
     private final MongoMappingContext mongoMappingContext;
