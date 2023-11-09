@@ -1,6 +1,7 @@
 package com.mingles.metamingle.shortform.command.application.controller;
 
 import com.google.protobuf.Api;
+import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
@@ -17,6 +18,8 @@ public class ShortFormCommandController {
     //    private final ShortFormCommandService shortFormCommandService;
     private final ShortFormFirebaseService shortFormFirebaseService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     // 숏폼 생성
 //    @PostMapping("/short-form")
 //    public ResponseEntity<ApiResponse> createShortForm(@RequestPart("video") MultipartFile video,
@@ -30,11 +33,15 @@ public class ShortFormCommandController {
 
     // 숏폼 생성
     @PostMapping("/short-form-firebase")
-    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestPart("video") MultipartFile video,
+    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestHeader("Authorization") String token,
+                                                                   @RequestPart("video") MultipartFile video,
                                                                    @RequestPart("title") String title,
                                                                    @RequestPart("description") String description) throws Exception {
 
-        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description);
+
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+
+        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description, memberNo);
 
         return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
 

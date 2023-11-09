@@ -48,12 +48,12 @@ public class InteractiveMovieCommandService {
     private final InteractiveMovieDomainService interactiveMovieDomainService;
     private final ApiShortFormService apiShortFormService;
 
-    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices)
+    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices, Long memberNo)
             throws JCodecException, IOException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
-        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title, description);
+        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title, description, memberNo);
         response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), "none", 0));
 
         ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
@@ -73,7 +73,7 @@ public class InteractiveMovieCommandService {
             String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
 
             // 임시 멤버 넘버 사용
-            MemberNoVO memberNoVO = new MemberNoVO(1L);
+            MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
             InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i), new Date(),
                     i + 1, shortFormNoVO, memberNoVO);
