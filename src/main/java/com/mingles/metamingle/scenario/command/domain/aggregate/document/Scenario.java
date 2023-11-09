@@ -1,5 +1,6 @@
 package com.mingles.metamingle.scenario.command.domain.aggregate.document;
 
+import lombok.Builder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -17,4 +18,9 @@ public class Scenario{
     @Field(name = "scenario_content")
     private String scenarioContent;
 
+    @Builder
+    public Scenario(String prompt, String scenarioContent) {
+        this.prompt = prompt;
+        this.scenarioContent = scenarioContent;
+    }
 }
