@@ -23,7 +23,7 @@ pipeline {
                         bat "copy %SECRETS_FIREBASE% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\src\\main\\resources\\meta-mingle-firebase-key.json"
                     }
                 }
-
+                bat(script: 'dir /s /b')
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
