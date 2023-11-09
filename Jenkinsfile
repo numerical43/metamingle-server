@@ -12,12 +12,11 @@ pipeline {
         }
         stage('Build') {
             steps {
-
-                def currentDir = pwd()
-                echo "Current directory : ${currentDir}"
-
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
                     script {
+                        def currentDir = pwd()
+                        echo "Current directory : ${currentDir}"
+
                         def applicationYmlFile = new File('src/main/resources/application.yml')
                         bat "copy %SECRETS_APPLICATION src\\main\\resources\\application.yml"
                     }
