@@ -54,6 +54,8 @@ pipeline {
 
                     // Spring Boot 애플리케이션 실행
                     def startCommand = "start java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
+
+                    echo startCommand
                     bat startCommand
                 }
             }
