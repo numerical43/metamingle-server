@@ -1,4 +1,4 @@
-package com.mingles.metamingle.script.query.application.dto.request;
+package com.mingles.metamingle.scenario.command.application.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindScriptRequest {
+public class CreateScenarioRequest {
 
-    private Long scriptNo;
+    private String text;
 
 }
