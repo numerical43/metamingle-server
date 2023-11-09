@@ -12,6 +12,18 @@ pipeline {
         }
         stage('Build') {
             steps {
+                withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
+                    script {
+                        bat "copy %SECRETS_APPLICATION src\\main\\resources\\application.yml"
+                    }
+                }
+
+                withCredentials([file(credentialsId: 'meta-mingle-firebase-key', variable: 'SECRETS_FIREBASE')]) {
+                    script {
+                        bat "copy %SECRETS_FIREBASE src\\main\\resources\\meta-mingle-firebase-key.json"
+                    }
+                }
+
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
