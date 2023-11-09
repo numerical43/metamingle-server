@@ -16,12 +16,9 @@ import java.io.IOException;
 public class ApiShortFormService {
 
     private final ShortFormFirebaseService shortFormFirebaseService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public ShortForm createShortFormWithInteractiveMovie(@RequestHeader("Authorization") String token, MultipartFile file, String title, String description)
+    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description, Long memberNo)
             throws JCodecException, IOException {
-
-        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 
         return shortFormFirebaseService.createShortFormWithInteractiveMovie(file, title, description, memberNo);
 
