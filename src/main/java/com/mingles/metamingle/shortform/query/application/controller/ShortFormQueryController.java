@@ -1,5 +1,6 @@
 package com.mingles.metamingle.shortform.query.application.controller;
 
+import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormListResponse;
 import com.mingles.metamingle.shortform.query.application.dto.response.GetShortFormResponse;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,10 +19,13 @@ import java.util.List;
 public class ShortFormQueryController {
 
     private final ShortFormQueryService shortFormQueryService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 숏폼 리스트 조회
     @GetMapping("/short-form")
-    public ResponseEntity<ApiResponse> getShortFormList() {
+    public ResponseEntity<ApiResponse> getShortFormList(@RequestHeader("Authorization") String token) {
+
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 
         List<GetShortFormListResponse> response = shortFormQueryService.getShortFormList();
 
@@ -29,7 +34,9 @@ public class ShortFormQueryController {
 
     // 숏폼 하나 상세 조회
     @GetMapping("/short-form/{shortFormNo}")
-    public ResponseEntity<ApiResponse> getShortForm(@PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> getShortForm(@RequestHeader("Authorization") String token, @PathVariable("shortFormNo") Long shortFormNo) {
+
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 
         GetShortFormResponse response = shortFormQueryService.getShortForm(shortFormNo);
 
