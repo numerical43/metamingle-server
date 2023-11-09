@@ -67,6 +67,11 @@ pipeline {
                     def startCommand = "start cmd /B java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
 
                     bat startCommand
+
+                    if (currentBuild.resultIsBetterOrEqualTo('FAILURE')) {
+                        error("Failed to start the process.")
+                    } else {
+                        echo "JAR process started successfully."
                 }
             }
         }
