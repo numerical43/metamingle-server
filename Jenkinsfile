@@ -14,9 +14,8 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
                     script {
-                        dir() {
-                            bat(script: 'dir /s /b')
-                        }
+
+                        bat(script: 'dir /s /b')
                         bat "copy %SECRETS_APPLICATION src\\main\\resources\\application.yml"
                     }
                 }
