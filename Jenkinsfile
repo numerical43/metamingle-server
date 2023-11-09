@@ -14,11 +14,13 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
                     script {
-                        def currentDir = pwd()
-                        echo "Current directory : ${currentDir}"
-
-                        def applicationYmlFile = new File('src/main/resources/application.yml')
                         bat "copy %SECRETS_APPLICATION src\\main\\resources\\application.yml"
+
+                        if (fileExists("src\\main\\resources\\application.yml")) {
+                            echo "Secrets 파일을 에 복사했습니다."
+                        } else {
+                            error("Secrets 파일 복사 실패")
+                        }
                     }
                 }
 
