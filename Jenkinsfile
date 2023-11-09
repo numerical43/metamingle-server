@@ -23,7 +23,6 @@ pipeline {
                         bat "copy %SECRETS_FIREBASE% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\src\\main\\resources\\meta-mingle-firebase-key.json"
                     }
                 }
-                bat(script: 'dir /s /b')
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
@@ -65,7 +64,7 @@ pipeline {
                     bat "copy /Y ${jarPath} ${deployDir}"
 
                     // Spring Boot 애플리케이션 실행
-                    def startCommand = "start java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
+                    def startCommand = "start cmd /c java -jar \"${deployDir}${jarName}\" > \"${deployDir}application.log\" 2>&1"
 
                     echo startCommand
                     bat startCommand
