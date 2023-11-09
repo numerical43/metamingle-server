@@ -12,14 +12,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-                def APPLICATION_DEV = credentials('APPLICATION_DEV')
-                def FIREBASE_KEY = credentials('FIREBASE_KEY')
-
-                def json = new File('src/main/resources/meta-mingle-firebase-key.json')
-                def application = new File('src/main/resources/application.yml')
-                file.text = APPLICATION_DEV
-                file.text = FIREBASE_KEY
-
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
