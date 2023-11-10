@@ -44,7 +44,6 @@ pipeline {
                     // Docker 이미지를 Docker Hub에 푸시
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
-
                         def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true)
                         if (imageExists == 0) {
                             echo "Docker image does not exist."
