@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     def deployDir = "C:\\Users\\user\\Desktop\\metamingle\\"
-                    def dockerImageName = 'numerical43/meta-mingle:latest'
+                    def dockerImageName = 'numerical43/meta-mingle'
 
                     // JAR 파일 복사
                     bat "copy /Y build\\libs\\meta-mingle-0.0.1-SNAPSHOT.jar ${deployDir}"
