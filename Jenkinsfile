@@ -59,6 +59,7 @@ pipeline {
                     // 기존 컨테이너를 중지하고 제거
                     def isRunning = bat(script: 'docker ps -a --filter "name=meta-mingle-container"', returnStatus: true)
                     if (isRunning == 0) {
+                        echo (isRunning)
                         echo "No running containers with the name 'meta-mingle-container' found."
                     } else {
                         echo "Stopping and removing existing 'meta-mingle-container'..."
