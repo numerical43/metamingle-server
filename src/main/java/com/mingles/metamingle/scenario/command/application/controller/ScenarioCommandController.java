@@ -12,6 +12,10 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Tag(name = "AI 생성 대본 Command API")
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,28 @@ public class ScenarioCommandController {
     public Flux<ServerSentEvent<String>> streamScenario(@RequestBody CreateScenarioRequest request) {
 
         return scriptCommandInfraService.getStreamingData(request.getText());
+
+    }
+
+    @Operation(summary = "AI 대본 맞춤 이미지 추천")
+    @PostMapping(value = "/scenario/image")
+    public String getRecommendImage(@RequestBody CreateScenarioRequest request) {
+
+        String text = request.getText();
+
+        return scriptCommandInfraService.getBackGroundImage(text);
+    }
+
+    @Operation(summary = "AI 대본 맞춤 음악 추천")
+    @PostMapping(value = "/scenario/bgm")
+    public List<String> getRecommendImageAndBGM(@RequestBody CreateScenarioRequest request) {
+
+        String text = request.getText();
+
+        return Arrays.asList(
+                scriptCommandInfraService.getBackGroundImage(text),
+                scriptCommandInfraService.getBGM(text)
+        );
 
     }
 
