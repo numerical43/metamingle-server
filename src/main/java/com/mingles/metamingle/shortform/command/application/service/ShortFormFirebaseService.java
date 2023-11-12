@@ -55,7 +55,7 @@ public class ShortFormFirebaseService {
 
     // 숏폼 생성
     @Transactional
-    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description) throws IOException, JCodecException {
+    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
         String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
@@ -72,7 +72,7 @@ public class ShortFormFirebaseService {
 
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
-        MemberNoVO memberNoVO = new MemberNoVO(1L);
+        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
         ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
                                                 Boolean.FALSE, memberNoVO);

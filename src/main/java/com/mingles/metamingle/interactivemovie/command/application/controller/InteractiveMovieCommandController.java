@@ -40,8 +40,7 @@ public class InteractiveMovieCommandController {
 //    }
 
     @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
-    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestHeader("Authorization") String token,
-                                                              @RequestPart("video1") MultipartFile video1,
+    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
                                                               @RequestPart("video2") MultipartFile video2,
                                                               @RequestPart("video3") MultipartFile video3,
                                                               @RequestPart("title") String title,
@@ -49,7 +48,8 @@ public class InteractiveMovieCommandController {
                                                               @RequestPart("choice1") String choice1,
                                                               @RequestPart("choice2") String choice2) throws JCodecException, IOException {
 
-        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+        Long memberNo = 1L;
 
         List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
 

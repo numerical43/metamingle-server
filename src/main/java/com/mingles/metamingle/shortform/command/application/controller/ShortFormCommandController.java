@@ -39,8 +39,9 @@ public class ShortFormCommandController {
 
 
 //        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+        Long memberNo = 1L;
 
-        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description);
+        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description, memberNo);
 
         return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
 
