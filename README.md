@@ -4,7 +4,7 @@
 
 <Br>
 
-![meta mingle_text](https://github.com/meta-mingles/metamingle-server/assets/61495627/f0baa8f0-2d6d-4e7b-b10d-95f1220eda63)
+<img src="https://github.com/meta-mingles/.github/assets/88484476/6c623e90-4758-423b-b493-56f548f5b6d2" width="500"/>
 
 
 
