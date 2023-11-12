@@ -66,7 +66,8 @@ pipeline {
                         } else {
                             echo "Docker image does not exist."
                         }
-                        def danglingImages = bat(script: "docker images -f \"dangling=true\" -q)")
+
+                        def danglingImages = bat(script: "docker images -f \"dangling=true\" -q")
                         bat(script: "docker rmi ${danglingImages}")
 
                         // DockerHub에 생성한 이미지 push
