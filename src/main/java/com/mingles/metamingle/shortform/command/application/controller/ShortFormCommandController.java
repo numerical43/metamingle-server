@@ -33,13 +33,13 @@ public class ShortFormCommandController {
 
     // 숏폼 생성
     @PostMapping("/short-form-firebase")
-    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestHeader("Authorization") String token,
-                                                                   @RequestPart("video") MultipartFile video,
+    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestPart("video") MultipartFile video,
                                                                    @RequestPart("title") String title,
                                                                    @RequestPart("description") String description) throws Exception {
 
 
-        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+        Long memberNo = 1L;
 
         CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description, memberNo);
 
