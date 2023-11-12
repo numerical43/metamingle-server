@@ -50,7 +50,7 @@ pipeline {
                         def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true)
                         def isRunningText = isRunningContainer.toString()
                         echo "output : ${isRunningText}"
-                        if (isRunningContainer) {
+                        if (isRunningText) {
                             echo "Stopping and removing existing ${dockerContainerName}..."
                             bat(script: "docker stop ${isRunningContainer}")
                             bat(script: "docker rm ${isRunningContainer}")
@@ -62,7 +62,7 @@ pipeline {
                         def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true)
                         def imageExistText = imageExists.toString()
                         echo "output: ${imageExistText}"
-                        if (imageExists) {
+                        if (imageExistText) {
                             echo "Docker image exists. Removing..."
                             bat "docker rmi ${dockerImageName}"
                         } else {
