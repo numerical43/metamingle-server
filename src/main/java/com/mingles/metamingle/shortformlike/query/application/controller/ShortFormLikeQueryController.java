@@ -1,5 +1,6 @@
 package com.mingles.metamingle.shortformlike.query.application.controller;
 
+import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.shortformlike.query.application.dto.response.CountShortFormLike;
 import com.mingles.metamingle.shortformlike.query.application.dto.response.GetShortFormLike;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShortFormLikeQueryController {
 
     private final ShortFormLikeQueryService shortFormLikeQueryService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/short-form/{shortFormNo}/like")
     public ResponseEntity<ApiResponse> countShortFormLike(@PathVariable("shortFormNo") Long shortFormNo) {
@@ -25,9 +28,9 @@ public class ShortFormLikeQueryController {
     }
 
     @GetMapping("/short-form/{shortFormNo}/is-like")
-    public ResponseEntity<ApiResponse> getShortFormLike(@PathVariable("shortFormNo") Long shortFormNo) {
-        // 헤더에서 멤버 정보
-        Long memberNo = 1L;
+    public ResponseEntity<ApiResponse> getShortFormLike(@RequestHeader("Authorization") String token, @PathVariable("shortFormNo") Long shortFormNo) {
+
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 
         GetShortFormLike response = shortFormLikeQueryService.getShortFormLike(memberNo, shortFormNo);
 

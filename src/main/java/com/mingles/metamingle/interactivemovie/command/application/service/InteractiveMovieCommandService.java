@@ -73,7 +73,7 @@ public class InteractiveMovieCommandService {
             String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
 
             // 임시 멤버 넘버 사용
-            MemberNoVO memberNoVO = new MemberNoVO(1L);
+            MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
             InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i), new Date(),
                     i + 1, shortFormNoVO, memberNoVO);
