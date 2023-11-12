@@ -49,7 +49,7 @@ pipeline {
                         // 기존 컨테이너를 중지하고 제거
                         def isRunningContainer = bat(script: "docker ps -qa --filter name=${dockerContainerName}")
 
-                        if (!isRunningContainer.toString().isEmpty() {
+                        if (!isRunningContainer.toString().isEmpty()) {
                             echo "Stopping and removing existing ${dockerContainerName}..."
                             bat(script: "docker stop ${dockerContainerName}")
                             bat(script: "docker rm ${dockerContainerName}")
