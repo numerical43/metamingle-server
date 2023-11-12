@@ -47,7 +47,7 @@ pipeline {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
                         // 기존 컨테이너를 중지하고 제거
-                        def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true)
+                        def isRunningContainer = bat(script: "docker ps -qa --filter name=${dockerContainerName}", returnStatus: true)
                         def isRunningText = isRunningContainer.toString()
                         echo "output : ${isRunningText}"
                         if (isRunningText) {
