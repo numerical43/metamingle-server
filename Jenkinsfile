@@ -52,8 +52,8 @@ pipeline {
                         echo "output : ${isRunningText}"
                         if (isRunningText) {
                             echo "Stopping and removing existing ${dockerContainerName}..."
-                            bat(script: "docker stop ${isRunningContainer}")
-                            bat(script: "docker rm ${isRunningContainer}")
+                            bat(script: "docker stop ${dockerContainerName}")
+                            bat(script: "docker rm ${dockerContainerName}")
                         } else {
                             echo "No running containers with the name ${dockerContainerName} found."
                         }
