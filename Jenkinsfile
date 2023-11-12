@@ -47,8 +47,9 @@ pipeline {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
                         // 기존 컨테이너를 중지하고 제거
-                        def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true)
-                        if (isRunningContainer.exitCode) {
+                        def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true, returnStdout: true)
+                        def output = isRunningContainer.text.trim()
+                        if (isRunningContainer) {
                             echo "Stopping and removing existing ${dockerContainerName}..."
                             bat(script: "docker stop ${isRunningContainer}")
                             bat(script: "docker rm ${isRunningContainer}")
@@ -57,8 +58,9 @@ pipeline {
                         }
 
                         // 기존 이미지 제거
-                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true)
-                        if (imageExists.exitCode) {
+                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true, returnStdout: true)
+                        def output = imageExists.text.trim()
+                        if (imageExists) {
                             echo "Docker image exists. Removing..."
                             bat "docker rmi ${dockerImageName}"
                         } else {
