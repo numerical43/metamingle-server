@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface SoundRepository extends MongoRepository<Sound, String> {
-    List<Sound> findSoundsByGenre(String genre);
+    List<Sound> findSoundsByMood(String mood);
 }

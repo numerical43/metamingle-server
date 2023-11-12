@@ -14,11 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ImageResponse {
 
-    private String location;
     private String imageUrl;
 
     public ImageResponse(Image image) {
-        this.location = image.getLocation();
         this.imageUrl = image.getImageUrl();
     }
 

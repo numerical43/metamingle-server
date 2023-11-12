@@ -13,13 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SoundResponse {
 
-    private String genre;
-    private String mood;
     private String soundUrl;
 
     public SoundResponse(Sound sound) {
-        this.genre = sound.getGenre();
-        this.mood = sound.getMood();
         this.soundUrl = sound.getSoundUrl();
     }
 }
