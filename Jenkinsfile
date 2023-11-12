@@ -34,6 +34,7 @@ pipeline {
                 script {
                     def deployDir = "C:\\Users\\user\\Desktop\\metamingle\\"
                     def dockerImageName = 'numerical43/meta-mingle'
+                    def dockerContainerName = 'meta-mingle-container'
 
                     // JAR 파일 복사
                     bat "copy /Y build\\libs\\meta-mingle-0.0.1-SNAPSHOT.jar ${deployDir}"
@@ -44,30 +45,32 @@ pipeline {
                     // Docker 이미지를 Docker Hub에 푸시
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
-                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true)
-                        if (imageExists == 0) {
-                            echo "Docker image does not exist."
+
+                        // 기존 컨테이너를 중지하고 제거
+                        def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true).trim()
+                        if (isRunningContainer) {
+                            echo "Stopping and removing existing ${dockerContainerName}..."
+                            bat(script: "docker stop ${isRunningContainer}")
+                            bat(script: "docker rm ${isRunningContainer}")
                         } else {
+                            echo "No running containers with the name ${dockerContainerName} found."
+                        }
+
+                        // 기존 이미지 제거
+                        def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true).trim()
+                        if (imageExists) {
                             echo "Docker image exists. Removing..."
                             bat "docker rmi ${dockerImageName}"
+                        } else {
+                            echo "Docker image does not exist."
                         }
 
                         bat "docker push ${dockerImageName}"
                     }
 
-                    // 기존 컨테이너를 중지하고 제거
-                    def isRunning = bat(script: 'docker ps -a --filter "name=meta-mingle-container"', returnStatus: true)
-                    if (isRunning == 0) {
-                        echo (isRunning)
-                        echo "No running containers with the name 'meta-mingle-container' found."
-                    } else {
-                        echo "Stopping and removing existing 'meta-mingle-container'..."
-                        bat(script: 'docker stop meta-mingle-container')
-                        bat(script: 'docker rm meta-mingle-container')
-                    }
 
                     // Docker 이미지로 새 컨테이너 실행
-                    bat "docker run -d --name meta-mingle-container -p 8080:8080 ${dockerImageName}"
+                    bat "docker run -d --name meta-mingle-container -p 8080:8080 meta-mingle-container"
                 }
             }
         }
