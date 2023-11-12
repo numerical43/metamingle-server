@@ -65,12 +65,12 @@ pipeline {
                             echo "Docker image does not exist."
                         }
 
+                        // DockerHub에 생성한 이미지 push
                         bat "docker push ${dockerImageName}"
+
+                        // Docker 이미지로 새 컨테이너 실행
+                        bat "docker run -d --name meta-mingle-container -p 8080:8080 meta-mingle-container"
                     }
-
-
-                    // Docker 이미지로 새 컨테이너 실행
-                    bat "docker run -d --name meta-mingle-container -p 8080:8080 meta-mingle-container"
                 }
             }
         }
