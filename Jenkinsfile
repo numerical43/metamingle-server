@@ -48,7 +48,8 @@ pipeline {
 
                         // 기존 컨테이너를 중지하고 제거
                         def isRunningContainer = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStatus: true, returnStdout: true)
-                        def output = isRunningContainer.text.trim()
+                        def isRunningText = isRunningContainer.text.trim()
+                        echo "output : ${isRunningText}"
                         if (isRunningContainer) {
                             echo "Stopping and removing existing ${dockerContainerName}..."
                             bat(script: "docker stop ${isRunningContainer}")
@@ -59,7 +60,8 @@ pipeline {
 
                         // 기존 이미지 제거
                         def imageExists = bat(script: "docker images -q ${dockerImageName}", returnStatus: true, returnStdout: true)
-                        def output = imageExists.text.trim()
+                        def imageExistText = imageExists.text.trim()
+                        echo "output: ${imageExistText}"
                         if (imageExists) {
                             echo "Docker image exists. Removing..."
                             bat "docker rmi ${dockerImageName}"
