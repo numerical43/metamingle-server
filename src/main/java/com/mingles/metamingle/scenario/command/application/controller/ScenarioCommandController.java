@@ -3,6 +3,7 @@ package com.mingles.metamingle.scenario.command.application.controller;
 import com.mingles.metamingle.member.query.application.service.MemberQueryService;
 import com.mingles.metamingle.scenario.command.application.dto.request.CreateScenarioRequest;
 import com.mingles.metamingle.scenario.command.application.service.ScenarioCommandService;
+import com.mingles.metamingle.scenario.command.domain.service.ScenarioCommandDomainService;
 import com.mingles.metamingle.scenario.command.infrastructure.service.ScenarioCommandInfraService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,10 +23,14 @@ import java.util.List;
 public class ScenarioCommandController {
 
     private final ScenarioCommandInfraService scriptCommandInfraService;
+    private final ScenarioCommandDomainService scenarioCommandDomainService;
 
     @Operation(summary = "AI 대본 스트리밍 요청")
     @PostMapping(value = "/scenario/streaming", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> streamScenario(@RequestBody CreateScenarioRequest request) {
+
+        scenarioCommandDomainService.validateScriptLanguage(request.getText());
+        scenarioCommandDomainService.validateScriptLength(request.getText());
 
         return scriptCommandInfraService.getStreamingData(request.getText());
 

@@ -19,7 +19,7 @@ import java.util.Map;
 public class ScenarioCommandInfraService {
 
     private final ScenarioCommandService scenarioCommandService;
-    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.66:8011/").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("https://67ec-210-95-145-225.ngrok-free.app/").build();
 
     //SSE 를 이용한 텍스트 실시간 스트리밍
     public Flux<ServerSentEvent<String>> getStreamingData(String message) {
@@ -77,7 +77,6 @@ public class ScenarioCommandInfraService {
                     .bodyToMono(BgImageResponse.class)
                     .block();
 
-        System.out.println("background.getPlace() = " + background.getPlace());
         return background.getPlace();
 
 //        return "campus";
@@ -96,8 +95,6 @@ public class ScenarioCommandInfraService {
                 .bodyToMono(BGMResponse.class)
                 .block();
 
-
-        System.out.println("bgm.getMood() = " + bgm.getMood());
         return bgm.getMood();
 
 //        return "Chill";
