@@ -21,16 +21,21 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
-            FileInputStream serviceAccount =
-                    new FileInputStream(keyPath);
+            if (FirebaseApp.getApps().isEmpty()) {
+                FileInputStream serviceAccount =
+                        new FileInputStream(keyPath);
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setProjectId(projectId)
-                    .build();
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setProjectId(projectId)
+                        .build();
 
-            FirebaseApp.initializeApp(options);
+                FirebaseApp.initializeApp(options);
+                System.out.println("Firebase 초기화 성공");
 
+            } else {
+                System.out.println("Firebase 앱이 이미 초기화되어 있습니다.");
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("firebase config 오류");
         }
