@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        HOST_IP = powershell(returnStatus: true, script: '(Test-Connection -ComputerName localhost -Count 1).IPAddressToString').trim()
+        HOST_IP = powershell(returnStatus: true, script: '(Test-Connection -ComputerName localhost -Count 1).IPAddressToString')
     }
     tools {
         jdk 'Java 11'
