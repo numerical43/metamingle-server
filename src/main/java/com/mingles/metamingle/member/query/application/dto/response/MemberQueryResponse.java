@@ -16,13 +16,13 @@ import javax.persistence.Column;
 public class MemberQueryResponse {
 
     private Long memberNo;
-    private String creator;
+    private String nickname;
     private String email;
     private Role role;
     public static MemberQueryResponse from(Member member) {
         return new MemberQueryResponse(
                 member.getMemberNo(),
-                member.getCreator(),
+                member.getNickname(),
                 member.getEmail(),
                 member.getRole()
         );

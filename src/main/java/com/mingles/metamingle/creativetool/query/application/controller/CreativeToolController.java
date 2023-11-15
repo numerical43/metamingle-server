@@ -1,12 +1,11 @@
 package com.mingles.metamingle.creativetool.query.application.controller;
 
 import com.mingles.metamingle.common.ApiResponse;
-import com.mingles.metamingle.creativetool.query.application.dto.request.ImageRequest;
-import com.mingles.metamingle.creativetool.query.application.dto.request.SoundRequest;
 import com.mingles.metamingle.creativetool.query.application.dto.response.ImageResponse;
 import com.mingles.metamingle.creativetool.query.application.dto.response.SoundResponse;
 import com.mingles.metamingle.creativetool.query.application.service.CreativeToolService;
-import com.mingles.metamingle.member.query.application.dto.response.LoginResponse;
+import com.mingles.metamingle.scenario.command.application.dto.request.CreateScenarioRequest;
+import com.mingles.metamingle.scenario.command.infrastructure.service.ScenarioCommandInfraService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +20,13 @@ import java.util.List;
 public class CreativeToolController {
 
     private final CreativeToolService creativeToolService;
+    private final ScenarioCommandInfraService scenarioCommandInfraService;
 
     @GetMapping("/creative/image")
-    public ResponseEntity<ApiResponse> FindImagesByLocation(@RequestBody ImageRequest request) {
+    public ResponseEntity<ApiResponse> FindImagesByLocation(@RequestBody CreateScenarioRequest request) {
 
-        List<ImageResponse> response = creativeToolService.findImagesByLocation(request);
+        String location = scenarioCommandInfraService.getBackGroundImage(request.getText());
+        List<ImageResponse> response = creativeToolService.findImagesByLocation(location);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.success("성공적으로 조회되었습니다." , response)
@@ -33,9 +34,10 @@ public class CreativeToolController {
     }
 
     @GetMapping("/creative/sound")
-    public ResponseEntity<ApiResponse> FindSoundsByGenre(@RequestBody SoundRequest request) {
+    public ResponseEntity<ApiResponse> FindSoundsByGenre(@RequestBody CreateScenarioRequest request) {
 
-        List<SoundResponse> response = creativeToolService.findSoundsByGenre(request);
+        String mood = scenarioCommandInfraService.getBGM(request.getText());
+        List<SoundResponse> response = creativeToolService.findSoundsByGenre(mood);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.success("성공적으로 조회되었습니다." , response)

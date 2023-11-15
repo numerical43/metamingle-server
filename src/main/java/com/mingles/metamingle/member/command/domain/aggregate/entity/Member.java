@@ -23,7 +23,7 @@ public class Member implements UserDetails {
     private Long memberNo;
 
     @Column
-    private String creator;
+    private String nickname;
 
     @Column
     private String email;
@@ -36,8 +36,8 @@ public class Member implements UserDetails {
     private Role role;
 
     @Builder
-    public Member(String creator, String email, String password, Role role) {
-        this.creator = creator;
+    public Member(String nickname, String email, String password, Role role) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.role = role;

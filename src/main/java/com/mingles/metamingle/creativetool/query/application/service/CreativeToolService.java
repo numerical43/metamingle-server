@@ -2,23 +2,15 @@ package com.mingles.metamingle.creativetool.query.application.service;
 
 import com.mingles.metamingle.creativetool.document.Image;
 import com.mingles.metamingle.creativetool.document.Sound;
-import com.mingles.metamingle.creativetool.query.application.dto.request.ImageRequest;
-import com.mingles.metamingle.creativetool.query.application.dto.request.SoundRequest;
 import com.mingles.metamingle.creativetool.query.application.dto.response.ImageResponse;
 import com.mingles.metamingle.creativetool.query.application.dto.response.SoundResponse;
 import com.mingles.metamingle.creativetool.query.domain.mongo.ImageRepository;
 import com.mingles.metamingle.creativetool.query.domain.mongo.SoundRepository;
-import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
-import com.mingles.metamingle.member.query.application.dto.request.FindMemberRequest;
-import com.mingles.metamingle.member.query.application.dto.response.MemberQueryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +20,25 @@ public class CreativeToolService {
     private final SoundRepository soundRepository;
 
     @Transactional(readOnly = true)
-    public List<ImageResponse> findImagesByLocation(ImageRequest request) {
+    public List<ImageResponse> findImagesByLocation(String location) {
 
-        List<Image> images = imageRepository.findImagesByLocation(request.getLocation());
+        /* 기법 별 1개씩 총 6개 리턴 */
+        List<String> techniques = Arrays.asList("3D", "cartoon", "game cg", "oil painting", "painting", "photograph");
+
+        List<ImageResponse> imageResponses = new ArrayList<>();
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(15);
+
+        for (String technique : techniques) {
+            List<Image> images = imageRepository.findImagesByLocationAndTechnique(location, technique);
+            if (!images.isEmpty()) {
+                imageResponses.add(new ImageResponse(images.get(randomNumber)));
+            }
+        }
+
+
+        //        List<Image> images = imageRepository.findImagesByLocation(location);
 
         /*  전체 조회
         List<ImageResponse> imageResponses = new ArrayList<>();
@@ -44,28 +52,41 @@ public class CreativeToolService {
 
         
         //5개 랜덤 추출
-        Collections.shuffle(images);
-
-        int numberOfImagesToReturn = Math.min(5, images.size());
-        List<ImageResponse> imageResponses = new ArrayList<>();
-
-        for (int i = 0; i < numberOfImagesToReturn; i++) {
-            imageResponses.add(new ImageResponse(images.get(i)));
-        }
+//        Collections.shuffle(images);
+//
+//        int numberOfImagesToReturn = Math.min(5, images.size());
+//        List<ImageResponse> imageResponses = new ArrayList<>();
+//
+//        for (int i = 0; i < numberOfImagesToReturn; i++) {
+//            imageResponses.add(new ImageResponse(images.get(i)));
+//        }
 
         return imageResponses;
         
     }
 
     @Transactional(readOnly = true)
-    public List<SoundResponse> findSoundsByGenre(SoundRequest request) {
+    public List<SoundResponse> findSoundsByGenre(String mood) {
 
-        List<Sound> sounds = soundRepository.findSoundsByGenre(request.getGenre());
+        List<Sound> sounds = soundRepository.findSoundsByMood(mood);
 
+        /* 전체 조회
         List<SoundResponse> soundResponses = new ArrayList<>();
 
         for (Sound sound : sounds) {
             soundResponses.add(new SoundResponse(sound));
+        }
+
+        return soundResponses;
+        */
+
+        Collections.shuffle(sounds);
+
+        int numberOfSoundsToReturn = Math.min(3, sounds.size());
+        List<SoundResponse> soundResponses = new ArrayList<>();
+
+        for (int i = 0; i < numberOfSoundsToReturn; i++) {
+            soundResponses.add(new SoundResponse(sounds.get(i)));
         }
 
         return soundResponses;

@@ -13,10 +13,12 @@ import lombok.Setter;
 public class MemberCommandResponse {
 
     private String email;
+    private String nickname;
 
     public static MemberCommandResponse from(Member member) {
         return new MemberCommandResponse(
-                member.getEmail()
+                member.getEmail(),
+                member.getNickname()
         );
     }
 }

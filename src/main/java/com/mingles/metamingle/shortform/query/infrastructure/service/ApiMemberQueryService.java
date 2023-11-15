@@ -17,7 +17,7 @@ public class ApiMemberQueryService {
 
         Optional<Member> optionalMember = memberQueryRepository.findById(memberNo);
 
-        String memberName = optionalMember.get().getCreator();
+        String memberName = optionalMember.get().getNickname();
 
         return memberName;
 

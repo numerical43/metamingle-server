@@ -1,4 +1,4 @@
-package com.mingles.metamingle.creativetool.query.application.dto.request;
+package com.mingles.metamingle.scenario.command.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SoundRequest {
-    private String genre;
+public class BGMResponse {
+
+    String mood;
+
 }
