@@ -14,11 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ImageResponse {
 
-    private String location;
+    private String title;
     private String imageUrl;
 
     public ImageResponse(Image image) {
-        this.location = image.getLocation();
+        this.title = image.getId();
         this.imageUrl = image.getImageUrl();
     }
 

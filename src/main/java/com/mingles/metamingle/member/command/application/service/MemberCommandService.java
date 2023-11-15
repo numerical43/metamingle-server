@@ -26,6 +26,7 @@ public class MemberCommandService {
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .nickname(request.getNickname())
                 .role(Role.ROLE_MEMBER)
                 .build();
 
