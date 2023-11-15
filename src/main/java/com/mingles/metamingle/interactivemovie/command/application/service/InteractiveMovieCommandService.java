@@ -58,7 +58,7 @@ public class InteractiveMovieCommandService {
 
         ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
 
-        for (int i = 0; i <= 1; i++) {
+        for (int i = 1; i <= 2; i++) {
 
             String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
@@ -75,8 +75,8 @@ public class InteractiveMovieCommandService {
             // 임시 멤버 넘버 사용
             MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
-            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i), new Date(),
-                    i + 1, shortFormNoVO, memberNoVO);
+            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i - 1), new Date(),
+                    i, shortFormNoVO, memberNoVO);
 
             InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
 
