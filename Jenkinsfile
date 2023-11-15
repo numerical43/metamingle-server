@@ -49,26 +49,26 @@ pipeline {
                         // 기존 컨테이너를 중지하고 제거
                         def isRunningContainer = bat(script: "docker ps -qa --filter name=${dockerContainerName}")
 
-                        if (!isRunningContainer.toString().isEmpty()) {
-                            echo "Stopping and removing existing ${dockerContainerName}..."
-                            bat(script: "docker stop ${dockerContainerName}")
-                            bat(script: "docker rm ${dockerContainerName}")
-                        } else {
-                            echo "No running containers with the name ${dockerContainerName} found."
-                        }
+                        // if (!isRunningContainer.toString().isEmpty()) {
+                        //     echo "Stopping and removing existing ${dockerContainerName}..."
+                        //     bat(script: "docker stop ${dockerContainerName}")
+                        //     bat(script: "docker rm ${dockerContainerName}")
+                        // } else {
+                        //     echo "No running containers with the name ${dockerContainerName} found."
+                        // }
 
                         // 기존 이미지 제거
-                        def imageExists = bat(script: "docker images -q ${dockerImageName}")
+                        // def imageExists = bat(script: "docker images -q ${dockerImageName}")
 
-                        if (!imageExists.toString().isEmpty()) {
-                            echo "Docker image exists. Removing..."
-                            bat "docker rmi ${dockerImageName}"
-                        } else {
-                            echo "Docker image does not exist."
-                        }
+                        // if (!imageExists.toString().isEmpty()) {
+                        //     echo "Docker image exists. Removing..."
+                        //     bat "docker rmi ${dockerImageName}"
+                        // } else {
+                        //     echo "Docker image does not exist."
+                        // }
 
-                        def danglingImages = bat(script: "docker images -f \"dangling=true\" -q")
-                        bat(script: "docker rmi ${danglingImages}")
+                        // def danglingImages = bat(script: "docker images -f \"dangling=true\" -q")
+                        // bat(script: "docker rmi ${danglingImages}")
 
                         // DockerHub에 생성한 이미지 push
                         bat "docker push ${dockerImageName}"
