@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        DOCKER_GATEWAY = bat(script: 'docker network inspect bridge --format "{{(index .IPAM.Config 0).Gateway}}"', returnStdout: true).trim()
+    }
     tools {
         jdk 'Java 11'
         gradle 'Gradle 8.3'
@@ -74,7 +77,7 @@ pipeline {
                         bat "docker push ${dockerImageName}"
 
                         // Docker 이미지로 새 컨테이너 실행
-                        bat "docker run -d --name ${dockerContainerName} -p 8080:8080 ${dockerImageName}"
+                        bat "docker run -e MYSQL_HOST=${DOCKER_GATEWAY} -d --name ${dockerContainerName} -p 8080:8080 ${dockerImageName}"
                     }
                 }
             }
