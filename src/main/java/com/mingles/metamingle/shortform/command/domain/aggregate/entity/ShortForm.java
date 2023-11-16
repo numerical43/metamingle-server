@@ -1,6 +1,7 @@
 package com.mingles.metamingle.shortform.command.domain.aggregate.entity;
 
 import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
+import com.mingles.metamingle.shortform.command.domain.aggregate.vo.QuizUUIDVO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,9 +41,12 @@ public class ShortForm {
     @Embedded
     private MemberNoVO memberNoVO;
 
+    @Embedded
+    private QuizUUIDVO quizUUIDVO;
+
     @Builder
     public ShortForm(String title, String thumbnailUrl, String url, String description, Date date,
-                     Boolean isInteractive, MemberNoVO memberNoVO) {
+                     Boolean isInteractive, MemberNoVO memberNoVO, QuizUUIDVO quizUUIDVO) {
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
         this.url = url;
@@ -50,6 +54,7 @@ public class ShortForm {
         this.date = date;
         this.isInteractive = isInteractive;
         this.memberNoVO = memberNoVO;
+        this.quizUUIDVO = quizUUIDVO;
     }
 
 }

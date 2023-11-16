@@ -6,17 +6,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.UUID;
 
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberNoVO {
+public class QuizUUIDVO {
 
     @Column
-    private Long MemberNo;
-
-    public MemberNoVO(Long memberNo) {
-        this.MemberNo = memberNo;
-    }
-
+    UUID quizUUID;
 }

@@ -74,8 +74,8 @@ public class ShortFormFirebaseService {
 
         MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
-        ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                                                Boolean.FALSE, memberNoVO);
+        ShortForm shortFormEntity = new ShortForm(title, thumbnailUrl, url, description, new Date(),
+                                                Boolean.FALSE, memberNoVO, null);
 
         ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
 
@@ -149,7 +149,7 @@ public class ShortFormFirebaseService {
         MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
         ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                Boolean.TRUE, memberNoVO);
+                Boolean.TRUE, memberNoVO, null);
 
         ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
 
