@@ -4,16 +4,16 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 
 @Getter
 @Embeddable
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode
-public class AvatarMemberNoVO implements Serializable {
+@NoArgsConstructor
+public class AvatarMemberNoVO {
 
     @Column
     private Long memberNo;
-    
+    public AvatarMemberNoVO(long memberNo){
+        this.memberNo = memberNo;
+    }
+
 }

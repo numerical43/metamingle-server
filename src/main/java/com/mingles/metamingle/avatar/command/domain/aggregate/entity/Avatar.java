@@ -1,31 +1,40 @@
 package com.mingles.metamingle.avatar.command.domain.aggregate.entity;
 
+import com.mingles.metamingle.avatar.command.application.dto.request.AvatarCommandRequest;
 import com.mingles.metamingle.avatar.command.domain.aggregate.vo.AvatarMemberNoVO;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
 @Entity
 @Getter
 @Table(name = "TBL_AVATAR")
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Avatar implements Serializable {
+public class Avatar {
 
-    @EmbeddedId
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long avatarNo;
+
+    @Embedded
     private AvatarMemberNoVO avatarMemberNoVO;
 
-    @Size(max = 3000)
-    private String avatarData;
+//    @Column(length = 3000)
+//    private String avatarData;
+
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] avatarData;
 
     @Builder
-    public Avatar(AvatarMemberNoVO avatarMemberNoVO, String avatarData) {
+    public Avatar(AvatarMemberNoVO avatarMemberNoVO, byte[] avatarData) {
         this.avatarMemberNoVO = avatarMemberNoVO;
         this.avatarData = avatarData;
+    }
+
+    public void update(AvatarCommandRequest request) {
+        this.avatarData = request.getAvatarData();
     }
 
 }
