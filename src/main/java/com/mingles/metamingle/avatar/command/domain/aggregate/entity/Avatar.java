@@ -1,82 +1,40 @@
 package com.mingles.metamingle.avatar.command.domain.aggregate.entity;
 
+import com.mingles.metamingle.avatar.command.application.dto.request.AvatarCommandRequest;
 import com.mingles.metamingle.avatar.command.domain.aggregate.vo.AvatarMemberNoVO;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import javax.validation.constraints.Size;
 
 @Entity
 @Getter
 @Table(name = "TBL_AVATAR")
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-public class Avatar implements Serializable {
+public class Avatar {
 
-    @EmbeddedId
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long avatarNo;
+
+    @Embedded
     private AvatarMemberNoVO avatarMemberNoVO;
 
-    @Column
-    private String skinColor;
+//    @Column(length = 3000)
+//    private String avatarData;
 
-    @Column
-    private String hair;
-
-    @Column
-    private String hairColor;
-
-    @Column
-    private String eye;
-
-    @Column
-    private String eyeColor;
-
-    @Column
-    private String top;
-
-    @Column
-    private String topColor;
-
-    @Column
-    private String bottom;
-
-    @Column
-    private String bottomColor;
-
-    @Column
-    private String onePiece;
-
-    @Column
-    private String onPieceColor;
-
-    @Column
-    private String shoes;
-
-    @Column
-    private String ShoeColor;
-
-    @Column
-    private String gender;
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] avatarData;
 
     @Builder
-    public Avatar(AvatarMemberNoVO avatarMemberNoVO, String skinColor, String hair, String hairColor, String eye, String eyeColor, String top, String topColor, String bottom, String bottomColor, String onePiece, String onPieceColor, String shoes, String shoeColor, String gender) {
+    public Avatar(AvatarMemberNoVO avatarMemberNoVO, byte[] avatarData) {
         this.avatarMemberNoVO = avatarMemberNoVO;
-        this.skinColor = skinColor;
-        this.hair = hair;
-        this.hairColor = hairColor;
-        this.eye = eye;
-        this.eyeColor = eyeColor;
-        this.top = top;
-        this.topColor = topColor;
-        this.bottom = bottom;
-        this.bottomColor = bottomColor;
-        this.onePiece = onePiece;
-        this.onPieceColor = onPieceColor;
-        this.shoes = shoes;
-        ShoeColor = shoeColor;
-        this.gender = gender;
+        this.avatarData = avatarData;
+    }
+
+    public void update(AvatarCommandRequest request) {
+        this.avatarData = request.getAvatarData();
     }
 
 }
