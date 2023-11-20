@@ -6,7 +6,6 @@ import com.mingles.metamingle.member.command.application.dto.response.MemberComm
 import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
 import com.mingles.metamingle.member.command.domain.aggregate.entity.Role;
 import com.mingles.metamingle.member.command.domain.repository.MemberCommandRepository;
-import com.mingles.metamingle.member.command.infrastructure.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
