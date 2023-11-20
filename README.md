@@ -148,3 +148,4 @@ ex) [Feature] - {USER} 엔티티 설계
 - PR에 적극적으로 코드 리뷰 남기기 (LGTM 금지🙅).
 - Action이 통과해야만 Merge 가능.
 - Action 실패 시 원인 파악 및 테스트 성공 시까지 수정.
+
