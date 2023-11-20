@@ -1,6 +1,5 @@
 package com.mingles.metamingle.avatar.command.application.service;
 
-import com.mingles.metamingle.avatar.command.application.dto.request.AvatarCommandRequest;
 import com.mingles.metamingle.avatar.command.application.dto.response.AvatarCommandResponse;
 import com.mingles.metamingle.avatar.command.domain.aggregate.entity.Avatar;
 import com.mingles.metamingle.avatar.command.domain.aggregate.vo.AvatarMemberNoVO;
@@ -20,7 +19,7 @@ public class AvatarCommandService {
     private final AvatarQueryRepository avatarQueryRepository;
 
     @Transactional
-    public AvatarCommandResponse createAvatar(AvatarCommandRequest request, Long memberNo) {
+    public AvatarCommandResponse createAvatar(String avatarData, Long memberNo) {
 
         Optional<Avatar> avatar = avatarQueryRepository.findByAvatarMemberNoVO(new AvatarMemberNoVO(memberNo));
 
@@ -29,7 +28,7 @@ public class AvatarCommandService {
         if(avatar.isEmpty()) {
             createdAvatar = Avatar.builder()
                     .avatarMemberNoVO(new AvatarMemberNoVO(memberNo))
-                    .avatarData(request.getAvatarData())
+                    .avatarData(avatarData)
                     .build();
 
             avatarCommandRepository.save(createdAvatar);
@@ -37,7 +36,7 @@ public class AvatarCommandService {
         }
         else {
             createdAvatar = avatar.get();
-            createdAvatar.update(request);
+            createdAvatar.update(avatarData);
 
         }
         return AvatarCommandResponse.from(createdAvatar);

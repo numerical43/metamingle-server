@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AvatarQueryResponse {
 
-    private byte[] avatarData;
+    private String avatarData;
 
     public static AvatarQueryResponse from(Avatar avatar) {
         return new AvatarQueryResponse(
