@@ -47,8 +47,8 @@ pipeline {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
                         // 기존 컨테이너를 중지하고 제거
-                        bat "docker stop ${dockerContainerName} 2> null"
-                        bat "docker rm ${dockerContainerName} 2> null"
+                        bat "docker stop ${dockerContainerName} 1> null"
+                        bat "docker rm ${dockerContainerName} 1> null"
 
                         // DockerHub에 생성한 이미지 push
                         bat "docker push ${dockerImageName}"
