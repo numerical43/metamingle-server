@@ -1,4 +1,7 @@
 package com.mingles.metamingle.scenario.command.infrastructure.service;
+import com.mingles.metamingle.quiz.command.application.dto.response.QuizCommandInfraResponse;
+import com.mingles.metamingle.quiz.command.application.dto.response.QuizCommandResponse;
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import com.mingles.metamingle.scenario.command.application.dto.request.SaveScenarioRequest;
 import com.mingles.metamingle.scenario.command.application.dto.response.BGMResponse;
 import com.mingles.metamingle.scenario.command.application.dto.response.BgImageResponse;
@@ -13,12 +16,14 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ScenarioCommandInfraService {
 
     private final ScenarioCommandService scenarioCommandService;
+    private final QuizCommandService quizCommandService;
     private final WebClient webClient = WebClient.builder().baseUrl("https://67ec-210-95-145-225.ngrok-free.app/").build();
 
     //SSE 를 이용한 텍스트 실시간 스트리밍
@@ -101,6 +106,22 @@ public class ScenarioCommandInfraService {
     }
 
 
+    public QuizCommandResponse getQuizFromScript(String text) {
+
+        Map<String, String> bodyJson = new HashMap<>();
+        bodyJson.put("text", text);
+
+        QuizCommandInfraResponse quiz = webClient.post()
+                .bodyValue(bodyJson)
+                .retrieve()
+                .bodyToMono(QuizCommandInfraResponse.class)
+                .block();
+
+        UUID uuid = UUID.randomUUID();
+
+        return quizCommandService.saveQuizWithUUID(uuid, quiz.getKorea(), quiz.getEnglish(), quiz.getIsquiz());
+//        return quizCommandService.saveQuizWithUUID(uuid, "테스트", "test", "yes");
+    }
 
 }
 
