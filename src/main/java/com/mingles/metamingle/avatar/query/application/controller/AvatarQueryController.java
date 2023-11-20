@@ -1,12 +1,8 @@
 package com.mingles.metamingle.avatar.query.application.controller;
 
 import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.avatar.query.application.dto.response.AvatarQueryResponse;
 import com.mingles.metamingle.avatar.query.application.service.AvatarQueryService;
-import com.mingles.metamingle.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
