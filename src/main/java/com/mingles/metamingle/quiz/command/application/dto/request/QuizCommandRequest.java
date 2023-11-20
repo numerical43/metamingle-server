@@ -1,4 +1,4 @@
-package com.mingles.metamingle.avatar.command.application.dto.request;
+package com.mingles.metamingle.quiz.command.application.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AvatarCommandRequest {
+public class QuizCommandRequest {
 
-    private byte[] avatarData;
+    private String text;
 
 }
