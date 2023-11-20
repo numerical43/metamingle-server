@@ -3,6 +3,7 @@ package com.mingles.metamingle.member.command.application.controller;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.member.command.application.dto.request.MailAuthRequest;
 import com.mingles.metamingle.member.command.application.dto.request.RegistMemberRequest;
+import com.mingles.metamingle.member.command.application.dto.request.RegistMemberTemp;
 import com.mingles.metamingle.member.command.application.dto.response.MailAuthResponse;
 import com.mingles.metamingle.member.command.application.dto.response.MemberCommandResponse;
 import com.mingles.metamingle.member.command.application.service.MemberCommandService;
@@ -36,6 +37,21 @@ public class MemberCommandController {
     }
 
     @PostMapping("/member/signup")
+    public ResponseEntity<ApiResponse> Signup(@RequestBody RegistMemberTemp request) {
+
+        System.out.println("request.getPassword() = " + request.getPassword());
+
+        MemberCommandResponse response = memberCommandService.signup(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ApiResponse.success("회원가입이 완료되었습니다." , response)
+        );
+
+    }
+
+
+    /* Email 본인인증 후 회원가입
+    @PostMapping("/member/signup")
     public ResponseEntity<ApiResponse> Signup(@RequestBody RegistMemberRequest request) {
 
         if(mailService.verifyCode(request.getEmail(), request.getCode())) {
@@ -51,4 +67,7 @@ public class MemberCommandController {
                 ApiResponse.error("인증에 실패하였습니다.", request.getEmail())
         );
     }
+     */
+
+
 }
