@@ -47,8 +47,8 @@ public class ShortFormQueryService {
                     return new GetShortFormListResponse(
                             shortForm.getShortFormNo(),
                             shortForm.getTitle(),
-                            shortForm.getThumbnailUrl(),
-                            shortForm.getUrl(),
+                            shortForm.getThumbnailUrlKr(),
+                            shortForm.getUrlKr(),
                             shortForm.getDescription(),
                             memberName,
                             shortForm.getDate(),
@@ -83,8 +83,8 @@ public class ShortFormQueryService {
         GetShortFormResponse response = new GetShortFormResponse(
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
-                shortFormResponse.getThumbnailUrl(),
-                shortFormResponse.getUrl(),
+                shortFormResponse.getThumbnailUrlKr(),
+                shortFormResponse.getUrlKr(),
                 shortFormResponse.getDescription(),
                 memberName,
                 shortFormResponse.getDate(),

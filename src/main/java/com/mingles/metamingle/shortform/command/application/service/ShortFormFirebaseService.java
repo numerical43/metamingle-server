@@ -5,6 +5,9 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
+import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
+import com.mingles.metamingle.shortform.command.application.dto.response.SubtitledVideo;
+import com.mingles.metamingle.shortform.command.application.dto.response.UploadVideo;
 import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
@@ -53,10 +56,41 @@ public class ShortFormFirebaseService {
 
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
 
+//    // 숏폼 생성
+//    @Transactional
+//    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
+//        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+//
+//        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
+//        InputStream inputStream = file.getInputStream();
+//        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
+//        Blob getBlob = bucket.get(fileKeyName);
+//
+//        System.out.println("blob shortForm = " + getBlob.getMediaLink());
+//
+//
+//        inputStream.close();
+//
+//        String url = bucketUrl + fileKeyName + "?alt=media";
+//
+//        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
+//
+//        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
+//
+//        ShortForm shortFormEntity = new ShortForm(title, thumbnailUrl, url, description, new Date(),
+//                                                Boolean.FALSE, memberNoVO, null);
+//
+//        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
+//
+//        deleteTempFile();
+//
+//        return new CreateShortFormResponse(uploadedShortForm.getShortFormNo(),
+//                uploadedShortForm.getThumbnailUrl(),
+//                uploadedShortForm.getUrl());
+//    }
+
     // 숏폼 생성
-    @Transactional
-    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
-        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+    public UploadVideo createShortForm(MultipartFile file, String fileKeyName) throws IOException, JCodecException {
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
@@ -65,25 +99,56 @@ public class ShortFormFirebaseService {
 
         System.out.println("blob shortForm = " + getBlob.getMediaLink());
 
-
         inputStream.close();
 
         String url = bucketUrl + fileKeyName + "?alt=media";
-
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
-
-        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-
-        ShortForm shortFormEntity = new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                                                Boolean.FALSE, memberNoVO, null);
-
-        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
 
         deleteTempFile();
 
-        return new CreateShortFormResponse(uploadedShortForm.getShortFormNo(),
-                uploadedShortForm.getThumbnailUrl(),
-                uploadedShortForm.getUrl());
+        return new UploadVideo(url, thumbnailUrl);
+    }
+
+    // ai 서버 자막
+    @Transactional
+    public CreateShortFormResponse createShortFormWithSubtitle(MultipartFile file, String title, String description,
+                                                               Long memberNo, Boolean isInteractive)
+            throws IOException, JCodecException, InterruptedException {
+
+        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+
+        SubtitledVideo subtitledVideo = new SubtitledVideo();
+        // ai에 보내서 영어 자막 영상 요청 (fileKeyName과 MultipartFile을 전달)
+        subtitledVideo.setFileEng(file);
+        Thread.sleep(3000); // 3초 sleep
+        // ai에 보내서 한글 자막 영상 요청 (fileKeyName 전달)
+        subtitledVideo.setFileKr(file);
+
+        // 영어 자막 동영상 생성
+        UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
+        // 한글 자막 동영상 생성
+        UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
+
+
+        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
+
+        ShortForm shortForm = ShortForm.builder()
+                .title(title)
+                .description(description)
+                .memberNoVO(memberNoVO)
+                .urlKr(uploadVideoKr.getUrl())
+                .thumbnailUrlKr(uploadVideoKr.getThumbnailUrl())
+                .urlEng(uploadVideoEng.getUrl())
+                .thumbnailUrlEng(uploadVideoEng.getThumbnailUrl())
+                .date(new Date())
+                .isInteractive(isInteractive)
+                .build();
+
+        ShortForm createdShortForm = shortFormCommandRepository.save(shortForm);
+
+        return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
+                                           createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
+                                           createdShortForm.getUrlEng());
     }
 
     // 숏폼 삭제
@@ -101,36 +166,84 @@ public class ShortFormFirebaseService {
         // 사용자 확인 로직 (본인 확인)
 
         // firebase storage의 영상, 썸네일 삭제
-        String thumbnailName = shortForm.getThumbnailUrl()
+        String thumbnailNameKr = shortForm.getThumbnailUrlKr()
                                         .replace(bucketUrl, "")
                                         .replace("%2F", "/")
                                         .replace("?alt=media", "");
-        String videoName = shortForm.getUrl()
+        String videoNameKr = shortForm.getUrlKr()
                                     .replace(bucketUrl, "")
                                     .replace("?alt=media", "");
+        String thumbnailNameEng = shortForm.getThumbnailUrlEng()
+                .replace(bucketUrl, "")
+                .replace("%2F", "/")
+                .replace("?alt=media", "");
+        String videoNameEng = shortForm.getUrlEng()
+                .replace(bucketUrl, "")
+                .replace("?alt=media", "");
 
-        BlobId blobIdThumbnail = BlobId.of(bucketName, thumbnailName);
-        BlobId blobIdVideo = BlobId.of(bucketName, videoName);
+        BlobId blobIdThumbnailKr = BlobId.of(bucketName, thumbnailNameKr);
+        BlobId blobIdVideoKr = BlobId.of(bucketName, videoNameKr);
+        BlobId blobIdThumbnailEng = BlobId.of(bucketName, thumbnailNameEng);
+        BlobId blobIdVideoEng = BlobId.of(bucketName, videoNameEng);
 
         Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
 
-        if (!storage.delete(blobIdThumbnail)) {
+        if (!storage.delete(blobIdThumbnailKr)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 썸네일 삭제 실패 ");
         }
 
-        if (!storage.delete(blobIdVideo)) {
+        if (!storage.delete(blobIdThumbnailEng)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 썸네일 삭제 실패 ");
+        }
+
+        if (!storage.delete(blobIdVideoKr)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 무비 영상 삭제 실패 ");
         }
+
+        if (!storage.delete(blobIdVideoEng)) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 무비 영상 삭제 실패 ");
+        }
+
 
         shortFormCommandRepository.delete(shortForm);
 
         return new DeleteShortFormResponse(shortFormNo, deletedInteractiveMovieNos);
     }
 
+
+//    // 인터랙티브 무비와 관련된 숏폼 생성
+//    @Transactional
+//    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
+//        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+//
+//        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
+//        InputStream inputStream = file.getInputStream();
+//        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
+//
+//        System.out.println("blob interactiveMovie = " + blob.getMediaLink());
+//
+//        inputStream.close();
+//
+//        String url = bucketUrl + fileKeyName + "?alt=media";
+//
+//        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
+////        // 임시 멤버 넘버 사용
+//        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
+//
+//        ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
+//                Boolean.TRUE, memberNoVO, null);
+//
+//        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
+//
+//        deleteTempFile();
+//
+//        return uploadedShortForm;
+//    }
+
     // 인터랙티브 무비와 관련된 숏폼 생성
     @Transactional
-    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
+    public UploadVideo createShortFormWithInteractiveMovie(MultipartFile file) throws IOException, JCodecException {
         String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
@@ -145,17 +258,11 @@ public class ShortFormFirebaseService {
 
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
-        // 임시 멤버 넘버 사용
-        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-
-        ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-                Boolean.TRUE, memberNoVO, null);
-
-        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
+        UploadVideo uploadVideo = new UploadVideo(url, thumbnailUrl);
 
         deleteTempFile();
 
-        return uploadedShortForm;
+        return uploadVideo;
     }
 
     // 이미지 파일 이름 생성
@@ -163,9 +270,10 @@ public class ShortFormFirebaseService {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = dateFormat.format(new Date());
 
+        String fileExtension = shortFormCommandDomainService.checkAndGetFileExtension(fileName);
+
         // UUID + timestamp로 고유한 파일 이름 생성해서 반환
-        return UUID.randomUUID().toString().concat(timestamp)
-                .concat(shortFormCommandDomainService.checkAndGetFileExtension(fileName));
+        return UUID.randomUUID().toString().concat(timestamp);
     }
 
     // 파일 확장자 가져오기

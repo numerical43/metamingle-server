@@ -27,7 +27,7 @@ public class ApiInteractiveMovieQueryService {
         for (InteractiveMovie interactiveMovie : interactiveMovies) {
 
             InteractiveMovieDTO dto = new InteractiveMovieDTO(
-                    interactiveMovie.getUrl(),
+                    interactiveMovie.getUrlKr(),
                     interactiveMovie.getChoice(),
                     interactiveMovie.getInteractiveMovieNo()
             );

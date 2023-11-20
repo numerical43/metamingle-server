@@ -4,13 +4,15 @@ import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
+import com.mingles.metamingle.interactivemovie.command.application.dto.response.SubtitledVideo;
+import com.mingles.metamingle.interactivemovie.command.application.dto.response.UploadVideo;
 import com.mingles.metamingle.interactivemovie.command.domain.aggregate.entity.InteractiveMovie;
 import com.mingles.metamingle.interactivemovie.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.interactivemovie.command.domain.aggregate.vo.ShortFormNoVO;
 import com.mingles.metamingle.interactivemovie.command.domain.repository.InteractiveMovieCommandRepository;
 import com.mingles.metamingle.interactivemovie.command.domain.service.InteractiveMovieDomainService;
 import com.mingles.metamingle.interactivemovie.command.infrastructure.service.ApiShortFormService;
-import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
+import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
@@ -48,47 +50,112 @@ public class InteractiveMovieCommandService {
     private final InteractiveMovieDomainService interactiveMovieDomainService;
     private final ApiShortFormService apiShortFormService;
 
-    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices, Long memberNo)
-            throws JCodecException, IOException {
+//    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices, Long memberNo)
+//            throws JCodecException, IOException {
+//
+//        List<CreateInteractiveMovieResponse> response = new ArrayList<>();
+//
+//        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title, description, memberNo);
+//        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), "none", 0));
+//
+//        ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
+//
+//        for (int i = 1; i <= 2; i++) {
+//
+//            String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
+//
+//            Bucket bucket = StorageClient.getInstance().bucket(bucketName);
+//            InputStream inputStream = files.get(i).getInputStream();
+//            Blob blob = bucket.create(fileKeyName, inputStream, files.get(i).getContentType());
+//
+//            inputStream.close();
+//
+//            String url = bucketUrl + fileKeyName + "?alt=media";
+//
+//            String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
+//
+//            // 임시 멤버 넘버 사용
+//            MemberNoVO memberNoVO = new MemberNoVO(memberNo);
+//
+//            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i - 1), new Date(),
+//                    i, shortFormNoVO, memberNoVO);
+//
+//            InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
+//
+//            response.add(new CreateInteractiveMovieResponse(null, uploadedInteractiveMovie.getInteractiveMovieNo(),
+//                                                            uploadedInteractiveMovie.getThumbnailUrl(),
+//                                                            uploadedInteractiveMovie.getUrl(),
+//                                                            uploadedInteractiveMovie.getChoice(),
+//                                                            uploadedInteractiveMovie.getSequence()));
+//        }
+//
+//        return response;
+//
+//    }
+
+    public List<CreateInteractiveMovieResponse> createInteractiveMovieWithSubtitle(List<MultipartFile> files, String title,
+                                                                                   String description, List<String> choices, Long memberNo)
+            throws JCodecException, IOException, InterruptedException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
-        ShortForm shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title, description, memberNo);
-        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null, shortForm.getThumbnailUrl(),shortForm.getUrl(), "none", 0));
+        CreateShortFormResponse shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), title,
+                                                                                    description, memberNo, Boolean.TRUE);
+        response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null,
+                shortForm.getThumbnailUrlKr(), shortForm.getUrlKr(),
+                shortForm.getThumbnailUrlEng(), shortForm.getUrlEng(), "none", 0));
 
         ShortFormNoVO shortFormNoVO = new ShortFormNoVO(shortForm.getShortFormNo());
 
-        for (int i = 1; i <= 2; i++) {
+        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
+        // ai 서버에 요청
+        for (int i = 1; i <= 2; i++) {
             String fileKeyName = createFileName(files.get(i).getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
-            Bucket bucket = StorageClient.getInstance().bucket(bucketName);
-            InputStream inputStream = files.get(i).getInputStream();
-            Blob blob = bucket.create(fileKeyName, inputStream, files.get(i).getContentType());
+            SubtitledVideo subtitledVideo = new SubtitledVideo();
+            // ai 서버에 영어 자막 파일 요청 (fileKeyName과 MultipartFile을 같이 보내기)
+            subtitledVideo.setFileEng(files.get(i));
+            Thread.sleep(3000); // 3초 sleep
+            // ai 서버에 한글 자막 파일 요청
+            subtitledVideo.setFileKr(files.get(i));
 
-            inputStream.close();
+            UploadVideo uploadVideoEng = createInteractiveMovie(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
+            UploadVideo uploadVideoKr = createInteractiveMovie(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
 
-            String url = bucketUrl + fileKeyName + "?alt=media";
-
-            String thumbnailUrl = createAndUploadThumbnail(files.get(i), fileKeyName);
-
-            // 임시 멤버 넘버 사용
-            MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-
-            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, url, thumbnailUrl, description, choices.get(i - 1), new Date(),
+            InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, uploadVideoKr.getUrl(), uploadVideoKr.getThumbnailUrl(),
+                    uploadVideoEng.getUrl(), uploadVideoEng.getThumbnailUrl(), description, choices.get(i - 1), new Date(),
                     i, shortFormNoVO, memberNoVO);
 
-            InteractiveMovie uploadedInteractiveMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
+            InteractiveMovie createdMovie = interactiveMovieCommandRepository.save(interactiveMovieEntity);
 
-            response.add(new CreateInteractiveMovieResponse(null, uploadedInteractiveMovie.getInteractiveMovieNo(),
-                                                            uploadedInteractiveMovie.getThumbnailUrl(),
-                                                            uploadedInteractiveMovie.getUrl(),
-                                                            uploadedInteractiveMovie.getChoice(),
-                                                            uploadedInteractiveMovie.getSequence()));
+            response.add(new CreateInteractiveMovieResponse(null, createdMovie.getInteractiveMovieNo(),
+                    createdMovie.getThumbnailUrlKr(),
+                    createdMovie.getUrlKr(),
+                    createdMovie.getThumbnailUrlEng(),
+                    createdMovie.getUrlEng(),
+                    createdMovie.getChoice(),
+                    createdMovie.getSequence()));
         }
 
         return response;
 
+    }
+
+    private UploadVideo createInteractiveMovie(MultipartFile file, String fileKeyName)
+                                                    throws JCodecException, IOException {
+
+        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
+        InputStream inputStream = file.getInputStream();
+        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
+
+        inputStream.close();
+
+        String url = bucketUrl + fileKeyName + "?alt=media";
+
+        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
+
+        return new UploadVideo(url, thumbnailUrl);
     }
 
     // 이미지 파일 이름 생성
@@ -96,9 +163,10 @@ public class InteractiveMovieCommandService {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = dateFormat.format(new Date());
 
+        String fileExtension = interactiveMovieDomainService.checkAndGetFileExtension(fileName);
+
         // UUID + timestamp로 고유한 파일 이름 생성해서 반환
-        return UUID.randomUUID().toString().concat(timestamp)
-                .concat(interactiveMovieDomainService.checkAndGetFileExtension(fileName));
+        return UUID.randomUUID().toString().concat(timestamp);
     }
 
     // 파일 확장자 가져오기

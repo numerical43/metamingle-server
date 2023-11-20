@@ -20,8 +20,8 @@ public class InteractiveMovieQueryService {
                 new GetInteractiveMovieResponse(
                         interactiveMovie.getInteractiveMovieNo(),
                         interactiveMovie.getTitle(),
-                        interactiveMovie.getThumbnailUrl(),
-                        interactiveMovie.getUrl(),
+                        interactiveMovie.getThumbnailUrlKr(),
+                        interactiveMovie.getUrlKr(),
                         interactiveMovie.getDescription(),
                 "memberName",
                         interactiveMovie.getDate(),
