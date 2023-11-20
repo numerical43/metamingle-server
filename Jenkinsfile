@@ -54,7 +54,7 @@ pipeline {
                         bat "docker push ${dockerImageName}"
 
                         // Docker 이미지로 새 컨테이너 실행
-                        bat "docker run -d --name ${dockerContainerName} -p 8080:8080 -e ${dockerImageName}"
+                        bat "docker run -d --name ${dockerContainerName} -p 8080:8080 ${dockerImageName}"
                     }
                 }
             }
