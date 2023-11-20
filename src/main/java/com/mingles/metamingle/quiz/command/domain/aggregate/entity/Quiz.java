@@ -16,15 +16,27 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long quizNo;
 
-    @Column
+    @Column(columnDefinition = "BINARY(16)")
     private UUID quizUUID;
+
+    @Column
+    private String korean;
+
+    @Column
+    private String english;
+
+    @Column
+    private String isquiz;
 
     @Embedded
     private ShortFormNoVO shortFormNoVO;
 
     @Builder
-    public Quiz(UUID quizUUID, ShortFormNoVO shortFormNoVO) {
+    public Quiz(UUID quizUUID, String korean, String english, String isquiz, ShortFormNoVO shortFormNoVO) {
         this.quizUUID = quizUUID;
+        this.korean = korean;
+        this.english = english;
+        this.isquiz = isquiz;
         this.shortFormNoVO = shortFormNoVO;
     }
 
