@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        HOST_IP = powershell(returnStatus: true, script: '(Test-Connection -ComputerName localhost -Count 1).IPAddressToString')
-    }
     tools {
         jdk 'Java 11'
         gradle 'Gradle 8.3'
@@ -57,7 +54,7 @@ pipeline {
                         bat "docker push ${dockerImageName}"
 
                         // Docker 이미지로 새 컨테이너 실행
-                        bat "docker run -d --name ${dockerContainerName} -p 8080:8080 -e HOST_IP=${HOST_IP} ${dockerImageName}"
+                        bat "docker run -d --name ${dockerContainerName} -p 8080:8080 -e ${dockerImageName}"
                     }
                 }
             }
