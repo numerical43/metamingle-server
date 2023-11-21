@@ -52,7 +52,7 @@ public class MemberQueryService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 member, null, member.getAuthorities());
 
-        LoginResponse response = new LoginResponse(jwtTokenProvider.generateAccessToken(member));
+        LoginResponse response = new LoginResponse(jwtTokenProvider.generateAccessToken(member), member.getNickname());
 
         return response;
     }

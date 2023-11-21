@@ -21,9 +21,6 @@ public class MemberQueryController {
     @PostMapping("/member/login")
     public ResponseEntity<ApiResponse> Login(@RequestBody LoginRequest request) {
 
-        System.out.println("request = " + request);
-        System.out.println("request.getPassword() = " + request.getPassword());
-        System.out.println("request.getEmail() = " + request.getEmail());
 
         LoginResponse response = memberQueryService.login(request);
 
