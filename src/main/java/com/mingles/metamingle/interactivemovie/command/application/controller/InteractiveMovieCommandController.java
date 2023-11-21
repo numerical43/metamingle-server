@@ -1,10 +1,8 @@
 package com.mingles.metamingle.interactivemovie.command.application.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.common.ApiStatus;
-import com.mingles.metamingle.interactivemovie.command.application.dto.VideoMetadata;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.command.application.service.InteractiveMovieCommandService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,19 +25,9 @@ public class InteractiveMovieCommandController {
     private final InteractiveMovieCommandService interactiveMovieCommandService;
     private final JwtTokenProvider jwtTokenProvider;
 
-//    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
-//    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video") List<MultipartFile> videos,
-//                                                              @RequestPart("title") String title,
-//                                                              @RequestPart("description") String description,
-//                                                              @RequestPart("choice") List<String> choices) throws JCodecException, IOException {
-//
-//        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
-//
-//        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
-//    }
-
     @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
-    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
+    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestHeader("Authentication") String token,
+                                                              @RequestPart("video1") MultipartFile video1,
                                                               @RequestPart("video2") MultipartFile video2,
                                                               @RequestPart("video3") MultipartFile video3,
                                                               @RequestPart("title") String title,
@@ -48,8 +35,8 @@ public class InteractiveMovieCommandController {
                                                               @RequestPart("choice1") String choice1,
                                                               @RequestPart("choice2") String choice2) throws JCodecException, IOException {
 
-//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-        Long memberNo = 1L;
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
 
         List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
 
@@ -61,6 +48,16 @@ public class InteractiveMovieCommandController {
 
     }
 
+//    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
+//    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video") List<MultipartFile> videos,
+//                                                              @RequestPart("title") String title,
+//                                                              @RequestPart("description") String description,
+//                                                              @RequestPart("choice") List<String> choices) throws JCodecException, IOException {
+//
+//        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices);
+//
+//        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
+//    }
 
 //    @PostMapping(value = "/interactive-movie")
 //    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestBody VideoData data) throws JCodecException, IOException {
