@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +18,7 @@ public class InteractiveMovieQueryController {
     private final InteractiveMovieQueryService interactiveMovieQueryService;
 
     @GetMapping("/interactive-movie/{interactiveMovieNo}")
-    public ResponseEntity<ApiResponse> getInteractiveMovie(@PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
+    public ResponseEntity<ApiResponse> getInteractiveMovie(@RequestHeader("Authentiaction") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
 
         GetInteractiveMovieResponse response = interactiveMovieQueryService.getInteractiveMovie(interactiveMovieNo);
 
