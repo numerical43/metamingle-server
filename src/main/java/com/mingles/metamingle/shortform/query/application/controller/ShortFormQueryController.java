@@ -23,10 +23,10 @@ public class ShortFormQueryController {
 
     // 숏폼 리스트 조회
     @GetMapping("/short-form")
-    public ResponseEntity<ApiResponse> getShortFormList() {
+    public ResponseEntity<ApiResponse> getShortFormList(@RequestHeader("Authentication") String token) {
 
-//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-        Long memberNo = 1L;
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
 
         List<GetShortFormListResponse> response = shortFormQueryService.getShortFormList();
 
@@ -35,10 +35,10 @@ public class ShortFormQueryController {
 
     // 숏폼 하나 상세 조회
     @GetMapping("/short-form/{shortFormNo}")
-    public ResponseEntity<ApiResponse> getShortForm(@PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> getShortForm(@RequestHeader("Authentication") String token, @PathVariable("shortFormNo") Long shortFormNo) {
 
-//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-        Long memberNo = 1L;
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
 
         GetShortFormResponse response = shortFormQueryService.getShortForm(shortFormNo);
 
