@@ -122,8 +122,10 @@ public class InteractiveMovieCommandService {
 
             SubtitledVideo subtitledVideo = new SubtitledVideo();
 
-            subtitledVideo.setFileEng(sendToAIForEngSub(files.get(i).getResource(), fileKeyName));
-            subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+//            subtitledVideo.setFileEng(sendToAIForEngSub(files.get(i).getResource(), fileKeyName));
+//            subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+            subtitledVideo.setFileKr(files.get(i));
+            subtitledVideo.setFileEng(files.get(i));
 
             UploadVideo uploadVideoEng = createInteractiveMovie(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
             UploadVideo uploadVideoKr = createInteractiveMovie(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");

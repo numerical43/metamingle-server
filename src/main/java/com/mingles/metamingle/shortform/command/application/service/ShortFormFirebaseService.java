@@ -124,9 +124,10 @@ public class ShortFormFirebaseService {
         SubtitledVideo subtitledVideo = new SubtitledVideo();
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
-        subtitledVideo.setFileKr(sendToAIForEngSub(file.getResource(), fileKeyName));
-        subtitledVideo.setFileEng(sendToAIForKrSub(fileKeyName));
-
+//        subtitledVideo.setFileKr(sendToAIForEngSub(file.getResource(), fileKeyName));
+//        subtitledVideo.setFileEng(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(file);
+        subtitledVideo.setFileEng(file);
         // 영어 자막 동영상 생성
         UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
         // 한글 자막 동영상 생성
