@@ -19,7 +19,7 @@ public class InteractiveMovieLIkeCommandController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/interactive-movie/{interactiveMovieNo}/like")
-    public ResponseEntity<ApiResponse> createOrUpdateInteractiveMovieLike(@RequestHeader("Authorization") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
+    public ResponseEntity<ApiResponse> createOrUpdateInteractiveMovieLike(@RequestHeader("Authentication") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
         CreateInteractiveMovieLikeResponse response = interactiveMovieLikeCommandService.createOrUpdateInteractiveMovieLike(memberNo, interactiveMovieNo);
