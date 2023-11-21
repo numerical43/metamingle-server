@@ -1,6 +1,5 @@
 package com.mingles.metamingle.avatar.command.domain.aggregate.entity;
 
-import com.mingles.metamingle.avatar.command.application.dto.request.AvatarCommandRequest;
 import com.mingles.metamingle.avatar.command.domain.aggregate.vo.AvatarMemberNoVO;
 import lombok.*;
 
@@ -20,21 +19,21 @@ public class Avatar {
     @Embedded
     private AvatarMemberNoVO avatarMemberNoVO;
 
-//    @Column(length = 3000)
-//    private String avatarData;
+    @Column(length = 3000)
+    private String avatarData;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] avatarData;
+//    @Lob
+//    @Column(columnDefinition = "BLOB")
+//    private byte[] avatarData;
 
     @Builder
-    public Avatar(AvatarMemberNoVO avatarMemberNoVO, byte[] avatarData) {
+    public Avatar(AvatarMemberNoVO avatarMemberNoVO, String avatarData) {
         this.avatarMemberNoVO = avatarMemberNoVO;
         this.avatarData = avatarData;
     }
 
-    public void update(AvatarCommandRequest request) {
-        this.avatarData = request.getAvatarData();
+    public void update(String avatarData) {
+        this.avatarData = avatarData;
     }
 
 }

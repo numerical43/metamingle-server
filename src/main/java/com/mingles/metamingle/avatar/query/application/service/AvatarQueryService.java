@@ -26,8 +26,19 @@ public class AvatarQueryService {
         Avatar avatar = avatarQueryRepository.findByAvatarMemberNoVO(new AvatarMemberNoVO(memberNo))
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원의 아바타가 존재하지 않습니다."));
 
-        System.out.println("avatar.getAvatarData(). = " + new String(avatar.getAvatarData()));
+        byte[] avatarByte = avatar.getAvatarData().getBytes();
 
         return AvatarQueryResponse.from(avatar);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] getAvatarDataBytes(Long memberNo) {
+
+        Avatar avatar = avatarQueryRepository.findByAvatarMemberNoVO(new AvatarMemberNoVO(memberNo))
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원의 아바타가 존재하지 않습니다."));
+
+        byte[] avatarByte = avatar.getAvatarData().getBytes();
+
+        return avatarByte;
     }
 }
