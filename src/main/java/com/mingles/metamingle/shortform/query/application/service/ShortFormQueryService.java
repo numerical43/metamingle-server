@@ -25,7 +25,7 @@ public class ShortFormQueryService {
     private final ApiShortFormLikeQueryService apiShortFormLikeQueryService;
 
     // 전체 숏폼 조회
-    public List<GetShortFormListResponse> getShortFormList() {
+    public List<GetShortFormListResponse> getShortFormList(String language) {
 
         List<ShortForm> shortFormList = shortFormQueryRepository.findAllByOrderByShortFormNoDesc();
 
@@ -47,8 +47,8 @@ public class ShortFormQueryService {
                     return new GetShortFormListResponse(
                             shortForm.getShortFormNo(),
                             shortForm.getTitle(),
-                            shortForm.getThumbnailUrlKr(),
-                            shortForm.getUrlKr(),
+                            language.equals("kr") ? shortForm.getThumbnailUrlKr() : shortForm.getThumbnailUrlEng(),
+                            language.equals("kr") ? shortForm.getUrlKr() : shortForm.getUrlEng(),
                             shortForm.getDescription(),
                             memberName,
                             shortForm.getDate(),
@@ -63,7 +63,7 @@ public class ShortFormQueryService {
     }
 
     // 숏폼 하나 조회
-    public GetShortFormResponse getShortForm(Long shortFormNo) {
+    public GetShortFormResponse getShortForm(Long shortFormNo, String language) {
 
         ShortForm shortFormResponse = shortFormQueryRepository.findShortFormByShortFormNo(shortFormNo);
 
@@ -83,8 +83,8 @@ public class ShortFormQueryService {
         GetShortFormResponse response = new GetShortFormResponse(
                 shortFormResponse.getShortFormNo(),
                 shortFormResponse.getTitle(),
-                shortFormResponse.getThumbnailUrlKr(),
-                shortFormResponse.getUrlKr(),
+                language.equals("kr") ? shortFormResponse.getThumbnailUrlKr() : shortFormResponse.getThumbnailUrlEng(),
+                language.equals("kr") ? shortFormResponse.getUrlKr() : shortFormResponse.getUrlEng(),
                 shortFormResponse.getDescription(),
                 memberName,
                 shortFormResponse.getDate(),

@@ -5,7 +5,6 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
-import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
 import com.mingles.metamingle.shortform.command.application.dto.response.SubtitledVideo;
 import com.mingles.metamingle.shortform.command.application.dto.response.UploadVideo;
 import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
@@ -22,11 +21,16 @@ import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
@@ -34,9 +38,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -49,6 +51,8 @@ public class ShortFormFirebaseService {
     private String bucketName; // Firebase Storage 버킷 이름
     @Value("${firebase.storage.bucket-url}")
     private String bucketUrl;
+
+    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.66:8011/mp4").build();
 
     private final ShortFormCommandRepository shortFormCommandRepository;
 
@@ -118,17 +122,15 @@ public class ShortFormFirebaseService {
         String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
 
         SubtitledVideo subtitledVideo = new SubtitledVideo();
-        // ai에 보내서 영어 자막 영상 요청 (fileKeyName과 MultipartFile을 전달)
-        subtitledVideo.setFileEng(file);
-        Thread.sleep(3000); // 3초 sleep
-        // ai에 보내서 한글 자막 영상 요청 (fileKeyName 전달)
-        subtitledVideo.setFileKr(file);
+
+        // ai 서버에 자막 동영상 요청 & 응답 받기
+        subtitledVideo.setFileKr(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(sendToAIForKrSub(fileKeyName));
 
         // 영어 자막 동영상 생성
         UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
         // 한글 자막 동영상 생성
         UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
-
 
         MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
@@ -149,6 +151,36 @@ public class ShortFormFirebaseService {
         return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
                                            createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
                                            createdShortForm.getUrlEng());
+    }
+
+    public MultipartFile sendToAIForEngSub(Resource file, String filename) {
+
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file", file);
+        bodyBuilder.part("filename", filename);
+
+        return webClient.post()
+                .uri("/en_script_video")
+                .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))  // Use fromMultipartData instead of fromValue
+                .accept(MediaType.MULTIPART_FORM_DATA)
+                .retrieve()
+                .bodyToMono(MultipartFile.class)
+                .block();
+    }
+
+    public MultipartFile sendToAIForKrSub(String filename) {
+
+        Map<String, String> bodyJson = new HashMap<>();
+        bodyJson.put("filename", filename);
+
+        return webClient.post()
+                .uri("/kr_script_video")
+                .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
+                .bodyValue(bodyJson)
+                .retrieve()
+                .bodyToMono(MultipartFile.class)
+                .block();
     }
 
     // 숏폼 삭제
