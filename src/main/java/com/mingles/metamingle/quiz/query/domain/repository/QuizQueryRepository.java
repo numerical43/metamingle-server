@@ -6,9 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface QuizQueryRepository extends JpaRepository<Quiz, Long> {
 
     Optional<Quiz> findByShortFormNoVO(ShortFormNoVO shortFormNoVO);
+    Optional<Quiz> findByQuizUUID(UUID uuid);
+
 }

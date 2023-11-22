@@ -3,6 +3,7 @@ package com.mingles.metamingle.shortform.command.application.controller;
 import com.google.protobuf.Api;
 import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,8 @@ public class ShortFormCommandController {
     private final ShortFormFirebaseService shortFormFirebaseService;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final QuizCommandService quizCommandService;
 
     // 숏폼 생성
 //    @PostMapping("/short-form")
@@ -60,6 +65,8 @@ public class ShortFormCommandController {
 //        Long memberNo = 1L;
 
         CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(video, title, description, memberNo, Boolean.FALSE);
+
+        quizCommandService.updateQuizWithUUID(response.getShortFormNo(), UUID.fromString(uuid));
 
         return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
 
