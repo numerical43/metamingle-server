@@ -12,7 +12,7 @@ public class InteractiveMovieQueryService {
 
     private final InteractiveMovieQueryRepository interactiveMovieQueryRepository;
 
-    public GetInteractiveMovieResponse getInteractiveMovie(Long interactiveMovieNo) {
+    public GetInteractiveMovieResponse getInteractiveMovie(Long interactiveMovieNo, String language) {
 
         InteractiveMovie interactiveMovie = interactiveMovieQueryRepository.findInteractiveMovieByInteractiveMovieNo(interactiveMovieNo);
 
@@ -20,8 +20,8 @@ public class InteractiveMovieQueryService {
                 new GetInteractiveMovieResponse(
                         interactiveMovie.getInteractiveMovieNo(),
                         interactiveMovie.getTitle(),
-                        interactiveMovie.getThumbnailUrl(),
-                        interactiveMovie.getUrl(),
+                        language.equals("kr") ? interactiveMovie.getThumbnailUrlKr() : interactiveMovie.getThumbnailUrlEng(),
+                        language.equals("kr") ? interactiveMovie.getUrlKr() : interactiveMovie.getUrlEng(),
                         interactiveMovie.getDescription(),
                 "memberName",
                         interactiveMovie.getDate(),

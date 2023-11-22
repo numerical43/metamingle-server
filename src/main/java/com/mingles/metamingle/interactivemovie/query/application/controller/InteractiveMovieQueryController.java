@@ -6,10 +6,7 @@ import com.mingles.metamingle.interactivemovie.query.application.dto.response.Ge
 import com.mingles.metamingle.interactivemovie.query.application.service.InteractiveMovieQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +15,10 @@ public class InteractiveMovieQueryController {
     private final InteractiveMovieQueryService interactiveMovieQueryService;
 
     @GetMapping("/interactive-movie/{interactiveMovieNo}")
-    public ResponseEntity<ApiResponse> getInteractiveMovie(@RequestHeader("Authentiaction") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
+    public ResponseEntity<ApiResponse> getInteractiveMovie(@RequestHeader("Authentication") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo,
+                                                           @RequestParam("language") String language) {
 
-        GetInteractiveMovieResponse response = interactiveMovieQueryService.getInteractiveMovie(interactiveMovieNo);
+        GetInteractiveMovieResponse response = interactiveMovieQueryService.getInteractiveMovie(interactiveMovieNo, language);
 
         return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 조회 성공", response));
 
