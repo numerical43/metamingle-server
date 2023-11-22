@@ -139,32 +139,32 @@ VALUES
     (5, 24);
 
 
-INSERT INTO tbl_quiz (korean, english, isquiz)
+INSERT INTO tbl_quiz (korean, english, isquiz, short_form_no)
 VALUES
-    ('Korean1', 'English1', 'yes'),
-    ('Korean2', 'English2', 'yes'),
-    ('Korean3', 'English3', 'yes'),
-    ('Korean4', 'English4', 'yes'),
-    ('Korean5', 'English5', 'yes'),
-    ('Korean6', 'English6', 'yes'),
-    ('Korean7', 'English7', 'yes'),
-    ('Korean8', 'English8', 'yes'),
-    ('Korean9', 'English9', 'yes'),
-    ('Korean10', 'English10', 'yes'),
-    ('Korean11', 'English11', 'yes'),
-    ('Korean12', 'English12', 'yes'),
-    ('Korean13', 'English13', 'yes'),
-    ('Korean14', 'English14', 'yes'),
-    ('Korean15', 'English15', 'yes'),
-    ('Korean16', 'English16', 'yes'),
-    ('Korean17', 'English17', 'yes'),
-    ('Korean18', 'English18', 'yes'),
-    ('Korean19', 'English19', 'yes'),
-    ('Korean20', 'English20', 'yes'),
-    ('Korean21', 'English21', 'yes'),
-    ('Korean22', 'English22', 'yes'),
-    ('Korean23', 'English23', 'yes'),
-    ('Korean24', 'English24', 'yes');
+    ('Korean1', 'English1', 'yes', 1),
+    ('Korean2', 'English2', 'yes', 2),
+    ('Korean3', 'English3', 'yes', 3),
+    ('Korean4', 'English4', 'yes', 4),
+    ('Korean5', 'English5', 'yes', 5),
+    ('Korean6', 'English6', 'yes', 6),
+    ('Korean7', 'English7', 'yes', 7),
+    ('Korean8', 'English8', 'yes', 8),
+    ('Korean9', 'English9', 'yes', 9),
+    ('Korean10', 'English10', 'yes', 10),
+    ('Korean11', 'English11', 'yes', 11),
+    ('Korean12', 'English12', 'yes', 12),
+    ('Korean13', 'English13', 'yes', 13),
+    ('Korean14', 'English14', 'yes', 14),
+    ('Korean15', 'English15', 'yes', 15),
+    ('Korean16', 'English16', 'yes', 16),
+    ('Korean17', 'English17', 'yes', 17),
+    ('Korean18', 'English18', 'yes', 18),
+    ('Korean19', 'English19', 'yes', 19),
+    ('Korean20', 'English20', 'yes', 20),
+    ('Korean21', 'English21', 'yes', 21),
+    ('Korean22', 'English22', 'yes', 22),
+    ('Korean23', 'English23', 'yes', 23),
+    ('Korean24', 'English24', 'yes', 24);
 
 
 INSERT INTO tbl_quiz_rank (rank_no, date, korean, english, short_form_no)
