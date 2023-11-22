@@ -25,6 +25,29 @@ public class InteractiveMovieCommandController {
     private final InteractiveMovieCommandService interactiveMovieCommandService;
     private final JwtTokenProvider jwtTokenProvider;
 
+//    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
+//    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
+//                                                              @RequestPart("video2") MultipartFile video2,
+//                                                              @RequestPart("video3") MultipartFile video3,
+//                                                              @RequestPart("title") String title,
+//                                                              @RequestPart("description") String description,
+//                                                              @RequestPart("choice1") String choice1,
+//                                                              @RequestPart("choice2") String choice2) throws JCodecException, IOException {
+//
+////        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
+//
+//        List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
+//
+//        List<String> choices = Arrays.asList(choice1, choice2);
+//
+//        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices, memberNo);
+//
+//        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
+//
+//    }
+
+
     @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
     public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestHeader("Authentication") String token,
                                                               @RequestPart("video1") MultipartFile video1,
@@ -33,7 +56,9 @@ public class InteractiveMovieCommandController {
                                                               @RequestPart("title") String title,
                                                               @RequestPart("description") String description,
                                                               @RequestPart("choice1") String choice1,
-                                                              @RequestPart("choice2") String choice2) throws JCodecException, IOException {
+                                                              @RequestPart("choice2") String choice2,
+                                                              @RequestPart("uuid") String uuid)
+            throws JCodecException, IOException, InterruptedException {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 //        Long memberNo = 1L;
@@ -42,11 +67,12 @@ public class InteractiveMovieCommandController {
 
         List<String> choices = Arrays.asList(choice1, choice2);
 
-        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovie(videos, title, description, choices, memberNo);
+        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovieWithSubtitle(videos, title, description, choices, memberNo);
 
         return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
 
     }
+
 
 //    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
 //    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video") List<MultipartFile> videos,

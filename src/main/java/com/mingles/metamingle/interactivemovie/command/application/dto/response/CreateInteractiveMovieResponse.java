@@ -11,8 +11,10 @@ public class CreateInteractiveMovieResponse {
 
     private Long shortFormNo;
     private Long interactiveMovieNo;
-    private String thumbnailUrl;
-    private String url;
+    private String thumbnailUrlKr;
+    private String urlKr;
+    private String thumbnailUrlEng;
+    private String urlEng;
     private String choice;
     private int sequence;
 

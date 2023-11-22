@@ -31,17 +31,35 @@ public class ShortFormCommandController {
 //
 //    }
 
+//    // 숏폼 생성
+//    @PostMapping("/short-form-firebase")
+//    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestPart("video") MultipartFile video,
+//                                                                   @RequestPart("title") String title,
+//                                                                   @RequestPart("description") String description,
+//                                                                   @RequestPart("uuid") String uuid) throws Exception {
+//
+//
+////        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
+//
+//        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description, memberNo);
+//
+//        return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
+//
+//    }
+
     // 숏폼 생성
     @PostMapping("/short-form-firebase")
-    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestPart("video") MultipartFile video,
+    public ResponseEntity<ApiResponse> createShortFormWithFirebase(@RequestHeader("Authentication") String token,
+                                                                   @RequestPart("video") MultipartFile video,
                                                                    @RequestPart("title") String title,
-                                                                   @RequestPart("description") String description) throws Exception {
+                                                                   @RequestPart("description") String description,
+                                                                   @RequestPart("uuid") String uuid) throws Exception {
 
+        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
+//        Long memberNo = 1L;
 
-//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-        Long memberNo = 1L;
-
-        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(video, title, description, memberNo);
+        CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(video, title, description, memberNo, Boolean.FALSE);
 
         return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
 
@@ -49,7 +67,7 @@ public class ShortFormCommandController {
 
     // 숏폼 삭제
     @DeleteMapping("/short-form-firebase/{shortFormNo}")
-    public ResponseEntity<ApiResponse> deleteShortFormWithFirebase(@PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> deleteShortFormWithFirebase(@RequestHeader("Authentication") String token, @PathVariable("shortFormNo") Long shortFormNo) {
 
         DeleteShortFormResponse response = shortFormFirebaseService.deleteShortForm(shortFormNo);
 

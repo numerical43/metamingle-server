@@ -8,13 +8,17 @@ import lombok.Setter;
 public class CreateShortFormResponse {
 
     private Long shortFormNo;
-    private String thumbnailUrl;
-    private String url;
+    private String thumbnailUrlKr;
+    private String urlKr;
+    private String thumbnailUrlEng;
+    private String urlEng;
 
-    public CreateShortFormResponse(Long shortFormNo, String thumbnailUrl, String url) {
+    public CreateShortFormResponse(Long shortFormNo, String thumbnailUrlKr, String urlKr, String thumbnailUrlEng, String urlEng) {
         this.shortFormNo = shortFormNo;
-        this.thumbnailUrl = thumbnailUrl;
-        this.url = url;
+        this.thumbnailUrlKr = thumbnailUrlKr;
+        this.urlKr = urlKr;
+        this.thumbnailUrlEng = thumbnailUrlEng;
+        this.urlEng = urlEng;
     }
 
 }
