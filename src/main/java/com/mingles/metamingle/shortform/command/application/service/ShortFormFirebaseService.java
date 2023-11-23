@@ -22,9 +22,11 @@ import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -52,7 +55,7 @@ public class ShortFormFirebaseService {
     @Value("${firebase.storage.bucket-url}")
     private String bucketUrl;
 
-    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.66:8011/mp4").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.19:8011/mp4").build();
 
     private final ShortFormCommandRepository shortFormCommandRepository;
 
@@ -94,7 +97,8 @@ public class ShortFormFirebaseService {
 //    }
 
     // 숏폼 생성
-    public UploadVideo createShortForm(MultipartFile file, String fileKeyName) throws IOException, JCodecException {
+    @Transactional
+    public UploadVideo createShortForm(MultipartFile file, String fileKeyName, String thumbnailUrl) throws IOException, JCodecException {
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
@@ -106,7 +110,6 @@ public class ShortFormFirebaseService {
         inputStream.close();
 
         String url = bucketUrl + fileKeyName + "?alt=media";
-        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
         deleteTempFile();
 
@@ -124,14 +127,20 @@ public class ShortFormFirebaseService {
         SubtitledVideo subtitledVideo = new SubtitledVideo();
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
-//        subtitledVideo.setFileKr(sendToAIForEngSub(file.getResource(), fileKeyName));
-//        subtitledVideo.setFileEng(sendToAIForKrSub(fileKeyName));
-        subtitledVideo.setFileKr(file);
-        subtitledVideo.setFileEng(file);
+        System.out.println("ai 영어 자막 영상 요청");
+        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        System.out.println("ai 영어 자막 영상 응답 완료");
+        System.out.println("ai 한글 자막 영상 요청");
+        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        System.out.println("ai 한글 자막 영상 응답 완료");
+
+        // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일을 같음)
+        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName + ".jpeg");
+
         // 영어 자막 동영상 생성
-        UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
+        UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4", thumbnailUrl);
         // 한글 자막 동영상 생성
-        UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
+        UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4", thumbnailUrl);
 
         MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
@@ -154,37 +163,47 @@ public class ShortFormFirebaseService {
                                            createdShortForm.getUrlEng());
     }
 
-    public MultipartFile sendToAIForEngSub(Resource file, String filename) {
+    @Transactional
+    public MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) throws IOException {
 
         MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
         bodyBuilder.part("file", file);
-        bodyBuilder.part("filename", filename);
+        bodyBuilder.part("file_uuid", fileKeyName);
 
-        return webClient.post()
-                .uri("/en_script_video")
-                .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))  // Use fromMultipartData instead of fromValue
-                .accept(MediaType.MULTIPART_FORM_DATA)
+        System.out.println("영어 자막 영상 처리 중");
+
+        Flux<DataBuffer> responseBody = webClient.post()
+                .uri("/en_script_video/")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
-                .bodyToMono(MultipartFile.class)
-                .block();
+                .bodyToFlux(DataBuffer.class);
+
+        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
-    public MultipartFile sendToAIForKrSub(String filename) {
 
-        Map<String, String> bodyJson = new HashMap<>();
-        bodyJson.put("filename", filename);
+    public MultipartFile sendToAIForKrSub(String fileKeyName) {
 
-        return webClient.post()
-                .uri("/kr_script_video")
-                .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
-                .bodyValue(bodyJson)
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file_uuid", fileKeyName);
+
+        System.out.println("한글 자막 영상 처리 중");
+
+        Flux<DataBuffer> responseBody = webClient.post()
+                .uri("/kr_script_video/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
-                .bodyToMono(MultipartFile.class)
-                .block();
+                .bodyToFlux(DataBuffer.class);
+
+        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
     // 숏폼 삭제
+    @Transactional
     public DeleteShortFormResponse deleteShortForm(Long shortFormNo) {
 
         ShortForm shortForm = shortFormCommandRepository.findById(shortFormNo)
@@ -298,6 +317,27 @@ public class ShortFormFirebaseService {
         return uploadVideo;
     }
 
+    private MultipartFile dataBufferToMultipartFile(String fileKeyName, Flux<DataBuffer> responseBody) {
+        byte[] byteArray = responseBody
+                .collectList()
+                .map(dataBuffers -> {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    dataBuffers.forEach(buffer -> {
+                        try {
+                            byte[] bytes = new byte[buffer.readableByteCount()];
+                            buffer.read(bytes);
+                            outputStream.write(bytes);
+                        } catch (IOException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    });
+                    return outputStream.toByteArray();
+                })
+                .block();
+
+        return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
+    }
+
     // 이미지 파일 이름 생성
     private String createFileName(String fileName) {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -320,6 +360,8 @@ public class ShortFormFirebaseService {
 
     // 썸네일 이미지 생성
     private String createAndUploadThumbnail(MultipartFile file, String fileKeyName) throws IOException, JCodecException {
+        System.out.println("file.getContentType() = " + file.getContentType());
+        System.out.println("file = " + file.getSize());
         FrameGrab grab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(multipartToFile(file)));
         double startSec = 2; // 영상에서 얻고자 하는 시간대 설정
 
@@ -335,7 +377,7 @@ public class ShortFormFirebaseService {
         ImageIO.write(bufferedImage, "jpeg", baos);
         byte[] thumbnailBytes = baos.toByteArray();
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
-        String thumbnailKey = "thumbnails/" + fileKeyName.replace(".mp4", ".jpeg");
+        String thumbnailKey = "thumbnails/" + fileKeyName;
         Blob blob = bucket.create(thumbnailKey, thumbnailBytes, "image/jpeg");
 
         System.out.println("blob thumbnail = " + blob.getMediaLink());

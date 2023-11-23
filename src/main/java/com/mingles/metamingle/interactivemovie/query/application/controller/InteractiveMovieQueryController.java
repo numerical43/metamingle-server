@@ -15,8 +15,9 @@ public class InteractiveMovieQueryController {
     private final InteractiveMovieQueryService interactiveMovieQueryService;
 
     @GetMapping("/interactive-movie/{interactiveMovieNo}")
-    public ResponseEntity<ApiResponse> getInteractiveMovie(@RequestHeader("Authentication") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo,
-                                                           @RequestParam("language") String language) {
+    public ResponseEntity<ApiResponse> getInteractiveMovie(@RequestHeader("Authentication") String token,
+                                                           @PathVariable("interactiveMovieNo") Long interactiveMovieNo,
+                                                           @RequestParam(name = "language", defaultValue = "kr") String language) {
 
         GetInteractiveMovieResponse response = interactiveMovieQueryService.getInteractiveMovie(interactiveMovieNo, language);
 

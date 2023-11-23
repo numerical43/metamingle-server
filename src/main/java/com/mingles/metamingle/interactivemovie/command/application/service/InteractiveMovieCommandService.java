@@ -21,13 +21,16 @@ import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 
 import javax.imageio.ImageIO;
@@ -48,7 +51,7 @@ public class InteractiveMovieCommandService {
     @Value("${firebase.storage.bucket-url}")
     private String bucketUrl;
 
-    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.66:8011/mp4").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("http://192.168.0.19:8011/mp4").build();
 
     private final InteractiveMovieCommandRepository interactiveMovieCommandRepository;
 
@@ -101,7 +104,7 @@ public class InteractiveMovieCommandService {
 
     public List<CreateInteractiveMovieResponse> createInteractiveMovieWithSubtitle(List<MultipartFile> files, String title,
                                                                                    String description, List<String> choices, Long memberNo)
-            throws JCodecException, IOException, InterruptedException {
+                                                                                   throws JCodecException, IOException, InterruptedException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
@@ -122,10 +125,12 @@ public class InteractiveMovieCommandService {
 
             SubtitledVideo subtitledVideo = new SubtitledVideo();
 
-//            subtitledVideo.setFileEng(sendToAIForEngSub(files.get(i).getResource(), fileKeyName));
-//            subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
-            subtitledVideo.setFileKr(files.get(i));
-            subtitledVideo.setFileEng(files.get(i));
+            System.out.println("ai 영어 자막 영상 요청 : 인터랙티브 무비");
+            subtitledVideo.setFileEng(sendToAIForEngSub(files.get(i).getResource(), fileKeyName));
+            System.out.println("ai 영어 자막 영상 응답 완료 : 인터랙티브 무비");
+            System.out.println("ai 한글 자막 영상 요청 : 인터랙티브 무비");
+            subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+            System.out.println("ai 한글 자막 영상 응답 완료 : 인터랙티브 무비");
 
             UploadVideo uploadVideoEng = createInteractiveMovie(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
             UploadVideo uploadVideoKr = createInteractiveMovie(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
@@ -149,29 +154,35 @@ public class InteractiveMovieCommandService {
 
     }
 
-    public MultipartFile sendToAIForEngSub(Resource file, String filename) {
+    public MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) {
+
 
         MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
         bodyBuilder.part("file", file);
-        bodyBuilder.part("filename", filename);
+        bodyBuilder.part("file_uuid", fileKeyName);
 
-        return webClient.post()
-                .uri("/en_script_video")
-                .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))  // Use fromMultipartData instead of fromValue
-                .accept(MediaType.MULTIPART_FORM_DATA)
+        System.out.println("영어 자막 영상 처리 중");
+
+        Flux<DataBuffer> responseBody = webClient.post()
+                .uri("/en_script_video/")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
-                .bodyToMono(MultipartFile.class)
-                .block();
+                .bodyToFlux(DataBuffer.class);
+
+        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
-    public MultipartFile sendToAIForKrSub(String filename) {
+    public MultipartFile sendToAIForKrSub(String fileKeyName) {
 
         Map<String, String> bodyJson = new HashMap<>();
-        bodyJson.put("filename", filename);
+        bodyJson.put("filename", fileKeyName);
+
+        System.out.println("한글 자막 영상 처리 중 : 인터랙티브 무비");
 
         return webClient.post()
-                .uri("/kr_script_video")
+                .uri("/kr_script_video/")
                 .contentType(MediaType.MULTIPART_FORM_DATA)  // Set the content type here
                 .bodyValue(bodyJson)
                 .retrieve()
@@ -193,6 +204,28 @@ public class InteractiveMovieCommandService {
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
         return new UploadVideo(url, thumbnailUrl);
+    }
+
+    // Flux<DataBuffer>를 MultipartFile로 변환
+    private MultipartFile dataBufferToMultipartFile(String fileKeyName, Flux<DataBuffer> responseBody) {
+        byte[] byteArray = responseBody
+                .collectList()
+                .map(dataBuffers -> {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    dataBuffers.forEach(buffer -> {
+                        try {
+                            byte[] bytes = new byte[buffer.readableByteCount()];
+                            buffer.read(bytes);
+                            outputStream.write(bytes);
+                        } catch (IOException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    });
+                    return outputStream.toByteArray();
+                })
+                .block();
+
+        return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
     }
 
     // 이미지 파일 이름 생성
