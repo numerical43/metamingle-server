@@ -19,7 +19,7 @@ public class QuizRankQueryController {
     private final QuizRankQueryService quizRankQueryService;
 
     @GetMapping("/quiz-rank")
-    public ResponseEntity<ApiResponse> getTop12QuizList() {
+    public ResponseEntity<ApiResponse> getTop12QuizList(@RequestHeader("Authentication") String token) {
 
         List<QuizRankQueryResponse> responseList = quizRankQueryService.getQuizTop12List();
 
