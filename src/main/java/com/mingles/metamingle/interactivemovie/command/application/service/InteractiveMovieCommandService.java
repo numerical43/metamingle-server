@@ -132,8 +132,10 @@ public class InteractiveMovieCommandService {
             subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
             System.out.println("ai 한글 자막 영상 응답 완료 : 인터랙티브 무비");
 
-            UploadVideo uploadVideoEng = createInteractiveMovie(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4");
-            UploadVideo uploadVideoKr = createInteractiveMovie(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4");
+            String thumbnailUrl = shortForm.getThumbnailUrlKr();
+
+            UploadVideo uploadVideoEng = createInteractiveMovie(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4", thumbnailUrl);
+            UploadVideo uploadVideoKr = createInteractiveMovie(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4", thumbnailUrl);
 
             InteractiveMovie interactiveMovieEntity = new InteractiveMovie(title, uploadVideoKr.getUrl(), uploadVideoKr.getThumbnailUrl(),
                     uploadVideoEng.getUrl(), uploadVideoEng.getThumbnailUrl(), description, choices.get(i - 1), new Date(),
@@ -177,7 +179,7 @@ public class InteractiveMovieCommandService {
     public MultipartFile sendToAIForKrSub(String fileKeyName) {
 
         Map<String, String> bodyJson = new HashMap<>();
-        bodyJson.put("filename", fileKeyName);
+        bodyJson.put("file_uuid", fileKeyName);
 
         System.out.println("한글 자막 영상 처리 중 : 인터랙티브 무비");
 
@@ -190,8 +192,8 @@ public class InteractiveMovieCommandService {
                 .block();
     }
 
-    private UploadVideo createInteractiveMovie(MultipartFile file, String fileKeyName)
-                                                    throws JCodecException, IOException {
+    private UploadVideo createInteractiveMovie(MultipartFile file, String fileKeyName, String thumbnailUrl)
+                                                    throws IOException {
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
@@ -200,8 +202,6 @@ public class InteractiveMovieCommandService {
         inputStream.close();
 
         String url = bucketUrl + fileKeyName + "?alt=media";
-
-        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
 
         return new UploadVideo(url, thumbnailUrl);
     }
