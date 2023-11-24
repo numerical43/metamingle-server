@@ -49,15 +49,13 @@ pipeline {
                         // 기존 컨테이너를 중지하고 제거
                         def dockerPsOutput = bat(script: "docker ps -a --filter name=${dockerContainerName}", returnStdout: true).trim()
 
-                        bat(script: "echo docker ps -a --filter name=${dockerContainerName}"
-
-                       if (dockerPsOutput.contains(dockerContainerName)) {
-                           // 기존 컨테이너를 중지하고 제거
-                           bat "docker stop ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
-                           bat "docker rm ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
-                       } else {
-                           echo "컨테이너가 없습니다."
-                       }
+                        if (dockerPsOutput.contains(dockerContainerName)) {
+                            // 기존 컨테이너를 중지하고 제거
+                            bat "docker stop ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
+                            bat "docker rm ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
+                        } else {
+                            echo "컨테이너가 없습니다."
+                        }
 
                         // DockerHub에 생성한 이미지 push
                         bat "docker push ${dockerImageName}"
