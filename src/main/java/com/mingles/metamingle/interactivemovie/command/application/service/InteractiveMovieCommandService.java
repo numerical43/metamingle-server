@@ -12,6 +12,7 @@ import com.mingles.metamingle.interactivemovie.command.domain.aggregate.vo.Short
 import com.mingles.metamingle.interactivemovie.command.domain.repository.InteractiveMovieCommandRepository;
 import com.mingles.metamingle.interactivemovie.command.domain.service.InteractiveMovieDomainService;
 import com.mingles.metamingle.interactivemovie.command.infrastructure.service.ApiShortFormService;
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.FrameGrab;
@@ -66,10 +67,9 @@ public class InteractiveMovieCommandService {
     private final WebClient webClient = WebClient.builder().clientConnector(connector).baseUrl("http://192.168.0.59:8011/mp4").build();
 
     private final InteractiveMovieCommandRepository interactiveMovieCommandRepository;
-
     private final InteractiveMovieDomainService interactiveMovieDomainService;
-
     private final ApiShortFormService apiShortFormService;
+    private final QuizCommandService quizCommandService;
 
 //    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices, Long memberNo)
 //            throws JCodecException, IOException {
@@ -139,10 +139,13 @@ public class InteractiveMovieCommandService {
 
         System.out.println("인터랙티브 무비 생성 & 저장 완료");
 
+        quizCommandService.updateQuizWithUUID(response.get(0).getShortFormNo(), UUID.fromString(uuid));
+
         return response;
 
     }
 
+    @Transactional
     public CreateInteractiveMovieResponse createInteractiveMovieByte(byte[] fileBytes, String fileName, String title,
                                                                  String description, String choice,
                                                                  int index, String thumbnailUrl, ShortFormNoVO shortFormNoVO,
@@ -205,6 +208,7 @@ public class InteractiveMovieCommandService {
         return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
+    @Transactional
     public MultipartFile sendToAIForKrSub(String fileKeyName) {
 
         MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
