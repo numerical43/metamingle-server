@@ -26,7 +26,6 @@ public class InteractiveMovieCommandController {
 
     private final InteractiveMovieCommandService interactiveMovieCommandService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final QuizCommandService quizCommandService;
 
 //    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
 //    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
@@ -73,9 +72,7 @@ public class InteractiveMovieCommandController {
         List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService
                 .createInteractiveMovieWithSubtitle(videos, videosName, uuid, title, description, choices, memberNo);
 
-        quizCommandService.updateQuizWithUUID(response.get(0).getShortFormNo(), UUID.fromString(uuid));
-
-        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
+        return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", "서버 전송 완료"));
 
     }
 
