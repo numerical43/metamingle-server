@@ -24,7 +24,7 @@ public class ScenarioCommandInfraService {
 
     private final ScenarioCommandService scenarioCommandService;
     private final QuizCommandService quizCommandService;
-    private final WebClient webClient = WebClient.builder().baseUrl("https://67ec-210-95-145-225.ngrok-free.app/").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("https://192.168.0.19:8011").build();
 
     //SSE 를 이용한 텍스트 실시간 스트리밍
     public Flux<ServerSentEvent<String>> getStreamingData(String message) {
@@ -112,6 +112,7 @@ public class ScenarioCommandInfraService {
         bodyJson.put("text", text);
 
         QuizCommandInfraResponse quiz = webClient.post()
+                .uri("chatbot/quiz_gen")
                 .bodyValue(bodyJson)
                 .retrieve()
                 .bodyToMono(QuizCommandInfraResponse.class)
