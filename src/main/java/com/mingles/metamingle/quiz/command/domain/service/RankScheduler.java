@@ -15,7 +15,7 @@ public class RankScheduler {
     private final QuizCommandService quizCommandService;
     private final ShortFormRankService shortFormRankService;
 
-    @Scheduled(cron = "0 0 3 * * *")
+//    @Scheduled(cron = "0 0 3 * * *")
     public void insertData() {
         //isQuiz = no / shortFormNo = null 인 퀴즈 테이블 drop
         quizCommandService.deleteQuizFromScheduler();

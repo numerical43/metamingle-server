@@ -5,6 +5,7 @@ import com.mingles.metamingle.common.ApiResponse;
 import com.mingles.metamingle.common.ApiStatus;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.command.application.service.InteractiveMovieCommandService;
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.JCodecException;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class InteractiveMovieCommandController {
 
     private final InteractiveMovieCommandService interactiveMovieCommandService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final QuizCommandService quizCommandService;
 
 //    @PostMapping(value = "/interactive-movie", consumes = {"multipart/form-data"})
 //    public ResponseEntity<ApiResponse> createInteractiveMovie(@RequestPart("video1") MultipartFile video1,
@@ -68,6 +71,8 @@ public class InteractiveMovieCommandController {
         List<String> choices = Arrays.asList(choice1, choice2);
 
         List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovieWithSubtitle(videos, title, description, choices, memberNo);
+
+        quizCommandService.updateQuizWithUUID(response.get(0).getShortFormNo(), UUID.fromString(uuid));
 
         return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
 

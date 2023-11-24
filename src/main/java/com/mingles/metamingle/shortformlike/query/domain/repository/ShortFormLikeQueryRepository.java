@@ -17,9 +17,10 @@ public interface ShortFormLikeQueryRepository extends JpaRepository<ShortFormLik
 
     Optional<ShortFormLike> findShortFormLikeByShortFormLikeVO(ShortFormLikeVO shortFormLikeVO);
 
-    @Query("SELECT sflike.shortFormLikeVO.shortFormNo, COUNT(sflike) as likeCount " +
+    @Query(value = "SELECT sflike.shortFormLikeVO.shortFormNo, COUNT(sflike) as likeCount " +
             "FROM ShortFormLike sflike " +
             "GROUP BY sflike.shortFormLikeVO.shortFormNo " +
-            "ORDER BY likeCount DESC ")
+            "ORDER BY likeCount DESC " +
+            "LIMIT 12", nativeQuery = true)
     List<Object[]> findTop12LikedShortForms();
 }
