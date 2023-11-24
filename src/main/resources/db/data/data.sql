@@ -1,47 +1,47 @@
--- -- tbl_short_form
--- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url, title, url)
+-- tbl_short_form
+-- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url_kr, thumbnail_url_eng_kr, thumbnail_url_kr, thumbnail_url_eng_eng, title, url)
 -- VALUES (1, '2023-10-20T04:43:29.783+00:00', '첫번째 영상 설명', FALSE, 1,
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2F9e4e1fa1-ffd4-4c51-a828-70bbadc57e6a20231103150452.jpeg?alt=media', '이건 제목입니다.',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/9e4e1fa1-ffd4-4c51-a828-70bbadc57e6a20231103150452.mp4?alt=media');
 --
--- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url, title, url)
+-- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url_kr, thumbnail_url_eng_kr, thumbnail_url_kr, thumbnail_url_eng_eng, title, url)
 -- VALUES (2, '2023-10-20T04:43:29.783+00:00', '두번째 영상 설명', FALSE, 1,
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2Ff1088f68-e0a4-4a4b-82ea-b73528e098ec20231102180049.jpeg?alt=media', 'JEMOK',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/f1088f68-e0a4-4a4b-82ea-b73528e098ec20231102180049.mp4?alt=media');
 --
--- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url, title, url)
+-- INSERT INTO tbl_short_form(short_form_no, date, description, is_interactive, member_no, thumbnail_url_kr, thumbnail_url_eng, title, url)
 -- VALUES (3, '2023-10-20T04:43:29.783+00:00', '인터랙티브 무비 설명설명설명명며여명며염', TRUE, 1,
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2Ff293f9a8-3606-4c24-91c4-b99c441049b320231112192510.jpeg?alt=media', '인터랙티브 무비 제목!',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/f293f9a8-3606-4c24-91c4-b99c441049b320231112192510.mp4?alt=media');
---
--- -- tbl_interactive_movie
--- INSERT INTO tbl_interactive_movie(interactive_movie_no, choice, date, description, member_no, sequence, short_form_no, title, thumbnail_url_kr,url_kr, thumbnail_url_eng, url_eng)
+
+-- tbl_interactive_movie
+-- INSERT INTO tbl_interactive_movie(interactive_movie_no, choice, date, description, member_no, sequence, short_form_no, title, thumbnail_url_kr, thumbnail_url_eng,url_kr, thumbnail_url_kr, thumbnail_url_eng, url_eng)
 -- VALUES (1, '선택지1111111111', '2023-10-20T04:43:29.783+00:00', '인터랙티브 무비 설명설명설명명며여명며염', 1, 1, 3, '인터랙티브 무비 제목!',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2F8b183d6d-0f54-41fb-8d1b-dd7a2092308320231112192515.jpeg?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/8b183d6d-0f54-41fb-8d1b-dd7a2092308320231112192515.mp4?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2Ff293f9a8-3606-4c24-91c4-b99c441049b320231112192510.jpeg?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/f293f9a8-3606-4c24-91c4-b99c441049b320231112192510.mp4?alt=media');
 --
--- INSERT INTO tbl_interactive_movie(interactive_movie_no, choice, date, description, member_no, sequence, short_form_no, title, thumbnail_url_kr, url_kr, thumbnail_url_eng, url_eng)
+-- INSERT INTO tbl_interactive_movie(interactive_movie_no, choice, date, description, member_no, sequence, short_form_no, title, thumbnail_url_kr, thumbnail_url_eng_kr, url_kr, thumbnail_url_kr, thumbnail_url_eng_eng, url_eng)
 -- VALUES (2, '선택지2222222222', '2023-10-20T04:43:29.783+00:00', '인터랙티브 무비 설명설명설명명며여명며염', 1, 2, 3, '인터랙티브 무비 제목!',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2Faf1519ff-19fa-4dea-999b-51d21371798820231102143428.jpeg?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/af1519ff-19fa-4dea-999b-51d21371798820231102143428.mp4?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/thumbnails%2Ff293f9a8-3606-4c24-91c4-b99c441049b320231112192510.jpeg?alt=media',
 --         'https://firebasestorage.googleapis.com/v0/b/meta-mingle.appspot.com/o/f293f9a8-3606-4c24-91c4-b99c441049b320231112192510.mp4?alt=media');
---
+
 -- -- tbl_script
-INSERT INTO tbl_script(script_no, member_no, short_form_no, member_content, ai_content, upload_date)
-VALUES (1, 1, 1, 'member content', 'ai content', '2023-10-10');
---
--- -- tbl_member
--- INSERT INTO tbl_member(member_no, email, password, nickname, role)
--- VALUES
---     (1, 'test1@gmail.com', 'password', '닉네임1', 'ROLE_MEMBER'),
---     (2, 'test2@gmail.com', 'password', '닉네임2', 'ROLE_MEMBER'),
---     (3, 'test3@gmail.com', 'password', '닉네임3', 'ROLE_MEMBER'),
---     (4, 'test4@gmail.com', 'password', '닉네임4', 'ROLE_MEMBER'),
---     (5, 'test5@gmail.com', 'password', '닉네임5', 'ROLE_MEMBER');
---
+-- INSERT INTO tbl_script(script_no, member_no, short_form_no, member_content, ai_content, upload_date)
+-- VALUES (1, 1, 1, 'member content', 'ai content', '2023-10-10');
+
+-- tbl_member
+INSERT INTO tbl_member(member_no, email, password, nickname, role)
+VALUES
+    (1, 'test1@gmail.com', 'password', '닉네임1', 'ROLE_MEMBER'),
+    (2, 'test2@gmail.com', 'password', '닉네임2', 'ROLE_MEMBER'),
+    (3, 'test3@gmail.com', 'password', '닉네임3', 'ROLE_MEMBER'),
+    (4, 'test4@gmail.com', 'password', '닉네임4', 'ROLE_MEMBER'),
+    (5, 'test5@gmail.com', 'password', '닉네임5', 'ROLE_MEMBER');
+
 -- -- QUIZ scheduler 테스트
 -- INSERT INTO tbl_quiz (korean, english, isquiz)
 -- VALUES
@@ -70,32 +70,32 @@ VALUES (1, 1, 1, 'member content', 'ai content', '2023-10-10');
 --     ('Korean23', 'English23', 'yes'),
 --     ('Korean24', 'English24', 'yes');
 --
--- -- INSERT INTO tbl_short_form (title, thumbnail_url, url, description, date, is_interactive)
--- -- VALUES
--- --     ('Title1', 'Thumbnail1', 'Url1', 'Description1', '2023-11-20', false),
--- --     ('Title2', 'Thumbnail2', 'Url2', 'Description2', '2023-11-20', true),
--- --     ('Title3', 'Thumbnail3', 'Url3', 'Description3', '2023-11-20', false),
--- --     ('Title4', 'Thumbnail4', 'Url4', 'Description4', '2023-11-20', true),
--- --     ('Title5', 'Thumbnail5', 'Url5', 'Description5', '2023-11-20', false),
--- --     ('Title6', 'Thumbnail6', 'Url6', 'Description6', '2023-11-20', true),
--- --     ('Title7', 'Thumbnail7', 'Url7', 'Description7', '2023-11-20', false),
--- --     ('Title8', 'Thumbnail8', 'Url8', 'Description8', '2023-11-20', true),
--- --     ('Title9', 'Thumbnail9', 'Url9', 'Description9', '2023-11-20', false),
--- --     ('Title10', 'Thumbnail10', 'Url10', 'Description10', '2023-11-20', true),
--- --     ('Title11', 'Thumbnail11', 'Url11', 'Description11', '2023-11-20', false),
--- --     ('Title12', 'Thumbnail12', 'Url12', 'Description12', '2023-11-20', true),
--- --     ('Title13', 'Thumbnail13', 'Url13', 'Description13', '2023-11-20', false),
--- --     ('Title14', 'Thumbnail14', 'Url14', 'Description14', '2023-11-20', true),
--- --     ('Title15', 'Thumbnail15', 'Url15', 'Description15', '2023-11-20', false),
--- --     ('Title16', 'Thumbnail16', 'Url16', 'Description16', '2023-11-20', true),
--- --     ('Title17', 'Thumbnail17', 'Url17', 'Description17', '2023-11-20', false),
--- --     ('Title18', 'Thumbnail18', 'Url18', 'Description18', '2023-11-20', true),
--- --     ('Title19', 'Thumbnail19', 'Url19', 'Description19', '2023-11-20', false),
--- --     ('Title20', 'Thumbnail20', 'Url20', 'Description20', '2023-11-20', true),
--- --     ('Title21', 'Thumbnail21', 'Url21', 'Description21', '2023-11-20', true),
--- --     ('Title22', 'Thumbnail22', 'Url22', 'Description22', '2023-11-20', true),
--- --     ('Title23', 'Thumbnail23', 'Url23', 'Description23', '2023-11-20', true),
--- --     ('Title24', 'Thumbnail24', 'Url24', 'Description24', '2023-11-20', true);
+-- INSERT INTO tbl_short_form (title, thumbnail_url_kr, thumbnail_url_eng, url, description, date, is_interactive)
+-- VALUES
+--     ('Title1', 'Thumbnail1', 'Url1', 'Description1', '2023-11-20', false),
+--     ('Title2', 'Thumbnail2', 'Url2', 'Description2', '2023-11-20', true),
+--     ('Title3', 'Thumbnail3', 'Url3', 'Description3', '2023-11-20', false),
+--     ('Title4', 'Thumbnail4', 'Url4', 'Description4', '2023-11-20', true),
+--     ('Title5', 'Thumbnail5', 'Url5', 'Description5', '2023-11-20', false),
+--     ('Title6', 'Thumbnail6', 'Url6', 'Description6', '2023-11-20', true),
+--     ('Title7', 'Thumbnail7', 'Url7', 'Description7', '2023-11-20', false),
+--     ('Title8', 'Thumbnail8', 'Url8', 'Description8', '2023-11-20', true),
+--     ('Title9', 'Thumbnail9', 'Url9', 'Description9', '2023-11-20', false),
+--     ('Title10', 'Thumbnail10', 'Url10', 'Description10', '2023-11-20', true),
+--     ('Title11', 'Thumbnail11', 'Url11', 'Description11', '2023-11-20', false),
+--     ('Title12', 'Thumbnail12', 'Url12', 'Description12', '2023-11-20', true),
+--     ('Title13', 'Thumbnail13', 'Url13', 'Description13', '2023-11-20', false),
+--     ('Title14', 'Thumbnail14', 'Url14', 'Description14', '2023-11-20', true),
+--     ('Title15', 'Thumbnail15', 'Url15', 'Description15', '2023-11-20', false),
+--     ('Title16', 'Thumbnail16', 'Url16', 'Description16', '2023-11-20', true),
+--     ('Title17', 'Thumbnail17', 'Url17', 'Description17', '2023-11-20', false),
+--     ('Title18', 'Thumbnail18', 'Url18', 'Description18', '2023-11-20', true),
+--     ('Title19', 'Thumbnail19', 'Url19', 'Description19', '2023-11-20', false),
+--     ('Title20', 'Thumbnail20', 'Url20', 'Description20', '2023-11-20', true),
+--     ('Title21', 'Thumbnail21', 'Url21', 'Description21', '2023-11-20', true),
+--     ('Title22', 'Thumbnail22', 'Url22', 'Description22', '2023-11-20', true),
+--     ('Title23', 'Thumbnail23', 'Url23', 'Description23', '2023-11-20', true),
+--     ('Title24', 'Thumbnail24', 'Url24', 'Description24', '2023-11-20', true);
 --
 -- INSERT INTO tbl_short_form_like (member_no, short_form_no)
 -- VALUES
@@ -167,19 +167,19 @@ VALUES (1, 1, 1, 'member content', 'ai content', '2023-10-10');
 --     ('Korean22', 'English22', 'yes', 22),
 --     ('Korean23', 'English23', 'yes', 23),
 --     ('Korean24', 'English24', 'yes', 24);
---
---
--- INSERT INTO tbl_quiz_rank (rank_no, date, korean, english, short_form_no)
--- VALUES
---     (1, '2023-11-21', '한국어1', 'English1', 1),
---     (2, '2023-11-21', '한국어2', 'English2', 2),
---     (3, '2023-11-21', '한국어3', 'English3', 3),
---     (4, '2023-11-21', '한국어4', 'English4', 4),
---     (5, '2023-11-21', '한국어5', 'English5', 5),
---     (6, '2023-11-21', '한국어6', 'English6', 6),
---     (7, '2023-11-21', '한국어7', 'English7', 7),
---     (8, '2023-11-21', '한국어8', 'English8', 8),
---     (9, '2023-11-21', '한국어9', 'English9', 9),
---     (10, '2023-11-21', '한국어10', 'English10', 10),
---     (11, '2023-11-21', '한국어11`', 'English11', 11),
---     (12, '2023-11-21', '한국어12`', 'English12', 12);
+
+
+INSERT INTO tbl_quiz_rank (rank_no, date, korean, english, short_form_no)
+VALUES
+    (1, '2023-11-21', '한국에서 "당근이세요?"라는 말을 사람들이 주로 어떤 상황에서 쓸까요?', 'In what situation do people mainly use the phrase "당근이세요?"', 1),
+    (2, '2023-11-21', '한국 카페에 가서 먼저 확인해야하는 것은 무엇일까요?', 'What is the first thing to check when you go to a cafe?', 2),
+    (3, '2023-11-21', '한국에서 원하지 않는 버스가 정류장에 왔을 때 어떤 행동을 해야할까요?', 'What should you do when a bus you don''t want comes to the bus stop?', 3),
+    (4, '2023-11-21', '최애 라는 뜻을 가진 미국 슬랭은 무엇일까요?', 'What is the American slang that means "favorite"?', 4),
+    (5, '2023-11-21', '미국에서도 지역 특성에 따른 방언이 존재한다는 사실, 사실일까요?', ' Is it true that there are dialects in the U.S. depending on the regional characteristics?', 5),
+    (6, '2023-11-21', '미국에서 남자들이 비가 와도 우산을 사용하지 않는 이유는 무엇일까요?', 'What is the reason men in America don''t use umbrellas even when it''s raining?', 6),
+    (7, '2023-11-21', '미국에서 ''인스타각''을 표현하는 슬랭은 무엇일까요?', 'What is the slang used to describe ''Instagram worthy'' in America?', 7),
+    (8, '2023-11-21', '미국의 할로윈에서 아이들이 주로 외치는 구절은 무엇일까요?', 'What is the phrase that children usually shout on Halloween in America?', 8),
+    (9, '2023-11-21', '미국에서 "잘했다" 라는 표현을 반려견에게 하면 어떤 말을 사용할까요?', 'What phrase do they use in America to tell a pet dog "Well done"?', 9),
+    (10, '2023-11-21', '한국에서 악수를 할 때 연장자와 어린 사람 중 누가 먼저 악수를 해야 할까요?', 'In Korea, who should shake hands first, the elder or the younger person?', 10),
+    (11, '2023-11-21', '미국에서는 하루에 보통 몇 번 양치를 하나요?', 'How many times a day do people usually brush their teeth in America?', 11),
+    (12, '2023-11-21', '한국에서 카페에 가면 사람들이 주로 어떤 커피를 마시나요?', 'What type of coffee do people usually drink in a cafe in Korea?', 12);
