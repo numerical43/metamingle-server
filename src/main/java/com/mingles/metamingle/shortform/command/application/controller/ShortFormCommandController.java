@@ -29,8 +29,6 @@ public class ShortFormCommandController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final QuizCommandService quizCommandService;
-
     // 숏폼 생성
 //    @PostMapping("/short-form")
 //    public ResponseEntity<ApiResponse> createShortForm(@RequestPart("video") MultipartFile video,
@@ -65,7 +63,7 @@ public class ShortFormCommandController {
                                                                    @RequestPart("video") MultipartFile video,
                                                                    @RequestPart("title") String title,
                                                                    @RequestPart("description") String description,
-                                                                   @RequestPart("uuid") String uuid) throws JCodecException, IOException, InterruptedException {
+                                                                   @RequestPart("uuid") String uuid) throws JCodecException, IOException {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 
@@ -73,11 +71,10 @@ public class ShortFormCommandController {
         byte[] videoBytes = video.getBytes();
         String fileName = video.getOriginalFilename();
 
-        CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(videoBytes, fileName, title, description, memberNo, Boolean.FALSE);
+        CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(videoBytes, fileName, uuid, title,
+                                                                                                description, memberNo, Boolean.FALSE);
 
-        quizCommandService.updateQuizWithUUID(response.getShortFormNo(), UUID.fromString(uuid));
-
-        return ResponseEntity.ok(ApiResponse.success("전송 성공", null));
+        return ResponseEntity.ok(ApiResponse.success("전송 성공", "서버 전송 완료"));
 
 //        ResponseEntity.ok(ApiResponse.success("전송 성공", null));
 //

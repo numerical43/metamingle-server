@@ -1,5 +1,6 @@
 package com.mingles.metamingle.shortform.command.application.service;
 
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import com.google.cloud.storage.Blob;
@@ -76,6 +77,8 @@ public class ShortFormFirebaseService {
 
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
 
+    private final QuizCommandService quizCommandService;
+
 //    // 숏폼 생성
 //    @Transactional
 //    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
@@ -131,7 +134,7 @@ public class ShortFormFirebaseService {
     // ai 서버 자막
     @Async
     @Transactional
-    public CreateShortFormResponse createShortFormWithSubtitle(byte[] fileBytes, String fileName,
+    public CreateShortFormResponse createShortFormWithSubtitle(byte[] fileBytes, String fileName, String uuid,
                                                                String title, String description,
                                                                Long memberNo, Boolean isInteractive)
             throws IOException, JCodecException {
@@ -177,16 +180,18 @@ public class ShortFormFirebaseService {
 
         System.out.println("숏폼 생성 & 저장 완료");
 
+        quizCommandService.updateQuizWithUUID(createdShortForm.getShortFormNo(), UUID.fromString(uuid));
+
         return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
                                            createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
                                            createdShortForm.getUrlEng());
     }
 
     @Transactional
-    public CreateShortFormResponse createShortFormWithSubtitleWithInteractiveMovie(byte[] fileBytes, String fileName,
-                                                               String title, String description,
-                                                               Long memberNo, Boolean isInteractive)
-            throws IOException, JCodecException {
+    public CreateShortFormResponse createShortFormWithSubtitleWithInteractiveMovie(byte[] fileBytes, String fileName, String uuid,
+                                                                                  String title, String description,
+                                                                                  Long memberNo, Boolean isInteractive)
+                                                                                  throws IOException, JCodecException {
 
         InputStream inputStream = new ByteArrayInputStream(fileBytes);
         MultipartFile file = new MockMultipartFile("file", fileName, "video/mp4", inputStream);

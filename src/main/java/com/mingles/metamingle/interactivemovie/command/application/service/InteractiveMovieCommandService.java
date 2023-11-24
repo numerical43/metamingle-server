@@ -115,13 +115,13 @@ public class InteractiveMovieCommandService {
 //    }
     @Async
     @Transactional
-    public List<CreateInteractiveMovieResponse> createInteractiveMovieWithSubtitle(List<byte[]> files, List<String> fileNames, String title,
-                                                                                   String description, List<String> choices, Long memberNo)
+    public List<CreateInteractiveMovieResponse> createInteractiveMovieWithSubtitle(List<byte[]> files, List<String> fileNames, String uuid,
+                                                                                   String title, String description, List<String> choices, Long memberNo)
                                                                                    throws JCodecException, IOException, InterruptedException {
 
         List<CreateInteractiveMovieResponse> response = new ArrayList<>();
 
-        CreateShortFormResponse shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), fileNames.get(0),
+        CreateShortFormResponse shortForm = apiShortFormService.createShortFormWithInteractiveMovie(files.get(0), fileNames.get(0), uuid,
                                                                                                     title, description, memberNo, Boolean.TRUE);
         response.add(new CreateInteractiveMovieResponse(shortForm.getShortFormNo(), null,
                 shortForm.getThumbnailUrlKr(), shortForm.getUrlKr(),

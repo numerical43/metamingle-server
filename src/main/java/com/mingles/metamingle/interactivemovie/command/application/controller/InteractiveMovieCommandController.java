@@ -70,7 +70,8 @@ public class InteractiveMovieCommandController {
         List<String> videosName = Arrays.asList(video1.getOriginalFilename(), video2.getOriginalFilename(), video3.getOriginalFilename());
         List<String> choices = Arrays.asList(choice1, choice2);
 
-        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovieWithSubtitle(videos, videosName, title, description, choices, memberNo);
+        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService
+                .createInteractiveMovieWithSubtitle(videos, videosName, uuid, title, description, choices, memberNo);
 
         quizCommandService.updateQuizWithUUID(response.get(0).getShortFormNo(), UUID.fromString(uuid));
 
