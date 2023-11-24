@@ -72,11 +72,8 @@ public class ShortFormFirebaseService {
     private final WebClient webClient = WebClient.builder().clientConnector(connector).baseUrl("http://192.168.0.59:8011/mp4").build();
 
     private final ShortFormCommandRepository shortFormCommandRepository;
-
     private final ShortFormCommandDomainService shortFormCommandDomainService;
-
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
-
     private final QuizCommandService quizCommandService;
 
 //    // 숏폼 생성
@@ -260,6 +257,7 @@ public class ShortFormFirebaseService {
     }
 
 
+    @Transactional
     public MultipartFile sendToAIForKrSub(String fileKeyName) {
 
         MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
