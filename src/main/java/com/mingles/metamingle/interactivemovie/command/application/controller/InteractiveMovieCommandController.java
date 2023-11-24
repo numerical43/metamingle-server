@@ -58,16 +58,16 @@ public class InteractiveMovieCommandController {
                                                               @RequestPart("choice1") String choice1,
                                                               @RequestPart("choice2") String choice2,
                                                               @RequestPart("uuid") String uuid)
-            throws JCodecException, IOException, InterruptedException {
+                                                              throws JCodecException, IOException, InterruptedException {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 //        Long memberNo = 1L;
 
-        List<MultipartFile> videos = Arrays.asList(video1, video2, video3);
-
+        List<byte[]> videos = Arrays.asList(video1.getBytes(), video2.getBytes(), video3.getBytes());
+        List<String> videosName = Arrays.asList(video1.getOriginalFilename(), video2.getOriginalFilename(), video3.getOriginalFilename());
         List<String> choices = Arrays.asList(choice1, choice2);
 
-        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovieWithSubtitle(videos, title, description, choices, memberNo);
+        List<CreateInteractiveMovieResponse> response = interactiveMovieCommandService.createInteractiveMovieWithSubtitle(videos, videosName, title, description, choices, memberNo);
 
         return ResponseEntity.ok(new ApiResponse(ApiStatus.SUCCESS, "인터랙티브 무비 생성 성공", response));
 
