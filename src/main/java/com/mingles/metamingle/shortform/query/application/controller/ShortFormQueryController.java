@@ -20,7 +20,8 @@ public class ShortFormQueryController {
 
     // 숏폼 리스트 조회
     @GetMapping("/short-form")
-    public ResponseEntity<ApiResponse> getShortFormList(@RequestHeader("Authentication") String token, @RequestParam("language")String language) {
+    public ResponseEntity<ApiResponse> getShortFormList(@RequestHeader("Authentication") String token,
+                                                        @RequestParam(name = "language", defaultValue = "kr")String language) {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 //        Long memberNo = 1L;
@@ -32,8 +33,9 @@ public class ShortFormQueryController {
 
     // 숏폼 하나 상세 조회
     @GetMapping("/short-form/{shortFormNo}")
-    public ResponseEntity<ApiResponse> getShortForm(@RequestHeader("Authentication") String token, @PathVariable("shortFormNo") Long shortFormNo,
-                                                    @RequestParam("language") String language) {
+    public ResponseEntity<ApiResponse> getShortForm(@RequestHeader("Authentication") String token,
+                                                    @PathVariable("shortFormNo") Long shortFormNo,
+                                                    @RequestParam(name = "language", defaultValue = "kr") String language) {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 //        Long memberNo = 1L;
