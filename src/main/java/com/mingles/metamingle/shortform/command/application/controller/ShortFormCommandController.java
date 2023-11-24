@@ -3,6 +3,7 @@ package com.mingles.metamingle.shortform.command.application.controller;
 import com.google.protobuf.Api;
 import com.mingles.metamingle.auth.JwtTokenProvider;
 import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,8 @@ public class ShortFormCommandController {
     private final ShortFormFirebaseService shortFormFirebaseService;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final QuizCommandService quizCommandService;
 
     // 숏폼 생성
 //    @PostMapping("/short-form")
@@ -68,6 +74,8 @@ public class ShortFormCommandController {
         String fileName = video.getOriginalFilename();
 
         CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(videoBytes, fileName, title, description, memberNo, Boolean.FALSE);
+
+        quizCommandService.updateQuizWithUUID(response.getShortFormNo(), UUID.fromString(uuid));
 
         return ResponseEntity.ok(ApiResponse.success("전송 성공", null));
 

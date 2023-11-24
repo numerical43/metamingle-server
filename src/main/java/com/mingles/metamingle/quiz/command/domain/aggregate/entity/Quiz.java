@@ -40,4 +40,8 @@ public class Quiz {
         this.shortFormNoVO = shortFormNoVO;
     }
 
+    public void update(Long shortFormNo) {
+        this.shortFormNoVO = new ShortFormNoVO(shortFormNo);
+    }
+
 }
