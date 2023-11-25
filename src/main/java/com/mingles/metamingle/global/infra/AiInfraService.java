@@ -76,19 +76,19 @@ public class AiInfraService {
     // 배경
     public String getBackGroundImage(String message) {
 
-        Map<String, String> bodyJson = new HashMap<>();
-        bodyJson.put("text", message);
+//        Map<String, String> bodyJson = new HashMap<>();
+//        bodyJson.put("text", message);
+//
+//        BgImageResponse background = webClient.post()
+//                .uri("/hatbot/image_connect")
+//                .bodyValue(bodyJson)
+//                .retrieve()
+//                .bodyToMono(BgImageResponse.class)
+//                .block();
+//
+//        return background.getPlace();
 
-        BgImageResponse background = webClient.post()
-                .uri("/hatbot/image_connect")
-                .bodyValue(bodyJson)
-                .retrieve()
-                .bodyToMono(BgImageResponse.class)
-                .block();
-
-        return background.getPlace();
-
-//        return "campus";
+        return "campus";
     }
 
     // BGM
