@@ -29,9 +29,9 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                withCredentials([file(credentialsId: 'deploy-dir', variable: 'deployDir')]),
-                withCredentials([file(credentialsId: 'docker-image-name', variable: 'dockerImageName')]),
-                withCredentials([file(credentialsId: 'docker-container-name', variable: 'dockerContainerName')])
+                withCredentials([file(credentialsId: 'deploy-dir', variable: 'deployDir')],
+                                [file(credentialsId: 'docker-image-name', variable: 'dockerImageName')],
+                                [file(credentialsId: 'docker-container-name', variable: 'dockerContainerName')
                 script {
 
                     // JAR 파일 복사
