@@ -39,22 +39,39 @@ public class ApiInteractiveMovieCommandService {
             interactiveMovieCommandRepository.delete(interactiveMovie);
             deletedInteractiveMovieNos.add(interactiveMovie.getInteractiveMovieNo());
 
-            String thumbnailName = interactiveMovie.getThumbnailUrl().replace(bucketUrl, "")
+            String thumbnailKrName = interactiveMovie.getThumbnailUrlKr().replace(bucketUrl, "")
                                                                      .replace("%2F", "/")
                                                                      .replace("?alt=media", "");
-            String videoName = interactiveMovie.getUrl().replace(bucketUrl, "")
+            String videoKrName = interactiveMovie.getUrlKr().replace(bucketUrl, "")
                                                         .replace("?alt=media", "");
 
-            BlobId blobIdThumbnail = BlobId.of(bucketName, thumbnailName);
-            BlobId blobIdVideo = BlobId.of(bucketName, videoName);
+            String thumbnailEngName = interactiveMovie.getThumbnailUrlEng().replace(bucketUrl, "")
+                    .replace("%2F", "/")
+                    .replace("?alt=media", "");
+            String videoEngName = interactiveMovie.getUrlEng().replace(bucketUrl, "")
+                    .replace("?alt=media", "");
+
+            BlobId blobIdThumbnailKr = BlobId.of(bucketName, thumbnailKrName);
+            BlobId blobIdVideoKr = BlobId.of(bucketName, videoKrName);
+            BlobId blobIdThumbnailEng = BlobId.of(bucketName, thumbnailEngName);
+            BlobId blobIdVideoEng = BlobId.of(bucketName, videoEngName);
 
             Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
 
-            if (!storage.delete(blobIdThumbnail)) {
+            if (!storage.delete(blobIdThumbnailKr)) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "인터랙티브 무비 썸네일 삭제 실패 ");
             }
 
-            if (!storage.delete(blobIdVideo)) {
+            if (!storage.delete(blobIdVideoKr)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "인터랙티브 무비 영상 삭제 실패 ");
+
+            }
+
+            if (!storage.delete(blobIdThumbnailEng)) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "인터랙티브 무비 썸네일 삭제 실패 ");
+            }
+
+            if (!storage.delete(blobIdVideoEng)) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "인터랙티브 무비 영상 삭제 실패 ");
 
             }

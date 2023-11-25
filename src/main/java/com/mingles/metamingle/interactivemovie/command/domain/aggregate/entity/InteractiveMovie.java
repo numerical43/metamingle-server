@@ -24,10 +24,16 @@ public class InteractiveMovie {
     private String title;
 
     @Column
-    private String url;
+    private String urlKr;
 
     @Column
-    private String thumbnailUrl;
+    private String thumbnailUrlKr;
+
+    @Column
+    private String urlEng;
+
+    @Column
+    private String thumbnailUrlEng;
 
     @Column
     private String description;
@@ -48,11 +54,13 @@ public class InteractiveMovie {
     private MemberNoVO memberNoVO;
 
     @Builder
-    public InteractiveMovie(String title, String url, String thumbnailUrl, String description, String choice, Date date, int sequence,
+    public InteractiveMovie(String title, String urlKr, String thumbnailUrlKr, String urlEng, String thumbnailUrlEng, String description, String choice, Date date, int sequence,
                             ShortFormNoVO shortFormNoVO, MemberNoVO memberNoVO) {
         this.title = title;
-        this.url = url;
-        this.thumbnailUrl = thumbnailUrl;
+        this.urlKr = urlKr;
+        this.thumbnailUrlKr = thumbnailUrlKr;
+        this.urlEng = urlEng;
+        this.thumbnailUrlEng = thumbnailUrlEng;
         this.description = description;
         this.choice = choice;
         this.date = date;

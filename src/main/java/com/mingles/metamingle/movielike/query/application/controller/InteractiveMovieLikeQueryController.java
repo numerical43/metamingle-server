@@ -20,7 +20,7 @@ public class InteractiveMovieLikeQueryController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/interactive-movie/{interactiveMovieNo}/like")
-    public ResponseEntity<ApiResponse> getInteractiveMovieLikeCount(@RequestHeader("Authorization") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
+    public ResponseEntity<ApiResponse> getInteractiveMovieLikeCount(@RequestHeader("Authentication") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
 
         CountInteractiveMovieLike response = interactiveMovieLikeQueryService.countInteractiveMovieLike(interactiveMovieNo);
 
@@ -28,7 +28,7 @@ public class InteractiveMovieLikeQueryController {
     }
 
     @GetMapping("/interactive-movie/{interactiveMovieNo}/is-like")
-    public ResponseEntity<ApiResponse> getInteractiveMovieLike(@RequestHeader("Authorization") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
+    public ResponseEntity<ApiResponse> getInteractiveMovieLike(@RequestHeader("Authentication") String token, @PathVariable("interactiveMovieNo") Long interactiveMovieNo) {
         // 헤더에서 멤버 정보
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 

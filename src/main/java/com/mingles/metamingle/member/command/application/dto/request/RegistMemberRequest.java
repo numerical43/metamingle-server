@@ -17,5 +17,6 @@ public class RegistMemberRequest {
     private String email;
     private String nickname;
     private String password;
+    private String code;
 
 }

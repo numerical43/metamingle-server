@@ -21,6 +21,7 @@ public class MemberQueryController {
     @PostMapping("/member/login")
     public ResponseEntity<ApiResponse> Login(@RequestBody LoginRequest request) {
 
+
         LoginResponse response = memberQueryService.login(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(

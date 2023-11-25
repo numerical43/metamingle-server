@@ -1,14 +1,13 @@
 package com.mingles.metamingle.shortformlike.command.domain.aggregate.entity;
 
+import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
 import com.mingles.metamingle.shortformlike.command.domain.aggregate.vo.ShortFormLikeVO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -18,7 +17,6 @@ public class ShortFormLike {
 
     @EmbeddedId
     private ShortFormLikeVO shortFormLikeVO;
-
 
     @Builder
     public ShortFormLike(ShortFormLikeVO shortFormLikeVO) {
