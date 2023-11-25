@@ -1,4 +1,4 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

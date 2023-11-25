@@ -1,4 +1,4 @@
-package com.mingles.metamingle.auth;
+package com.mingles.metamingle.global.auth;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

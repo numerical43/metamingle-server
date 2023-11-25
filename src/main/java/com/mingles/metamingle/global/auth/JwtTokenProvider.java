@@ -1,4 +1,4 @@
-package com.mingles.metamingle.auth;
+package com.mingles.metamingle.global.auth;
 
 import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
 import io.jsonwebtoken.*;
@@ -71,7 +71,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        return request.getHeader("Authentication");
     }
 
     public boolean validateToken(String token) {

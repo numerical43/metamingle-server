@@ -1,4 +1,4 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;

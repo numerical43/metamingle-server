@@ -1,4 +1,4 @@
-package com.mingles.metamingle.auth;
+package com.mingles.metamingle.global.auth;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

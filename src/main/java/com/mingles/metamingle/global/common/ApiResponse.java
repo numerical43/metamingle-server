@@ -1,4 +1,4 @@
-package com.mingles.metamingle.common;
+package com.mingles.metamingle.global.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

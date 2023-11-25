@@ -1,7 +1,7 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
-import com.mingles.metamingle.auth.CustomAuthenticationFilter;
-import com.mingles.metamingle.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.auth.CustomAuthenticationFilter;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

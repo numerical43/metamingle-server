@@ -1,8 +1,8 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
-import com.mingles.metamingle.auth.Jwt401Handler;
-import com.mingles.metamingle.auth.Jwt403Handler;
-import com.mingles.metamingle.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.auth.Jwt401Handler;
+import com.mingles.metamingle.global.auth.Jwt403Handler;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @RequiredArgsConstructor
@@ -52,9 +50,9 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeHttpRequests()
-                .anyRequest().permitAll()
-//                .antMatchers("/member/**").permitAll()
-//                .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
+                .antMatchers("/infra/**").hasRole("ADMIN")
+                .antMatchers("/member/**").permitAll()
+                .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));

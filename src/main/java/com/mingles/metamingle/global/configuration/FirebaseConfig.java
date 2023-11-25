@@ -1,4 +1,4 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
