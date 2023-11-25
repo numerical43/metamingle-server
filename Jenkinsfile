@@ -18,12 +18,12 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
                     script {
-                        bat "copy %SECRETS_APPLICATION% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\src\\main\\resources\\application.yml"
+                        bat "copy %SECRETS_APPLICATION% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\meta-mingle\\src\\main\\resources\\application.yml"
                     }
                 }
                 withCredentials([file(credentialsId: 'meta-mingle-firebase-key', variable: 'SECRETS_FIREBASE')]) {
                     script {
-                        bat "copy %SECRETS_FIREBASE% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\test\\src\\main\\resources\\meta-mingle-firebase-key.json"
+                        bat "copy %SECRETS_FIREBASE% C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\meta-mingle\\src\\main\\resources\\meta-mingle-firebase-key.json"
                     }
                 }
 
