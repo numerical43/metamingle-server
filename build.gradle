@@ -26,12 +26,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // security
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
@@ -46,7 +47,7 @@ dependencies {
     implementation 'net.coobird:thumbnailator:0.4.13'
 
     // firebase
-    implementation 'com.google.firebase:firebase-admin:8.1.0'
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
 
     // 썸네일
     implementation 'org.jcodec:jcodec:0.2.3'
@@ -54,6 +55,24 @@ dependencies {
 
     //webclient
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
+
+    //mongoDB
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
+
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //redis
+//    implementation 'org.springframework.data:spring-data-redis:2.7.5'
+//    implementation 'org.springframework.boot:spring-boot-starter-mail'
+//    implementation 'io.lettuce:lettuce-core:6.2.1.RELEASE'
+
+    //thymeleaf
+    implementation'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    implementation 'org.springframework:spring-test:5.3.30'
 
 }
 
