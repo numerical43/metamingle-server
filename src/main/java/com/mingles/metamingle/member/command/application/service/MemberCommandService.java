@@ -37,6 +37,20 @@ public class MemberCommandService {
 
     }
 
+    public MemberCommandResponse signupAdmin(RegistMemberTemp request) {
+
+        Member member = Member.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .nickname(request.getNickname())
+                .role(Role.ROLE_ADMIN)
+                .build();
+
+        memberCommandRepository.save(member);
+
+        return MemberCommandResponse.from(member);
+    }
+
 
     /* Email 인증 후 회원가입
     @Transactional

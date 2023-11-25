@@ -1,9 +1,9 @@
 package com.mingles.metamingle.avatar.command.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
 import com.mingles.metamingle.avatar.command.application.dto.response.AvatarCommandResponse;
 import com.mingles.metamingle.avatar.command.application.service.AvatarCommandService;
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

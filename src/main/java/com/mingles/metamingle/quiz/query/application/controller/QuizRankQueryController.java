@@ -1,6 +1,6 @@
 package com.mingles.metamingle.quiz.query.application.controller;
 
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.quiz.query.application.dto.response.QuizRankQueryResponse;
 import com.mingles.metamingle.quiz.query.application.service.QuizRankQueryService;
 import lombok.RequiredArgsConstructor;

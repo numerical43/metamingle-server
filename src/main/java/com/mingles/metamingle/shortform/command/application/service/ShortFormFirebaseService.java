@@ -1,5 +1,6 @@
 package com.mingles.metamingle.shortform.command.application.service;
 
+import com.mingles.metamingle.global.infra.AiInfraService;
 import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -17,7 +18,6 @@ import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortFor
 import com.mingles.metamingle.shortform.command.domain.repository.ShortFormCommandRepository;
 import com.mingles.metamingle.shortform.command.domain.service.ShortFormCommandDomainService;
 import com.mingles.metamingle.shortform.command.infrastructure.service.ApiInteractiveMovieCommandService;
-import io.grpc.netty.shaded.io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
@@ -25,7 +25,6 @@ import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,10 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import javax.imageio.ImageIO;
@@ -69,12 +66,11 @@ public class ShortFormFirebaseService {
     ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 
 
-    private final WebClient webClient = WebClient.builder().clientConnector(connector).baseUrl("http://192.168.0.59:8011/mp4").build();
-
     private final ShortFormCommandRepository shortFormCommandRepository;
     private final ShortFormCommandDomainService shortFormCommandDomainService;
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
     private final QuizCommandService quizCommandService;
+    private final AiInfraService aiInfraService;
 
 //    // 숏폼 생성
 //    @Transactional
@@ -145,10 +141,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -199,10 +195,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -234,46 +230,6 @@ public class ShortFormFirebaseService {
         return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
                 createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
                 createdShortForm.getUrlEng());
-    }
-
-    @Transactional
-    public MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) throws IOException {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", file);
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("영어 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/en_script_video/")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
-    }
-
-
-    @Transactional
-    public MultipartFile sendToAIForKrSub(String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("한글 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/kr_script_video/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
     // 숏폼 삭제

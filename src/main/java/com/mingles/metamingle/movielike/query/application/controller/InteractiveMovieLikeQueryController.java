@@ -1,7 +1,7 @@
 package com.mingles.metamingle.movielike.query.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.movielike.query.application.dto.response.CountInteractiveMovieLike;
 import com.mingles.metamingle.movielike.query.application.dto.response.GetInteractiveMovieLike;
 import com.mingles.metamingle.movielike.query.application.service.InteractiveMovieLikeQueryService;
