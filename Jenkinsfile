@@ -10,7 +10,6 @@ pipeline {
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
                 withCredentials([file(credentialsId: 'application-yml', variable: 'SECRETS_APPLICATION')]) {
