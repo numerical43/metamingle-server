@@ -1,4 +1,4 @@
-package com.mingles.metamingle.configuration;
+package com.mingles.metamingle.global.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
