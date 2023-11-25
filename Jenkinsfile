@@ -5,7 +5,6 @@ pipeline {
         gradle 'Gradle 8.3'
     }
     triggers {
-        // github trigger
         githubPush()
     }
     stages {
