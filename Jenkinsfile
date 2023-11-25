@@ -29,8 +29,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                withCredentials([file(credentialsId: 'deploy-dir', variable: 'deployDir')])
-                withCredentials([file(credentialsId: 'docker-image-name', variable: 'dockerImageName')])
+                withCredentials([file(credentialsId: 'deploy-dir', variable: 'deployDir')]),
+                withCredentials([file(credentialsId: 'docker-image-name', variable: 'dockerImageName')]),
                 withCredentials([file(credentialsId: 'docker-container-name', variable: 'dockerContainerName')])
                 script {
 
