@@ -1,8 +1,7 @@
 package com.mingles.metamingle.member.query.application.service;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
 import com.mingles.metamingle.member.command.domain.aggregate.entity.Member;
-import com.mingles.metamingle.member.command.domain.aggregate.entity.Role;
 import com.mingles.metamingle.member.query.application.dto.request.FindMemberRequest;
 import com.mingles.metamingle.member.query.application.dto.request.LoginRequest;
 import com.mingles.metamingle.member.query.application.dto.response.LoginResponse;
@@ -10,16 +9,12 @@ import com.mingles.metamingle.member.query.application.dto.response.MemberQueryR
 import com.mingles.metamingle.member.query.infrastructure.repository.MemberQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

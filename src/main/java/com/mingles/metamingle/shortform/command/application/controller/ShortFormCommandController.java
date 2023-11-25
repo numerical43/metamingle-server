@@ -1,7 +1,7 @@
 package com.mingles.metamingle.shortform.command.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;

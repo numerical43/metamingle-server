@@ -1,6 +1,6 @@
 package com.mingles.metamingle.member.query.application.controller;
 
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.member.query.application.dto.request.LoginRequest;
 import com.mingles.metamingle.member.query.application.dto.response.LoginResponse;
 import com.mingles.metamingle.member.query.application.service.MemberQueryService;

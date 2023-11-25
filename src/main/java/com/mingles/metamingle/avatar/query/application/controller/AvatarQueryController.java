@@ -1,6 +1,6 @@
 package com.mingles.metamingle.avatar.query.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
 import com.mingles.metamingle.avatar.query.application.service.AvatarQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
