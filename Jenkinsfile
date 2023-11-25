@@ -27,7 +27,6 @@ pipeline {
                 bat(script: 'gradlew clean build', returnStatus: true)
             }
         }
-
         stage('Deploy') {
             steps {
                 script {
