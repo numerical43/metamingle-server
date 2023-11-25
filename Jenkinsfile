@@ -30,9 +30,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'deploy-dir', variable: 'deployDir'),
-                    file(credentialsId: 'docker-image-name', variable: 'dockerImageName'),
-                    file(credentialsId: 'docker-container-name', variable: 'dockerContainerName'),
+                    string(credentialsId: 'deploy-dir', variable: 'deployDir'),
+                    string(credentialsId: 'docker-image-name', variable: 'dockerImageName'),
+                    string(credentialsId: 'docker-container-name', variable: 'dockerContainerName'),
                     usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                     script {
 
