@@ -1,7 +1,7 @@
 package com.mingles.metamingle.interactivemovie.query.application.controller;
 
-import com.mingles.metamingle.common.ApiResponse;
-import com.mingles.metamingle.common.ApiStatus;
+import com.mingles.metamingle.global.common.ApiResponse;
+import com.mingles.metamingle.global.common.ApiStatus;
 import com.mingles.metamingle.interactivemovie.query.application.dto.response.GetInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.query.application.service.InteractiveMovieQueryService;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,10 @@
 package com.mingles.metamingle.interactivemovie.command.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.common.ApiResponse;
-import com.mingles.metamingle.common.ApiStatus;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.common.ApiResponse;
+import com.mingles.metamingle.global.common.ApiStatus;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.command.application.service.InteractiveMovieCommandService;
-import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
 import lombok.RequiredArgsConstructor;
 import org.jcodec.api.JCodecException;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor

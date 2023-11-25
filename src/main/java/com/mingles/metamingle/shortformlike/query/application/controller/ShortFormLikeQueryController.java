@@ -1,7 +1,7 @@
 package com.mingles.metamingle.shortformlike.query.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.shortformlike.query.application.dto.response.CountShortFormLike;
 import com.mingles.metamingle.shortformlike.query.application.dto.response.GetShortFormLike;
 import com.mingles.metamingle.shortformlike.query.application.service.ShortFormLikeQueryService;
@@ -20,7 +20,8 @@ public class ShortFormLikeQueryController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/short-form/{shortFormNo}/like")
-    public ResponseEntity<ApiResponse> countShortFormLike(@PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> countShortFormLike(@RequestHeader("Authentication") String token,
+                                                          @PathVariable("shortFormNo") Long shortFormNo) {
 
         CountShortFormLike response = shortFormLikeQueryService.countShortFormLike(shortFormNo);
 
@@ -28,7 +29,8 @@ public class ShortFormLikeQueryController {
     }
 
     @GetMapping("/short-form/{shortFormNo}/is-like")
-    public ResponseEntity<ApiResponse> getShortFormLike(@RequestHeader("Authorization") String token, @PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> getShortFormLike(@RequestHeader("Authentication") String token,
+                                                        @PathVariable("shortFormNo") Long shortFormNo) {
 
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
 

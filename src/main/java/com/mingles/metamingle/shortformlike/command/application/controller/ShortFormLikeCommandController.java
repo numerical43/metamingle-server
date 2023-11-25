@@ -1,7 +1,7 @@
 package com.mingles.metamingle.shortformlike.command.application.controller;
 
-import com.mingles.metamingle.auth.JwtTokenProvider;
-import com.mingles.metamingle.common.ApiResponse;
+import com.mingles.metamingle.global.auth.JwtTokenProvider;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.shortformlike.command.application.dto.response.CreateShortFormLikeResponse;
 import com.mingles.metamingle.shortformlike.command.application.service.ShortFormLikeCommandService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ShortFormLikeCommandController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/short-form/{shortFormNo}/like")
-    public ResponseEntity<ApiResponse> createOrUpdateShortFormLike(@RequestHeader("Authorization") String token, @PathVariable("shortFormNo") Long shortFormNo) {
+    public ResponseEntity<ApiResponse> createOrUpdateShortFormLike(@RequestHeader("Authentication") String token, @PathVariable("shortFormNo") Long shortFormNo) {
         // 헤더에서 토큰으로 memberNo 가져오기
         Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
         CreateShortFormLikeResponse response = shortFormLikeCommandService.createShortFormLike(memberNo, shortFormNo);
