@@ -5,7 +5,8 @@ pipeline {
         gradle 'Gradle 8.3'
     }
     triggers {
-      githubPush()
+        // github trigger
+        githubPush()
     }
     stages {
         stage('Checkout') {
