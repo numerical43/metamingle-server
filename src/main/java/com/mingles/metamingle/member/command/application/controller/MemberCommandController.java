@@ -1,14 +1,9 @@
 package com.mingles.metamingle.member.command.application.controller;
 
-import com.mingles.metamingle.common.ApiResponse;
-import com.mingles.metamingle.member.command.application.dto.request.MailAuthRequest;
-import com.mingles.metamingle.member.command.application.dto.request.RegistMemberRequest;
+import com.mingles.metamingle.global.common.ApiResponse;
 import com.mingles.metamingle.member.command.application.dto.request.RegistMemberTemp;
-import com.mingles.metamingle.member.command.application.dto.response.MailAuthResponse;
 import com.mingles.metamingle.member.command.application.dto.response.MemberCommandResponse;
 import com.mingles.metamingle.member.command.application.service.MemberCommandService;
-import com.mingles.metamingle.member.query.application.dto.request.LoginRequest;
-import com.mingles.metamingle.member.query.application.dto.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +33,21 @@ public class MemberCommandController {
     @PostMapping("/member/signup")
     public ResponseEntity<ApiResponse> Signup(@RequestBody RegistMemberTemp request) {
 
-        System.out.println("request.getPassword() = " + request.getPassword());
-
         MemberCommandResponse response = memberCommandService.signup(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 ApiResponse.success("회원가입이 완료되었습니다." , response)
+        );
+
+    }
+
+    @PostMapping("/member/admin/signup")
+    public ResponseEntity<ApiResponse> SignupAdmin(@RequestBody RegistMemberTemp request) {
+
+        MemberCommandResponse response = memberCommandService.signupAdmin(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ApiResponse.success("관리자 등록이 완료되었습니다." , response)
         );
 
     }
