@@ -45,15 +45,8 @@ pipeline {
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
 
                         // 기존 컨테이너를 중지하고 제거
-                        def dockerPsOutput = bat(script: "docker ps -a --filter name=%dockerContainerName%", returnStdout: true).trim()
-
-                        if (dockerPsOutput.contains(dockerContainerName)) {
-                            // 기존 컨테이너를 중지하고 제거
-                            bat "docker stop %dockerContainerName% > nul 2>&1 || (echo Container not running or does not exist. & exit 0)"
-                            bat "docker rm %dockerContainerName% > nul 2>&1 || (echo Container not running or does not exist. & exit 0)"
-                        } else {
-                            echo "컨테이너가 없습니다."
-                        }
+                        bat "docker stop %dockerContainerName% || (echo Container not running or does not exist. & exit 0)"
+                        bat "docker rm %dockerContainerName% || (echo Container not running or does not exist. & exit 0)"
 
                         // DockerHub에 생성한 이미지 push
                         bat "docker push %dockerImageName%"
