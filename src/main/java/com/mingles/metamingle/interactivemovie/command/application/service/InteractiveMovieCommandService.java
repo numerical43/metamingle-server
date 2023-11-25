@@ -3,6 +3,7 @@ package com.mingles.metamingle.interactivemovie.command.application.service;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.firebase.cloud.StorageClient;
+import com.mingles.metamingle.global.infra.AiInfraService;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.CreateInteractiveMovieResponse;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.SubtitledVideo;
 import com.mingles.metamingle.interactivemovie.command.application.dto.response.UploadVideo;
@@ -25,7 +26,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
@@ -33,8 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 
@@ -63,13 +61,11 @@ public class InteractiveMovieCommandService {
 
     ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 
-
-    private final WebClient webClient = WebClient.builder().clientConnector(connector).baseUrl("http://192.168.0.59:8011/mp4").build();
-
     private final InteractiveMovieCommandRepository interactiveMovieCommandRepository;
     private final InteractiveMovieDomainService interactiveMovieDomainService;
     private final ApiShortFormService apiShortFormService;
     private final QuizCommandService quizCommandService;
+    private final AiInfraService aiInfraService;
 
 //    public List<CreateInteractiveMovieResponse> createInteractiveMovie(List<MultipartFile> files, String title, String description, List<String> choices, Long memberNo)
 //            throws JCodecException, IOException {
@@ -160,10 +156,10 @@ public class InteractiveMovieCommandService {
         SubtitledVideo subtitledVideo = new SubtitledVideo();
 
         System.out.println("ai 영어 자막 영상 요청 : 인터랙티브 무비");
-        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료 : 인터랙티브 무비");
         System.out.println("ai 한글 자막 영상 요청 : 인터랙티브 무비");
-        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료 : 인터랙티브 무비");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일을 같음)
@@ -187,44 +183,6 @@ public class InteractiveMovieCommandService {
                 createdMovie.getUrlEng(),
                 createdMovie.getChoice(),
                 createdMovie.getSequence());
-    }
-
-    public MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", file);
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("영어 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/en_script_video/")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
-    }
-
-    @Transactional
-    public MultipartFile sendToAIForKrSub(String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("한글 자막 영상 처리 중 : 인터랙티브 무비");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/kr_script_video/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
     private UploadVideo createInteractiveMovie(MultipartFile file, String fileKeyName, String thumbnailUrl)
