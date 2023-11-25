@@ -4,6 +4,9 @@ pipeline {
         jdk 'Java 11'
         gradle 'Gradle 8.3'
     }
+    triggers {
+      githubPush()
+    }
     stages {
         stage('Checkout') {
             steps {
