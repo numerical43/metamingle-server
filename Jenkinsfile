@@ -51,8 +51,8 @@ pipeline {
 
                         if (dockerPsOutput.contains(dockerContainerName)) {
                             // 기존 컨테이너를 중지하고 제거
-                            bat "docker stop ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
-                            bat "docker rm ${dockerContainerName} > nul 2>&1 || ( echo Container not running or does not exist. )"
+                            bat "docker stop ${dockerContainerName} > nul 2>&1 || (echo Container not running or does not exist. & exit 0)"
+                            bat "docker rm ${dockerContainerName} > nul 2>&1 || (echo Container not running or does not exist. & exit 0)"
                         } else {
                             echo "컨테이너가 없습니다."
                         }
