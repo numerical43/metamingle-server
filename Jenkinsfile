@@ -39,7 +39,6 @@ pipeline {
                         // JAR 파일 복사
                         bat "copy /Y build\\libs\\meta-mingle-0.0.1-SNAPSHOT.jar %DEPLOY_DIR%"
 
-                        // Docker 이미지 빌드
                         bat "docker build -t %DOCKER_IMAGE_NAME% ."
 
                         bat "docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%"
