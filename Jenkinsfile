@@ -36,7 +36,6 @@ pipeline {
                     usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                     script {
 
-                        // JAR 파일 복사
                         bat "copy /Y build\\libs\\meta-mingle-0.0.1-SNAPSHOT.jar %DEPLOY_DIR%"
 
                         bat "docker build -t %DOCKER_IMAGE_NAME% ."
