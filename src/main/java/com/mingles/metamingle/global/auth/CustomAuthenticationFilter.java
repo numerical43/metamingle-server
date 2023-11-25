@@ -1,4 +1,4 @@
-package com.mingles.metamingle.auth;
+package com.mingles.metamingle.global.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
