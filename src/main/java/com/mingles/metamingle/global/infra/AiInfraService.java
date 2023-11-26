@@ -82,7 +82,6 @@ public class AiInfraService {
                 .block();
 
         return background.getPlace();
-
 //        return "campus";
     }
 
