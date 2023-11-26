@@ -31,21 +31,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AiInfraService {
 
-    private static String aiAddr;
-
-    public void setAiAddr(String aiAddr) {
-        AiInfraService.aiAddr = aiAddr;
-    }
-
-    public String getAiAddr() {
-        return aiAddr;
-    }
+    private WebClient webClient;
 
     private final ScenarioCommandService scenarioCommandService;
     private final QuizCommandService quizCommandService;
 
     //AI 세션 변경 확인
-    private final WebClient webClient = WebClient.builder().baseUrl(aiAddr).build();
+    public void setWebClient(String aiAddr) {
+        this.webClient = WebClient.builder().baseUrl(aiAddr).build();
+    }
+
 
     //SSE 를 이용한 텍스트 실시간 스트리밍
     public Flux<ServerSentEvent<String>> getStreamingData(String message) {

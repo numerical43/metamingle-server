@@ -7,16 +7,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AddrController {
 
-    private final AddrService addrService;
+    private final AiInfraService aiInfraService;
 
     @PostMapping ("/infra/update-addr")
     public String updateInfraAddr(@RequestBody String aiAddr) {
-        addrService.updateAddr(aiAddr);
-        return addrService.getAddr();
-    }
-
-    @GetMapping("/infra/get-addr")
-    public String getInfraAddr() {
-        return addrService.getAddr();
+        aiInfraService.setWebClient(aiAddr);
+        return aiAddr;
     }
 }
