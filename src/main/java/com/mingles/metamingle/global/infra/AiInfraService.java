@@ -8,21 +8,11 @@ import com.mingles.metamingle.scenario.command.application.dto.response.BGMRespo
 import com.mingles.metamingle.scenario.command.application.dto.response.BgImageResponse;
 import com.mingles.metamingle.scenario.command.application.service.ScenarioCommandService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -75,7 +65,7 @@ public class AiInfraService {
         bodyJson.put("text", message);
 
         BgImageResponse background = webClient.post()
-                .uri("/hatbot/image_connect")
+                .uri("/chatbot/image_connect")
                 .bodyValue(bodyJson)
                 .retrieve()
                 .bodyToMono(BgImageResponse.class)
@@ -121,69 +111,5 @@ public class AiInfraService {
         return quizCommandService.saveQuizWithUUID(uuid, quiz.getKorea(), quiz.getEnglish(), quiz.getIsquiz());
 //        return quizCommandService.saveQuizWithUUID(uuid, "테스트", "test", "yes");
     }
-
-
-    private MultipartFile dataBufferToMultipartFile(String fileKeyName, Flux<DataBuffer> responseBody) {
-        byte[] byteArray = responseBody
-                .collectList()
-                .map(dataBuffers -> {
-                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                        dataBuffers.forEach(buffer -> {
-                            byte[] bytes = new byte[buffer.readableByteCount()];
-                            buffer.read(bytes);
-                            try {
-                                outputStream.write(bytes);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            DataBufferUtils.release(buffer);
-                        });
-                        return outputStream.toByteArray();
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException(e.getMessage());
-                    }
-                })
-                .block();
-
-        return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
-    }
-
-    public MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", file);
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("영어 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/en_script_video/")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
-    }
-
-    public MultipartFile sendToAIForKrSub(String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("한글 자막 영상 처리 중 : 인터랙티브 무비");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/kr_script_video/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
-    }
-
 
 }
