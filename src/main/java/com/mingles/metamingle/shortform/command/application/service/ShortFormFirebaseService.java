@@ -2,6 +2,8 @@ package com.mingles.metamingle.shortform.command.application.service;
 
 import com.mingles.metamingle.global.infra.AiInfraService;
 import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
+import com.mingles.metamingle.scenario.command.application.service.ScenarioCommandService;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import com.google.cloud.storage.Blob;
@@ -36,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
@@ -64,6 +67,14 @@ public class ShortFormFirebaseService {
             .responseTimeout(connectionTimeout);
 
     ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
+
+    private WebClient webClient;
+
+    //AI 세션 변경 확인
+    public void setWebClient(String aiAddr) {
+        this.webClient = WebClient.builder().baseUrl(aiAddr).build();
+    }
+
 
 
     private final ShortFormCommandRepository shortFormCommandRepository;
@@ -141,10 +152,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -173,7 +184,7 @@ public class ShortFormFirebaseService {
 
         System.out.println("숏폼 생성 & 저장 완료");
 
-        quizCommandService.updateQuizWithUUID(createdShortForm.getShortFormNo(), UUID.fromString(uuid));
+//        quizCommandService.updateQuizWithUUID(createdShortForm.getShortFormNo(), UUID.fromString(uuid));
 
         return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
                                            createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
@@ -195,10 +206,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -346,6 +357,44 @@ public class ShortFormFirebaseService {
                 .block();
 
         return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
+    }
+
+
+    private MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) {
+
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file", file);
+        bodyBuilder.part("file_uuid", fileKeyName);
+
+        System.out.println("영어 자막 영상 처리 중");
+
+        Flux<DataBuffer> responseBody = webClient.post()
+                .uri("/mp4/en_script_video/")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .retrieve()
+                .bodyToFlux(DataBuffer.class);
+
+        return dataBufferToMultipartFile(fileKeyName, responseBody);
+    }
+
+    private MultipartFile sendToAIForKrSub(String fileKeyName) {
+
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file_uuid", fileKeyName);
+
+        System.out.println("한글 자막 영상 처리 중");
+
+        Flux<DataBuffer> responseBody = webClient.post()
+                .uri("/mp4/modi_kr_script_video/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .accept(MediaType.APPLICATION_OCTET_STREAM)
+                .retrieve()
+                .bodyToFlux(DataBuffer.class);
+
+        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
     // 이미지 파일 이름 생성
