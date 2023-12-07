@@ -83,39 +83,6 @@ public class ShortFormFirebaseService {
     private final QuizCommandService quizCommandService;
     private final AiInfraService aiInfraService;
 
-//    // 숏폼 생성
-//    @Transactional
-//    public CreateShortFormResponse createShortForm(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
-//        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
-//
-//        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
-//        InputStream inputStream = file.getInputStream();
-//        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
-//        Blob getBlob = bucket.get(fileKeyName);
-//
-//        System.out.println("blob shortForm = " + getBlob.getMediaLink());
-//
-//
-//        inputStream.close();
-//
-//        String url = bucketUrl + fileKeyName + "?alt=media";
-//
-//        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
-//
-//        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-//
-//        ShortForm shortFormEntity = new ShortForm(title, thumbnailUrl, url, description, new Date(),
-//                                                Boolean.FALSE, memberNoVO, null);
-//
-//        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
-//
-//        deleteTempFile();
-//
-//        return new CreateShortFormResponse(uploadedShortForm.getShortFormNo(),
-//                uploadedShortForm.getThumbnailUrl(),
-//                uploadedShortForm.getUrl());
-//    }
-
     // 숏폼 생성
     @Transactional
     public UploadVideo createShortForm(MultipartFile file, String fileKeyName, String thumbnailUrl) throws IOException, JCodecException {
@@ -152,10 +119,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -206,10 +173,10 @@ public class ShortFormFirebaseService {
 
         // ai 서버에 자막 동영상 요청 & 응답 받기
         System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(sendToAIForEngSub(file.getResource(), fileKeyName));
+        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
         System.out.println("ai 영어 자막 영상 응답 완료");
         System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(sendToAIForKrSub(fileKeyName));
+        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
         System.out.println("ai 한글 자막 영상 응답 완료");
 
         // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
@@ -302,99 +269,6 @@ public class ShortFormFirebaseService {
         shortFormCommandRepository.delete(shortForm);
 
         return new DeleteShortFormResponse(shortFormNo, deletedInteractiveMovieNos);
-    }
-
-
-//    // 인터랙티브 무비와 관련된 숏폼 생성
-//    @Transactional
-//    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description, Long memberNo) throws IOException, JCodecException {
-//        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
-//
-//        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
-//        InputStream inputStream = file.getInputStream();
-//        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
-//
-//        System.out.println("blob interactiveMovie = " + blob.getMediaLink());
-//
-//        inputStream.close();
-//
-//        String url = bucketUrl + fileKeyName + "?alt=media";
-//
-//        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName);
-////        // 임시 멤버 넘버 사용
-//        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-//
-//        ShortForm shortFormEntity= new ShortForm(title, thumbnailUrl, url, description, new Date(),
-//                Boolean.TRUE, memberNoVO, null);
-//
-//        ShortForm uploadedShortForm = shortFormCommandRepository.save(shortFormEntity);
-//
-//        deleteTempFile();
-//
-//        return uploadedShortForm;
-//    }
-
-    private MultipartFile dataBufferToMultipartFile(String fileKeyName, Flux<DataBuffer> responseBody) {
-        byte[] byteArray = responseBody
-                .collectList()
-                .map(dataBuffers -> {
-                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                        dataBuffers.forEach(buffer -> {
-                            byte[] bytes = new byte[buffer.readableByteCount()];
-                            buffer.read(bytes);
-                            try {
-                                outputStream.write(bytes);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            DataBufferUtils.release(buffer);
-                        });
-                        return outputStream.toByteArray();
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException(e.getMessage());
-                    }
-                })
-                .block();
-
-        return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
-    }
-
-
-    private MultipartFile sendToAIForEngSub(Resource file, String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file", file);
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("영어 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/mp4/en_script_video/")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
-    }
-
-    private MultipartFile sendToAIForKrSub(String fileKeyName) {
-
-        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
-        bodyBuilder.part("file_uuid", fileKeyName);
-
-        System.out.println("한글 자막 영상 처리 중");
-
-        Flux<DataBuffer> responseBody = webClient.post()
-                .uri("/mp4/modi_kr_script_video/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
-                .accept(MediaType.APPLICATION_OCTET_STREAM)
-                .retrieve()
-                .bodyToFlux(DataBuffer.class);
-
-        return dataBufferToMultipartFile(fileKeyName, responseBody);
     }
 
     // 이미지 파일 이름 생성
