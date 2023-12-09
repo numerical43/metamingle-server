@@ -45,6 +45,11 @@
 
 <br>
 
+## 🧱 아키텍처
+![Server](https://github.com/meta-mingles/metamingle-server/assets/61495627/457e4e29-16ba-450f-9d78-80998e7bea35)
+
+<br>
+
 ## ✨ 협업 도구
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>  <img src="https://img.shields.io/badge/Miro-F7DF1E?style=for-the-badge&logo=Miro&logoColor=black"/>
 
