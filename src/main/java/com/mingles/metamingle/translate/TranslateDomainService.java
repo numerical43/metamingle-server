@@ -9,6 +9,14 @@ import java.util.regex.Pattern;
 public class TranslateDomainService {
 
     //자음/모음만 있을 경우 번역 x
+    public void checkKorean(String text) {
+
+        boolean notWord = Pattern.matches(".*[가-힣]+.*", text);
+
+        if(!notWord) {
+            throw new IllegalArgumentException("자음/모음만 있는 경우 번역이 불가능합니다.");
+        }
+    }
 
     public boolean detectSourceLanguageIsEnglish(String text) {
         String regex = "^[a-zA-Z\\s\\p{P}]*$";

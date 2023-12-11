@@ -18,6 +18,8 @@ public class TranslateController {
     @PostMapping(value = "/translate")
     public String translateChat(@RequestBody TranslationRequest request) {
 
+        translateDomainService.checkKorean(request.getText());
+
         if(translateDomainService.detectSourceLanguageIsEnglish(request.getText())) {
             return aiInfraService.translateTextToKorean(request.getText());
         } else return aiInfraService.translateTextToEnglish(request.getText());
