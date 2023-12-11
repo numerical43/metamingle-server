@@ -27,13 +27,14 @@ public class CreativeToolService {
 
         List<ImageResponse> imageResponses = new ArrayList<>();
 
-        Random random = new Random();
-        int randomNumber = random.nextInt(15);
+//        Random random = new Random();
+//        int randomNumber = random.nextInt(6);
 
         for (String technique : techniques) {
+            int i = 0;
             List<Image> images = imageRepository.findImagesByLocationAndTechnique(location, technique);
             if (!images.isEmpty()) {
-                imageResponses.add(new ImageResponse(images.get(randomNumber)));
+                imageResponses.add(new ImageResponse(images.get(i++)));
             }
         }
 
