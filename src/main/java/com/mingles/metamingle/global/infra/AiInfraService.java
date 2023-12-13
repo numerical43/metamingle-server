@@ -8,6 +8,7 @@ import com.mingles.metamingle.scenario.command.application.dto.response.BGMRespo
 import com.mingles.metamingle.scenario.command.application.dto.response.BgImageResponse;
 import com.mingles.metamingle.scenario.command.application.service.ScenarioCommandService;
 import com.mingles.metamingle.shortform.command.application.service.ShortFormFirebaseService;
+import com.mingles.metamingle.translate.dto.TranslationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -183,6 +184,37 @@ public class AiInfraService {
                 .block();
 
         return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
+
+    public String translateTextToEnglish(String text) {
+
+        Map<String, String> bodyJson = new HashMap<>();
+        bodyJson.put("text", text);
+        bodyJson.put("lang", "KO");
+
+        TranslationResponse response = webClient.post()
+                .uri("/chat_translate/chat")
+                .bodyValue(bodyJson)
+                .retrieve()
+                .bodyToMono(TranslationResponse.class)
+                .block();
+
+        return response.getOutput();
+    }
+
+    public String translateTextToKorean(String text) {
+
+        Map<String, String> bodyJson = new HashMap<>();
+        bodyJson.put("text", text);
+        bodyJson.put("lang", "EN");
+
+        TranslationResponse response = webClient.post()
+                .uri("/chat_translate/chat")
+                .bodyValue(bodyJson)
+                .retrieve()
+                .bodyToMono(TranslationResponse.class)
+                .block();
+
+        return response.getOutput();
     }
 
 }
