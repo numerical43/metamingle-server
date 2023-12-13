@@ -48,6 +48,7 @@
 ## 🧱 아키텍처
 ![Server](https://github.com/meta-mingles/metamingle-server/assets/61495627/457e4e29-16ba-450f-9d78-80998e7bea35)
 
+
 <br>
 
 ## ✨ 협업 도구

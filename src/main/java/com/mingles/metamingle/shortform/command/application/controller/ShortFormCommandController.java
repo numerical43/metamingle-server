@@ -39,25 +39,6 @@ public class ShortFormCommandController {
 
         return ResponseEntity.ok(ApiResponse.success("전송 성공", "서버 전송 완료"));
 
-//        ResponseEntity.ok(ApiResponse.success("전송 성공", null));
-//
-//        CompletableFuture.runAsync(() -> {
-//            try {
-//                Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-//                CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(video, title, description, memberNo, Boolean.FALSE);
-//            } catch (IOException | JCodecException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//
-//        return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", "완료"));
-
-//        Long memberNo = jwtTokenProvider.getMemberNoFromToken(token);
-//        CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(video, title, description, memberNo, Boolean.FALSE);
-//
-//
-//        return ResponseEntity.ok(ApiResponse.success("숏폼 저장 성공 (firebase)", response));
-
     }
 
     // 숏폼 삭제
