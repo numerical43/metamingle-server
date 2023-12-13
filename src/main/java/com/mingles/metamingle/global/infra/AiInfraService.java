@@ -184,6 +184,7 @@ public class AiInfraService {
                 .block();
 
         return new MockMultipartFile(fileKeyName, fileKeyName, MediaType.MULTIPART_FORM_DATA_VALUE, byteArray);
+    }
 
     public String translateTextToEnglish(String text) {
 
