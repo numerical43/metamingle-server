@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class ShortFormCommandDomainService {
 
     // 파일 확장자의 유효성을 확인하고 파일 확장자 반환
-    public String checkAndGetFileExtension(String fileName) {
+    public void checkAndGetFileExtension(String fileName) {
 
         // 허용되는 이미지 확장자 목록
         String allowedExtension = "mp4";
@@ -26,7 +26,6 @@ public class ShortFormCommandDomainService {
             throw new IllegalArgumentException("동영상 파일이 아닙니다.");
         }
 
-        return fileExtension;
     }
 
 }

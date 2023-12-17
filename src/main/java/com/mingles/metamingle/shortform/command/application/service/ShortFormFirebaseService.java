@@ -1,22 +1,16 @@
 package com.mingles.metamingle.shortform.command.application.service;
 
-import com.mingles.metamingle.global.infra.AiInfraService;
-import com.mingles.metamingle.quiz.command.application.service.QuizCommandService;
-import com.mingles.metamingle.scenario.command.application.service.ScenarioCommandService;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
-import com.mingles.metamingle.shortform.command.application.dto.response.SubtitledVideo;
-import com.mingles.metamingle.shortform.command.application.dto.response.UploadVideo;
-import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
+import com.mingles.metamingle.global.infra.AiInfraService;
 import com.mingles.metamingle.shortform.command.application.dto.response.CreateShortFormResponse;
 import com.mingles.metamingle.shortform.command.application.dto.response.DeleteShortFormResponse;
+import com.mingles.metamingle.shortform.command.application.dto.response.SubtitledVideo;
+import com.mingles.metamingle.shortform.command.application.dto.response.UploadVideo;
 import com.mingles.metamingle.shortform.command.domain.aggregate.entity.ShortForm;
+import com.mingles.metamingle.shortform.command.domain.aggregate.vo.MemberNoVO;
 import com.mingles.metamingle.shortform.command.domain.repository.ShortFormCommandRepository;
 import com.mingles.metamingle.shortform.command.domain.service.ShortFormCommandDomainService;
 import com.mingles.metamingle.shortform.command.infrastructure.service.ApiInteractiveMovieCommandService;
@@ -27,20 +21,16 @@ import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 
 import javax.imageio.ImageIO;
@@ -49,7 +39,9 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -75,12 +67,9 @@ public class ShortFormFirebaseService {
         this.webClient = WebClient.builder().baseUrl(aiAddr).build();
     }
 
-
-
     private final ShortFormCommandRepository shortFormCommandRepository;
     private final ShortFormCommandDomainService shortFormCommandDomainService;
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
-    private final QuizCommandService quizCommandService;
     private final AiInfraService aiInfraService;
 
     // 숏폼 생성
@@ -89,8 +78,6 @@ public class ShortFormFirebaseService {
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
-        Blob blob = bucket.create(fileKeyName, inputStream, file.getContentType());
-        Blob getBlob = bucket.get(fileKeyName);
 
         inputStream.close();
 
@@ -247,7 +234,6 @@ public class ShortFormFirebaseService {
         BlobId blobIdVideoEng = BlobId.of(bucketName, videoNameEng);
 
         Storage storage = StorageClient.getInstance().bucket(bucketName).getStorage();
-        Bucket bucket = StorageClient.getInstance().bucket(bucketName);
 
         if (!storage.delete(blobIdThumbnailKr)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 썸네일 삭제 실패 ");
@@ -265,7 +251,6 @@ public class ShortFormFirebaseService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "숏폼 무비 영상 삭제 실패 ");
         }
 
-
         shortFormCommandRepository.delete(shortForm);
 
         return new DeleteShortFormResponse(shortFormNo, deletedInteractiveMovieNos);
@@ -276,19 +261,10 @@ public class ShortFormFirebaseService {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String timestamp = dateFormat.format(new Date());
 
-        String fileExtension = shortFormCommandDomainService.checkAndGetFileExtension(fileName);
+        shortFormCommandDomainService.checkAndGetFileExtension(fileName);
 
         // UUID + timestamp로 고유한 파일 이름 생성해서 반환
         return UUID.randomUUID().toString().concat(timestamp);
-    }
-
-    // 파일 확장자 가져오기
-    private String getFileExtension(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex != -1) {
-            return fileName.substring(lastDotIndex);
-        }
-        return "";
     }
 
     // 썸네일 이미지 생성
@@ -310,7 +286,8 @@ public class ShortFormFirebaseService {
         byte[] thumbnailBytes = baos.toByteArray();
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         String thumbnailKey = "thumbnails/" + fileKeyName;
-        Blob blob = bucket.create(thumbnailKey, thumbnailBytes, "image/jpeg");
+
+        bucket.create(thumbnailKey, thumbnailBytes, "image/jpeg");
 
         return bucketUrl + thumbnailKey.replace("/", "%2F") + "?alt=media";
     }
