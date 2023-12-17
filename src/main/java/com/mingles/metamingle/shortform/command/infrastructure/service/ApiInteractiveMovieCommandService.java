@@ -64,7 +64,6 @@ public class ApiInteractiveMovieCommandService {
 
             if (!storage.delete(blobIdVideoKr)) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "인터랙티브 무비 영상 삭제 실패 ");
-
             }
 
             if (!storage.delete(blobIdThumbnailEng)) {
