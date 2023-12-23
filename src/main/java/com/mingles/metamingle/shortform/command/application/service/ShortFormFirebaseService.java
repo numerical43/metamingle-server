@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -72,9 +73,9 @@ public class ShortFormFirebaseService {
     private final ApiInteractiveMovieCommandService apiInteractiveMovieCommandService;
     private final AiInfraService aiInfraService;
 
-    // 숏폼 생성
+    // 숏폼 업로드
     @Transactional
-    public UploadVideo createShortForm(MultipartFile file, String fileKeyName, String thumbnailUrl) throws IOException, JCodecException {
+    public UploadVideo uploadShortForm(MultipartFile file, String fileKeyName, String thumbnailUrl) throws IOException, JCodecException {
 
         Bucket bucket = StorageClient.getInstance().bucket(bucketName);
         InputStream inputStream = file.getInputStream();
@@ -89,13 +90,23 @@ public class ShortFormFirebaseService {
         return new UploadVideo(url, thumbnailUrl);
     }
 
-    // ai 서버 자막
+    // 숏폼 생성
     @Async
+    @Transactional
+    public CreateShortFormResponse createShortForm(byte[] fileBytes, String fileName, String uuid,
+                                          String title, String description,
+                                          Long memberNo, Boolean isInteractive)
+            throws IOException, JCodecException {
+
+        return createShortFormWithSubtitle(fileBytes, fileName, uuid, title, description, memberNo, isInteractive);
+    }
+
+    // ai 서버 자막
     @Transactional
     public CreateShortFormResponse createShortFormWithSubtitle(byte[] fileBytes, String fileName, String uuid,
                                                                String title, String description,
                                                                Long memberNo, Boolean isInteractive)
-            throws IOException, JCodecException {
+                                                               throws IOException, JCodecException {
 
         InputStream inputStream = new ByteArrayInputStream(fileBytes);
         MultipartFile file = new MockMultipartFile("file", fileName, "video/mp4", inputStream);
@@ -116,63 +127,9 @@ public class ShortFormFirebaseService {
         String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName + ".jpeg");
 
         // 영어 자막 동영상 생성
-        UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4", thumbnailUrl);
+        UploadVideo uploadVideoEng = uploadShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4", thumbnailUrl);
         // 한글 자막 동영상 생성
-        UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4", thumbnailUrl);
-
-        MemberNoVO memberNoVO = new MemberNoVO(memberNo);
-
-        ShortForm shortForm = ShortForm.builder()
-                .title(title)
-                .description(description)
-                .memberNoVO(memberNoVO)
-                .urlKr(uploadVideoKr.getUrl())
-                .thumbnailUrlKr(uploadVideoKr.getThumbnailUrl())
-                .urlEng(uploadVideoEng.getUrl())
-                .thumbnailUrlEng(uploadVideoEng.getThumbnailUrl())
-                .date(new Date())
-                .isInteractive(isInteractive)
-                .build();
-
-        ShortForm createdShortForm = shortFormCommandRepository.save(shortForm);
-
-        System.out.println("숏폼 생성 & 저장 완료");
-
-//        quizCommandService.updateQuizWithUUID(createdShortForm.getShortFormNo(), UUID.fromString(uuid));
-
-        return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
-                                           createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
-                                           createdShortForm.getUrlEng());
-    }
-
-    @Transactional
-    public CreateShortFormResponse createShortFormWithSubtitleWithInteractiveMovie(byte[] fileBytes, String fileName, String uuid,
-                                                                                  String title, String description,
-                                                                                  Long memberNo, Boolean isInteractive)
-                                                                                  throws IOException, JCodecException {
-
-        InputStream inputStream = new ByteArrayInputStream(fileBytes);
-        MultipartFile file = new MockMultipartFile("file", fileName, "video/mp4", inputStream);
-
-        String fileKeyName = createFileName(file.getOriginalFilename()); // 파일 이름을 고유한 파일 이름으로 교체
-
-        SubtitledVideo subtitledVideo = new SubtitledVideo();
-
-        // ai 서버에 자막 동영상 요청 & 응답 받기
-        System.out.println("ai 영어 자막 영상 요청");
-        subtitledVideo.setFileEng(aiInfraService.sendToAIForEngSub(file.getResource(), fileKeyName));
-        System.out.println("ai 영어 자막 영상 응답 완료");
-        System.out.println("ai 한글 자막 영상 요청");
-        subtitledVideo.setFileKr(aiInfraService.sendToAIForKrSub(fileKeyName));
-        System.out.println("ai 한글 자막 영상 응답 완료");
-
-        // 썸네일 이미지 생성 (영어자막/한글자막 영상에 관련없이 썸네일은 같음)
-        String thumbnailUrl = createAndUploadThumbnail(file, fileKeyName + ".jpeg");
-
-        // 영어 자막 동영상 생성
-        UploadVideo uploadVideoEng = createShortForm(subtitledVideo.getFileEng(), fileKeyName + "eng.mp4", thumbnailUrl);
-        // 한글 자막 동영상 생성
-        UploadVideo uploadVideoKr = createShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4", thumbnailUrl);
+        UploadVideo uploadVideoKr = uploadShortForm(subtitledVideo.getFileKr(), fileKeyName + "kr.mp4", thumbnailUrl);
 
         MemberNoVO memberNoVO = new MemberNoVO(memberNo);
 
@@ -193,8 +150,8 @@ public class ShortFormFirebaseService {
         inputStream.close();
 
         return new CreateShortFormResponse(createdShortForm.getShortFormNo(), createdShortForm.getThumbnailUrlKr(),
-                createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
-                createdShortForm.getUrlEng());
+                                           createdShortForm.getUrlKr(), createdShortForm.getThumbnailUrlEng(),
+                                           createdShortForm.getUrlEng());
     }
 
     // 숏폼 삭제
@@ -294,7 +251,7 @@ public class ShortFormFirebaseService {
 
     // MultipartFile을 File로 변환
     private File multipartToFile(MultipartFile multipart) throws IOException {
-        File file = new File(multipart.getOriginalFilename());
+        File file = new File(Objects.requireNonNull(multipart.getOriginalFilename()));
         try (FileOutputStream fos = new FileOutputStream(file)) {
             StreamUtils.copy(multipart.getInputStream(), fos);
         }

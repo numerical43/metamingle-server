@@ -34,7 +34,7 @@ public class ShortFormCommandController {
         byte[] videoBytes = video.getBytes();
         String fileName = video.getOriginalFilename();
 
-        CreateShortFormResponse response = shortFormFirebaseService.createShortFormWithSubtitle(videoBytes, fileName, uuid, title,
+        CreateShortFormResponse response = shortFormFirebaseService.createShortForm(videoBytes, fileName, uuid, title,
                                                                                                 description, memberNo, Boolean.FALSE);
 
         return ResponseEntity.ok(ApiResponse.success("전송 성공", "서버 전송 완료"));

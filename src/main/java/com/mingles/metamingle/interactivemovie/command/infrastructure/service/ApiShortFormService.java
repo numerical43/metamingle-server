@@ -14,19 +14,12 @@ public class ApiShortFormService {
 
     private final ShortFormFirebaseService shortFormFirebaseService;
 
-//    public ShortForm createShortFormWithInteractiveMovie(MultipartFile file, String title, String description, Long memberNo)
-//            throws JCodecException, IOException {
-//
-//        return shortFormFirebaseService.createShortFormWithInteractiveMovie(file, title, description, memberNo);
-//
-//    }
-
     public CreateShortFormResponse createShortFormWithInteractiveMovie(byte[] file, String fileName, String uuid,
                                                                        String title, String description,
                                                                        Long memberNo, Boolean isInteractive)
-                                                                       throws JCodecException, IOException, InterruptedException {
+                                                                       throws JCodecException, IOException {
 
-        return shortFormFirebaseService.createShortFormWithSubtitleWithInteractiveMovie(file, fileName, uuid, title,
+        return shortFormFirebaseService.createShortFormWithSubtitle(file, fileName, uuid, title,
                                                                     description, memberNo, isInteractive);
     }
 }
